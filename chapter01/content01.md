@@ -1,12 +1,38 @@
-## pip install
+=========== 
+构建基本Python环境
+===========
+
+
+---------------
+下载Python开发包
+---------------
+1. 下载网址
+        https://python.org
+   
+2. 下载过程
+        （1） 
+
+
+
+
+
+
+
+
+
+---------------------
+使用pip下载安装第三方包
+---------------------
 
 # pip update to specific version
 pip install -U package==x.x.x
 pip install --upgrade psycopg2==2.7.5
 
+# 国内常用的镜像网站
 # pip from tsinghua, aliyun
 pip install [package] -i https://pypi.tuna.tsinghua.edu.cn/simple
 pip install [package] -i http://mirrors.aliyun.com/pypi/simple/ --trusted-host mirrors.aliyun.com
+
 
 # set default source
 pip config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple
@@ -28,11 +54,3 @@ trusted-host=
         pypi.douban.com
         pypi.mirrors.ustc.edu.cn
 
-
-## --- pyecharts
-# pip install echarts-countries-pypkg 全球国家地图
-# pip install echarts-china-provinces-pypkg 中国省份地图
-# pip install echarts-china-cities-pypkg 中国城市地图
-# pip install echarts-china-counties-pypkg 县区地图
-# pip install echarts-china-misc-pypkg
-# pip install echarts-united-kingdom-pypkg
