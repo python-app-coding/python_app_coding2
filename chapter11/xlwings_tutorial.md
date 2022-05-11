@@ -3,7 +3,8 @@
 ------
 ##1. 第三方包xlwings简介
 
-xlwings是一款开源免费的Python第三方库，使用xlwings能够轻松读写Excel文件中的数据，支持按照Excel单元格进行访问修改，可以与pandas等类库集成使用。
+xlwings是一款开源免费的Python第三方库，使用xlwings能够轻松读写Excel文件中的数据，支持按照Excel单元格进行访问修改，
+可以与pandas等类库集成使用。
 
 在较新的Anaconda和WinPython中，已经预装了xlwings，可以在Windows和MacOs环境中使用。
 
@@ -13,7 +14,8 @@ xlwings是一款开源免费的Python第三方库，使用xlwings能够轻松读
 
 有关xlwings项目详情，可访问网址：https://www.xlwings.org/
 
-费利克斯•朱姆斯坦（Felix Zumstein）是xlwings的创始人。费利克斯在工作中接触了大量Excel用户，他对Excel在各行各业中的使用瓶颈和解决思路拥有深刻的见解。
+费利克斯•朱姆斯坦（Felix Zumstein）是xlwings的创始人。费利克斯在工作中接触了大量Excel用户，他对Excel在各行各业中的使用瓶颈和解决思路
+拥有深刻的见解。
 
 他的书《Python for Excel》值得一读：
 
