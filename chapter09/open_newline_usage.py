@@ -3,7 +3,7 @@
 演示在open函数中设置newline的各种效果和影响
 demo the usage of parameter newline in open function
 """
-
+import os
 
 demo_text = "Line1\nLine2\rLine3\r\n"
 
@@ -24,12 +24,13 @@ def demo_open_write_with_newline(filename="demo_newline.txt", newline=None):
     print("\n\nwrite text to file\n"+'-'*100)
     newline_str = str(newline.encode('utf8')) if isinstance(newline, str) else "None"
     print(f"newline={newline_str}")
+
     with open(filename, "w+", newline=newline, encoding="utf8") as fp:
         fp.write(demo_text)
 
+    print("raw text:", demo_text.encode('utf8'))
     with open(filename, "rb") as fp:
         readbytes = fp.read()
-        print("raw text:", demo_text.encode('utf8'))
         if newline is None:
             print("write to:", readbytes, "\t# "+r"\n ==> os.linesep (os.linesep is '\r\n' in Windows)")
         elif newline in ("", "\n"):
@@ -55,13 +56,15 @@ def demo_open_read_with_newline(filename="demo_newline.txt", newline=None):
     newline=any_legal_char,
     """
 
-    with open(filename, "w+", newline=None, encoding="utf8") as fp:
+    with open(filename, "w+", newline="", encoding="utf8") as fp:
         fp.write(demo_text)
+    with open(filename, "rb") as fp:
+        demo_text_in_file = fp.read()
 
     print("\n\nread text from file\n"+'-'*80)
     newline_str = str(newline.encode('utf8')) if isinstance(newline, str) else "None"
     print(f"newline={newline_str}")
-    print("raw text:", demo_text.encode('utf8'))
+    print("raw text:", demo_text_in_file)
     with open(filename, mode="r", newline=newline) as fp:
         # read by read
         readbytes = fp.read().encode('utf8')
@@ -83,12 +86,14 @@ def demo_open_read_with_newline(filename="demo_newline.txt", newline=None):
 
 
 if __name__ == "__main__":
+    print(f"os.linesep={os.linesep.encode()}")
+    # demo write
     demo_open_write_with_newline(newline=None)
     demo_open_write_with_newline(newline='')
     demo_open_write_with_newline(newline='\n')
     demo_open_write_with_newline(newline='\r')
     demo_open_write_with_newline(newline='\r\n')
-
+    # demo read
     demo_open_read_with_newline(newline=None)
     demo_open_read_with_newline(newline="")
     demo_open_read_with_newline(newline="\r")
