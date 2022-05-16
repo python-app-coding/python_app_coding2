@@ -32,9 +32,9 @@ def demo_open_write_with_newline(filename=demo_file, newline=None):
     print("\n\nwrite text to file\n"+'-'*100)
 
     # display newline char and raw text string
-    newline_str = str(newline.encode('utf8')) if isinstance(newline, str) else "None"
+    newline_str = str(newline.encode('utf8')).replace('b', '') if isinstance(newline, str) else "None"
     print(f"newline={newline_str}")
-    print("raw text:", demo_text.encode('utf8'))
+    print("raw text:", str(demo_text.encode('utf8'))[1:])
 
     # write demo_text to file with newline
     with open(filename, "w+", newline=newline, encoding="utf8") as fp:
@@ -43,9 +43,10 @@ def demo_open_write_with_newline(filename=demo_file, newline=None):
     # read from text file in binary mode to compare with raw_text
     with open(filename, "rb") as fp:
         readbytes = fp.read()
+        readbytes = str(readbytes)[1:]  # remove b at first pos
         if newline is None:
             print("write to:", readbytes, "\t# " +
-                  r"\n ==> os.linesep (os.linesep is '\r\n' in Windows, '\n' in Linux, '\r' in Mac)")
+                  r"\n ==> os.linesep ('\r\n' in Windows, '\n' in Linux, '\r' in Mac)")
         elif newline in ("", "\n"):
             print("write to:", readbytes, "\t# "+r" no conversion")
         elif newline == "\r":
@@ -82,12 +83,13 @@ def demo_open_read_with_newline(filename=demo_file, newline=None):
         demo_text_in_file = fp.read()
 
     print("\n\nread text from file\n"+'-'*80)
-    newline_str = str(newline.encode('utf8')) if isinstance(newline, str) else "None"
+    newline_str = str(newline.encode('utf8')).replace('b', '') if isinstance(newline, str) else "None"
     print(f"newline={newline_str}")
-    print("raw text:", demo_text_in_file)
+    print("raw text:", str(demo_text_in_file)[1:])
     with open(filename, mode="r", newline=newline) as fp:
-        # read by read
+        # read
         readbytes = fp.read().encode('utf8')
+        readbytes = str(readbytes)[1:]      # remove b at first pos
         if newline is None:
             print("read  to:", readbytes, "\t# no replace")
         elif newline == "":
@@ -98,13 +100,16 @@ def demo_open_read_with_newline(filename=demo_file, newline=None):
             print("read  to:", readbytes, "\t# no replace")
         else:
             print("read  to:", readbytes, "\t# no replace")
+
         print("-."*40)
         # read by readlines
         print(f"# use {newline_str} as line-end-char to get each line")
         print("--- readlines ---")
         fp.seek(0)
         for lno, line in enumerate(fp.readlines()):
-            print(f"(line-{lno+1}):{line.encode('utf8')}")
+            linestr = str(line.encode('utf8'))[1:]
+            print(f"(line-{lno+1}):{linestr}")
+
         print("--- readline ---")
         fp.seek(0)
         line_no = 1
@@ -112,7 +117,8 @@ def demo_open_read_with_newline(filename=demo_file, newline=None):
             line = fp.readline()
             if line == "":
                 break
-            print(f"(line-{line_no}):{line.encode()}")
+            line = str(line.encode())[1:]
+            print(f"(line-{line_no}):{line}")
             line_no += 1
 
 
@@ -128,8 +134,8 @@ if __name__ == "__main__":
     # demo_open_write_with_newline(newline='\n\r')  # invalid newline char
 
     # demo read
-    # demo_open_read_with_newline(newline=None)
-    # demo_open_read_with_newline(newline="")
-    # demo_open_read_with_newline(newline="\r")
-    # demo_open_read_with_newline(newline="\n")
-    # demo_open_read_with_newline(newline="\r\n")
+    demo_open_read_with_newline(newline=None)
+    demo_open_read_with_newline(newline="")
+    demo_open_read_with_newline(newline="\r")
+    demo_open_read_with_newline(newline="\n")
+    demo_open_read_with_newline(newline="\r\n")
