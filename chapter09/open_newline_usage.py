@@ -11,10 +11,9 @@ demo_file = "temp_newline.txt"
 
 def demo_open_write_with_newline(filename=demo_file, newline=None):
     """
-    展示写文本文件时newline的作用
+    展示使用open函数写文本文件时newline的作用
     将newline分别设置为None, "\n", "", "\r"时，文本写入文件的情况
-    demo what happens when writing text to file
-    if newline is set to None, "\n", "", "\r", etc
+    demo what happens when writing text by open to file if newline is set to None, "\n", "", "\r", "\r\n"
 
     newline在写文本文件时的作用 newline behaviors in writing text file:
     newline=None，使用universal Newline模式（PEP278），文本中的“\n”被视为换行符，写入时将其转换为os.linesep；
@@ -24,13 +23,15 @@ def demo_open_write_with_newline(filename=demo_file, newline=None):
     newline="\r\n", 写入时将"\n"转换为“\r\n”；
 
     总结 Summary:
-    在写文本文件时，
-    newline=None会进行通用换行符的转换，使用\n判断换行变换为os.linesep，对write和writeline有影响
-    newline='\n' or '', 不做转换，对write和writeline没有影响
-    newline='\r',将'\n'变换'\r'，对write和writeline有影响
-    newline='\r\n', 将'\n'变换'\r\n', 对write和writeline有影响
+    在将文本写入文件时，希望将'\n'转换为操作系统规定的换行符，可使用newline=None;
+    在将文本写入文件时，希望将'\n'转换为'\r'，可使用newline='\r'；
+    在将文本写入文件时，希望将'\n'转换为'\r\n'，可使用newline='\r\n'；
+    在将文本写入文件时，希望保持原文本不变，可使用newline='\n'或‘’。
     """
+
     print("\n\nwrite text to file\n"+'-'*100)
+
+    # display newline char and raw text string
     newline_str = str(newline.encode('utf8')) if isinstance(newline, str) else "None"
     print(f"newline={newline_str}")
     print("raw text:", demo_text.encode('utf8'))
@@ -62,14 +63,14 @@ def demo_open_read_with_newline(filename=demo_file, newline=None):
     分别设置为None, “”， "\n", "\r"时，文本文件读出数据的情况
     demo what happens when reading text from text file if newline is set to None, "\n", "", "\r", "\r\n"
 
-    newline behaviors in reading text file:
+    设置newline对open.read和readline(s)的影响 newline behaviors in reading text file by open.read or readline:
     newline=None，将文本中的'\r', '\n' '\r\n'都视为行结束符，读出后都转换为'\n';
     newline='', 将文本中的'\r', '\n' '\r\n'都视为行结束符，读出内容不做转换;
     newline='\r', 将文本中的'\r'视为行结束符，读出内容不做转换;
     newline='\n', 将文本中的'\n'视为行结束符，读出内容不做转换;
     newline='\r\n', 将文本中的'\r\n'视为行结束符，读出内容不做转换;
 
-    Summary:
+    总结 Summary:
     如果将文件中的'\r', '\n' '\r\n'都视为行结束符，读出后进仅使用'\n'做行结束符，使用newline=None读出最合适;
     如果将文件中的'\r', '\n' '\r\n'都视为行结束符，对文件的内容不做改变，使用newline=''最合适；
     如果针对文件的'\r', '\n' '\r\n'分别处理行结束符，需要按照配置使用newline。
