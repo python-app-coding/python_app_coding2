@@ -16,16 +16,19 @@ def demo_open_write_with_newline(filename=demo_file, newline=None):
     demo what happens when writing text to file
     if newline is set to None, "\n", "", "\r", etc
 
-    test result:
+    newline在写文本文件时的作用 newline behaviors in writing text file:
     newline=None，使用universal Newline模式（PEP278），文本中的“\n”被视为换行符，写入时将其转换为os.linesep；
     newline="\n", 写入时对文本内容不做任何替换；
     newline="", 写入时对文本内容不做任何替换；
     newline="\r", 写入时将"\n"转换为“\r”；
     newline="\r\n", 写入时将"\n"转换为“\r\n”；
 
-    etc:
-    newline=any_legal_char, 定义：将\n替换为any_legal_char；
-        测试：对合法字符的定义不明确，各种其它字符对写数据没有进行替换
+    总结 Summary:
+    在写文本文件时，
+    newline=None会进行通用换行符的转换，使用\n判断换行变换为os.linesep，对write和writeline有影响
+    newline='\n' or '', 不做转换，对write和writeline没有影响
+    newline='\r',将'\n'变换'\r'，对write和writeline有影响
+    newline='\r\n', 将'\n'变换'\r\n', 对write和writeline有影响
     """
     print("\n\nwrite text to file\n"+'-'*100)
     newline_str = str(newline.encode('utf8')) if isinstance(newline, str) else "None"
@@ -36,16 +39,20 @@ def demo_open_write_with_newline(filename=demo_file, newline=None):
     with open(filename, "w+", newline=newline, encoding="utf8") as fp:
         fp.write(demo_text)
 
-    # read from file to compare with raw_text
+    # read from text file in binary mode to compare with raw_text
     with open(filename, "rb") as fp:
         readbytes = fp.read()
         if newline is None:
-            print("write to:", readbytes, "\t# "+r"\n ==> os.linesep (os.linesep is '\r\n' in Windows)")
+            print("write to:", readbytes, "\t# " +
+                  r"\n ==> os.linesep (os.linesep is '\r\n' in Windows, '\n' in Linux, '\r' in Mac)")
         elif newline in ("", "\n"):
-            print("write to:", readbytes, "\t# "+r" no replacement")
+            print("write to:", readbytes, "\t# "+r" no conversion")
         elif newline == "\r":
             print("write to:", readbytes, "\t# " + r" \n ==> \r")
+        elif newline == "\r\n":
+            print("write to:", readbytes, "\t# " + r" \n ==> \r\n")
         else:
+            # so far, the legal_newline_char can be None, '', '\n', '\r', and '\r\n'
             print("write to:", readbytes, "\t# "+r" \n ==> "+str(newline.encode('utf8')))
 
 
@@ -55,12 +62,17 @@ def demo_open_read_with_newline(filename=demo_file, newline=None):
     分别设置为None, “”， "\n", "\r"时，文本文件读出数据的情况
     demo what happens when reading text from text file if newline is set to None, "\n", "", "\r", "\r\n"
 
-    test result:
+    newline behaviors in reading text file:
     newline=None，将文本中的'\r', '\n' '\r\n'都视为行结束符，读出后都转换为'\n';
     newline='', 将文本中的'\r', '\n' '\r\n'都视为行结束符，读出内容不做转换;
     newline='\r', 将文本中的'\r'视为行结束符，读出内容不做转换;
     newline='\n', 将文本中的'\n'视为行结束符，读出内容不做转换;
     newline='\r\n', 将文本中的'\r\n'视为行结束符，读出内容不做转换;
+
+    Summary:
+    如果将文件中的'\r', '\n' '\r\n'都视为行结束符，读出后进仅使用'\n'做行结束符，使用newline=None读出最合适;
+    如果将文件中的'\r', '\n' '\r\n'都视为行结束符，对文件的内容不做改变，使用newline=''最合适；
+    如果针对文件的'\r', '\n' '\r\n'分别处理行结束符，需要按照配置使用newline。
     """
 
     with open(filename, "w+", newline="", encoding="utf8") as fp:
@@ -105,6 +117,7 @@ def demo_open_read_with_newline(filename=demo_file, newline=None):
 
 if __name__ == "__main__":
     print(f"os.linesep={os.linesep.encode()}")
+
     # demo write
     demo_open_write_with_newline(newline=None)
     demo_open_write_with_newline(newline='')
@@ -112,9 +125,10 @@ if __name__ == "__main__":
     demo_open_write_with_newline(newline='\r')
     demo_open_write_with_newline(newline='\r\n')
     # demo_open_write_with_newline(newline='\n\r')  # invalid newline char
+
     # demo read
-    demo_open_read_with_newline(newline=None)
-    demo_open_read_with_newline(newline="")
-    demo_open_read_with_newline(newline="\r")
-    demo_open_read_with_newline(newline="\n")
-    demo_open_read_with_newline(newline="\r\n")
+    # demo_open_read_with_newline(newline=None)
+    # demo_open_read_with_newline(newline="")
+    # demo_open_read_with_newline(newline="\r")
+    # demo_open_read_with_newline(newline="\n")
+    # demo_open_read_with_newline(newline="\r\n")
