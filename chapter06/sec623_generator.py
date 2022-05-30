@@ -41,7 +41,8 @@ def gen2():
         start += 1
 
 
-g3 = (j for j in [1, 2])	# 也可以使用(j for j in range(1,3))
+# 也可以使用(j for j in range(1,3))
+g3 = (j for j in [1, 2])
 
 
 if __name__ == '__main__':
