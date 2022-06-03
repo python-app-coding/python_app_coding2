@@ -1,10 +1,12 @@
 # coding = utf8
 
-# from ..formulas import loan
-import sys
-import os
-sys.path.append(os.path.dirname(__file__) + os.sep + '../formulas')
+from ..formulas import loan
+
+# import sys
+# import os
+# sys.path.append(os.path.dirname(__file__) + os.sep + '../formulas')
 # import loan
+
 import pytest
 
 
@@ -12,7 +14,7 @@ class Test1:
 
     def setup(self):
         self.input1 = (200, 30, 0.06, 1)
-        self.result1_total_repay = 380.51
+        self.result1_total_repay = 380.5
         self.input2 = (200, 30, 0.049, 2)
         self.result2_month_repay = 1.0614534412456103
 
