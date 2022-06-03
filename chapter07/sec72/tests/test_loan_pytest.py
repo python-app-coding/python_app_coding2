@@ -1,7 +1,30 @@
 # coding = utf8
 
+"""
+PyTest几种命令行指定测试集方式
+
+【方式一】目录级运行
+指定运行某一目录下所有测试集方式
+命令格式：  pytest 目录名
+> pytest tests/
+
+【方式二】文件/模块级运行
+即指定运行.py文件中的所有测试
+命令格式： pytest 文件名.py
+> pytest  xxxx.py
+
+【方式三】运行测试类
+命令格式：pytest 文件名.py::测试类
+> pytest test_file::TestClass
+
+【方式四】运行测试方法
+命令格式：pytest 文件名.py::测试类::测试方法
+> pytest test_file::TestClass::test_method
+"""
+
 from ..formulas import loan
 
+# 使用绝对目录导入本文件相对位置模块
 # import sys
 # import os
 # sys.path.append(os.path.dirname(__file__) + os.sep + '../formulas')
