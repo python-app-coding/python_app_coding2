@@ -53,13 +53,13 @@ class Test1:
 
 class Test2:
 
-    @pytest.mark.parametrize(
-         'b, y, r, mode, result',
-         [(200, 30, 0.06, 1, 380.5), (100, 30, 0.049, 1, 173.7041)]
-         )
-    def test_repay_total_repay(self, b, y, r, mode, result):
-        run_result = loan.repay(b, y, r, mode)
-        assert round(run_result.total_repay, 2) == round(result, 2)
+    # @pytest.mark.parametrize(
+    #      'b, y, r, mode, result',
+    #      [(200, 30, 0.06, 1, 380.5), (100, 30, 0.049, 1, 173.7041)]
+    #      )
+    # def test_repay_total_repay(self, b, y, r, mode, result):
+    #     run_result = loan.repay(b, y, r, mode)
+    #     assert round(run_result.total_repay, 2) == round(result, 2)
 
     @pytest.mark.parametrize('b,y,r,mode, result', [(200, 30, 0.049, 2, 1.0614534412456103)])
     def test_repay_month_repay(self, b, y, r, mode, result):
