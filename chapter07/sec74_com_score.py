@@ -62,19 +62,19 @@ def com_score(*args):
     return sum(mul(*x) for x in args)
 
 
-def com_score_art(uni_score, art_score, mode='文编', ndigits=2):
+def com_score_art(uni_score, art_score, subject='文编', ndigits=2):
     """
     计算艺术综合分数
-    mode：str，值域={"美术"，“文编”， “播音”，“书法”，“舞蹈”}
+    subject：str，值域={"美术"，“文编”， “播音”，“书法”，“舞蹈”}
     uni_score: float, 统一考试分数
     art_score：float, 艺术专业分数
     ndigits: 保留小数位数，缺省值=2. 使用Python内置的舍人函数round， 与四舍五入方式不同
 
-    >>> com_score_art(451, 200, mode='美术')
+    >>> com_score_art(451, 200, subject='美术')
     '275.30'
-    >>> com_score_art(170.5, 10, mode='美术', ndigits=1)
+    >>> com_score_art(170.5, 10, subject='美术', ndigits=1)
     '58.2'
-    >>> com_score_art(5, 10, mode='美术', ndigits=0)
+    >>> com_score_art(5, 10, subject='美术', ndigits=0)
     '9'
     """
     # 各类别系数
@@ -86,25 +86,25 @@ def com_score_art(uni_score, art_score, mode='文编', ndigits=2):
          '书法': (0.4, 0.6)
          }
     # 合成分数
-    com_socre = sum(x * y for x, y in zip((uni_score, art_score), props[mode]))
+    com_socre = sum(x * y for x, y in zip((uni_score, art_score), props[subject]))
     # 返回字符串，保留nidigits位小数位
     return format(com_socre, '.{}f'.format(ndigits))
 
 
-def com_score_art_round45(unitest_score, art_score, mode='文编', ndigits=2):
+def com_score_art_round45(unitest_score, art_score, subject='文编', ndigits=2):
     """
 
     :param unitest_score:
     :param art_score:
-    :param mode:
+    :param subject:
     :param ndigits:
     :return:
 
-    >>> com_score_art_round45(451, 200, mode='美术')
+    >>> com_score_art_round45(451, 200, subject='美术')
     '275.30'
-    >>> com_score_art_round45(170.5, 10, mode='美术', ndigits=1)
+    >>> com_score_art_round45(170.5, 10, subject='美术', ndigits=1)
     '58.2'
-    >>> com_score_art_round45(5, 10, mode='美术', ndigits=0)
+    >>> com_score_art_round45(5, 10, subject='美术', ndigits=0)
     '9'
     """
     # 使用高精度十进制计算模块和四舍五入方式
@@ -121,7 +121,7 @@ def com_score_art_round45(unitest_score, art_score, mode='文编', ndigits=2):
         '书法': (r04, r06)
         }
     # 合成分数
-    comp_socre=sum(D(x)*ratio for x, ratio in zip((unitest_score, art_score), props[mode]))
+    comp_socre=sum(D(x)*ratio for x, ratio in zip((unitest_score, art_score), props[subject]))
     # 使用 ROUND_HALF_UP 方式进行舍入（四舍五入）
     comp_socre = round(comp_socre, ndigits)
     # # 返回字符串，保留 nidigits 位小数位

@@ -1,6 +1,7 @@
 # coding = utf8
 
 import datetime
+import zhdate
 
 
 def get_horoscope(month, day):
@@ -216,7 +217,7 @@ class ChinaEra:
         >>> ChinaEra.get_china_date_from_solar_date(2020, 10, 1)
         (2020, 8, 15)
         """
-        import zhdate
+        # import zhdate
         ln = zhdate.ZhDate.from_datetime(datetime.datetime(year, month, day))
         return ln.lunar_year, ln.lunar_month, ln.lunar_day
 
@@ -234,7 +235,7 @@ class ChinaEra:
         >>> ChinaEra.get_solar_date_from_china_date(2020, 8, 15)
         (2020, 10, 1)
         """
-        import zhdate
+        # import zhdate
         solar_date = zhdate.ZhDate(year, month, day, leap).to_datetime()
         return solar_date.year, solar_date.month, solar_date.day
 
