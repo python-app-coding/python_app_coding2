@@ -202,7 +202,7 @@ def get_dir_files(pathname, suff_list=None):
 
 if __name__ == '__main__':
     # get path-tree for command line: python argv[1]
-    path = os.path.abspath('..')
+    path = os.path.abspath('../..')
     if len(argv) > 1:
         path = argv[1]
     print(path)
