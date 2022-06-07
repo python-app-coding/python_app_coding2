@@ -4,29 +4,29 @@
 when import or run, inspect attributes: __file__、__name__、sys.argv[0]、sys.path[0]
 
 以下面方式运行本模块 run or import this module following modes below：
-module location: D:\python_app_coding\chapter08\module_attrs.py
+module location: D:\python_app_coding\chapter08\sec815_module_attrs.py
 
 1. 在本目录以主程序运行
     [own directory]> python module
 
-    (venv) D:\python_app_coding\chapter08>python module_attrs.py
+    (venv) D:\python_app_coding\chapter08>python sec815_module_attrs.py
     Module status: run
     --------------------------------------------------------------------------------
-    __file__:       D:\python_app_coding\chapter08\module_attrs.py
+    __file__:       D:\python_app_coding\chapter08\sec815_module_attrs.py
     __name__:       __main__
-    sys.argv[0]:    module_attrs.py
+    sys.argv[0]:    sec815_module_attrs.py
     sys.path[0]:    D:\python_app_coding\chapter08
     --------------------------------------------------------------------------------
 
 2. 在其他目录以主程序运行
     [other directory]> python module
 
-    (venv) D:\python_app_coding>python chapter08\module_attrs.py
+    (venv) D:\python_app_coding>python chapter08\sec815_module_attrs.py
     Module status: run
     --------------------------------------------------------------------------------
-    __file__:       D:\python_app_coding\chapter08\module_attrs.py
+    __file__:       D:\python_app_coding\chapter08\sec815_module_attrs.py
     __name__:       __main__
-    sys.argv[0]:    chapter08\module_attrs.py
+    sys.argv[0]:    chapter08\sec815_module_attrs.py
     sys.path[0]:    D:\python_app_coding\chapter08
     --------------------------------------------------------------------------------
 
@@ -36,13 +36,13 @@ module location: D:\python_app_coding\chapter08\module_attrs.py
     (venv) D:\python_app_coding\chapter08>python -m module_attrs
     Module status: run
     --------------------------------------------------------------------------------
-    __file__:       D:\python_app_coding\chapter08\module_attrs.py
+    __file__:       D:\python_app_coding\chapter08\sec815_module_attrs.py
     __name__:       __main__
-    sys.argv[0]:    D:\python_app_coding\chapter08\module_attrs.py
+    sys.argv[0]:    D:\python_app_coding\chapter08\sec815_module_attrs.py
     sys.path[0]:    D:\python_app_coding\chapter08
     __spec__.name:  module_attrs
     __spec__.parent:
-    __spec__.origin:        D:\python_app_coding\chapter08\module_attrs.py
+    __spec__.origin:        D:\python_app_coding\chapter08\sec815_module_attrs.py
     --------------------------------------------------------------------------------
 
 4. 在其它目录以模块方式运行
@@ -51,13 +51,13 @@ module location: D:\python_app_coding\chapter08\module_attrs.py
     (venv) D:\python_app_coding>python -m chapter08.module_attrs
     Module status: run
     --------------------------------------------------------------------------------
-    __file__:       D:\python_app_coding\chapter08\module_attrs.py
+    __file__:       D:\python_app_coding\chapter08\sec815_module_attrs.py
     __name__:       __main__
-    sys.argv[0]:    D:\python_app_coding\chapter08\module_attrs.py
+    sys.argv[0]:    D:\python_app_coding\chapter08\sec815_module_attrs.py
     sys.path[0]:    D:\python_app_coding
     __spec__.name:  chapter08.module_attrs
     __spec__.parent:        chapter08
-    __spec__.origin:        D:\python_app_coding\chapter08\module_attrs.py
+    __spec__.origin:        D:\python_app_coding\chapter08\sec815_module_attrs.py
     --------------------------------------------------------------------------------
 
 5. 在本目录导入
@@ -66,13 +66,13 @@ module location: D:\python_app_coding\chapter08\module_attrs.py
 
     Module status: import
     --------------------------------------------------------------------------------
-    __file__:           D:\python_app_coding\chapter08\module_attrs.py
+    __file__:           D:\python_app_coding\chapter08\sec815_module_attrs.py
     __name__:           module_attrs
     sys.argv[0]:
     sys.path[0]:
     __spec__.name:      module_attrs
     __spec__.parent:
-    __spec__.origin:    D:\python_app_coding\chapter08\module_attrs.py
+    __spec__.origin:    D:\python_app_coding\chapter08\sec815_module_attrs.py
     --------------------------------------------------------------------------------
 
 6. 在其他目录导入 import zt orhter directory
@@ -81,26 +81,26 @@ module location: D:\python_app_coding\chapter08\module_attrs.py
 
     Module status: import
     --------------------------------------------------------------------------------
-    __file__:       D:\python_app_coding\chapter08\module_attrs.py
+    __file__:       D:\python_app_coding\chapter08\sec815_module_attrs.py
     __name__:       chapter08.module_attrs
     sys.argv[0]:
     sys.path[0]:
     __spec__.name:  chapter08.module_attrs
     __spec__.parent:        chapter08
-    __spec__.origin:        D:\python_app_coding\chapter08\module_attrs.py
+    __spec__.origin:        D:\python_app_coding\chapter08\sec815_module_attrs.py
     --------------------------------------------------------------------------------
 
 7. 在Ipython中导入
     []: import module
     Module status: import
     --------------------------------------------------------------------------------
-    __file__:	D:\python_app_coding\chapter08\module_attrs.py
+    __file__:	D:\python_app_coding\chapter08\sec815_module_attrs.py
     __name__:	chapter08.module_attrs
     sys.argv[0]:	C:\Program Files\JetBrains\PyCharm 2021.1.2\plugins\python\helpers\pydev\pydevconsole.py
     sys.path[0]:	C:\Program Files\JetBrains\PyCharm 2021.1.2\plugins\python\helpers\pydev
     __spec__.name:	chapter08.module_attrs
     __spec__.parent:	chapter08
-    __spec__.origin:	D:\python_app_coding\chapter08\module_attrs.py
+    __spec__.origin:	D:\python_app_coding\chapter08\sec815_module_attrs.py
     --------------------------------------------------------------------------------
 
 """
