@@ -32,14 +32,12 @@ def exp_filecmp_cmpfiles():
                            ))
 
 
-
 def exp_filecmp_dircmp():
     print(filecmp.dircmp('work', 'work2').report())
     # diff work work2			# 差异比较目录
     # Only in work : ['cmpfile3.txt']	# 仅在一个目录的文件
     # Identical files : ['cmpfile2.txt']	# 相同的文件
     # Differing files : ['cmpfile1.txt']	# 不相同的文件
-
 
 
 def exp_filecmp_dircmp2():
@@ -62,20 +60,35 @@ def exp_filecmp_dircmp2():
       │  └─cmpfile3.txt		# 内容：Wello-World\nHello-China
       └─◎─work4 [path] [files:0 dirs:0]
     """
-    if not os.path.isdir('worka'):
+    if not os.path.isdir('worka/work1'):
         os.mkdir('worka')
-        with open("worka/cmpfile1.txt", 'wt') as fp1, \
-                open("worka/cmpfile2.txt", 'wt') as fp2, \
-                open("worka/cmpfile3.txt", 'wt') as fp3:
+        os.mkdir('worka/work1')
+        os.mkdir('worka/work2')
+        os.mkdir('worka/work3')
+        with open("worka/work1/cmpfile1.txt", 'wt') as fp1, \
+                open("worka/work1/cmpfile2.txt", 'wt') as fp2, \
+                open("worka/work2/cmpfile1.txt", 'wt') as fp3, \
+                open("worka/work3/cmpfile3.txt", 'wt') as fp4\
+            :
             fp1.write("Hello-World\nHello-China")
             fp2.write("Hello World\nHello-China")
             fp3.write("Hello-World\nHello-China")
-    if not os.path.isdir('work2'):
+            fp4.write("Hello-World\nHello-China")
+    if not os.path.isdir('workb/work1'):
         os.mkdir('workb')
-        with open("workb/cmpfile1.txt", 'wt') as fp1, \
-                open("workb/cmpfile2.txt", 'wt') as fp2:
-            fp1.write("Hello\nHello-China")
-            fp2.write("Hello World\nHello-China")
+        os.mkdir('workb/work1')
+        os.mkdir('workb/work2')
+        os.mkdir('workb/work3')
+        os.mkdir('workb/work4')
+        with open("workb/work1/cmpfile1.txt", 'wt') as fp1,\
+                open("workb/work2/cmpfile1.txt", 'wt') as fp2,\
+                open("workb/work2/cmpfile2.txt", 'wt') as fp3,\
+                open("workb/work3/cmpfile3.txt", 'wt') as fp4:
+            fp1.write("Hello-World\nHello-China")
+            fp2.write("Hello-World\nHello-China")
+            fp3.write("Hello World\nHello-China")
+            fp4.write("Hello-World\nHello-China")
+
     print("dircmp report_full_closure:")
     print(filecmp.dircmp('worka', 'workb').report_full_closure())
 
@@ -95,7 +108,14 @@ def exp_filecmp_dircmp2():
     # Only in workb\work2 : ['cmpfile2.txt']  		# 文件cmpfile2.txt仅在workb\work2中存在
     # Identical files : ['cmpfile1.txt']      		# 文件cmpfile1.txt在两个目录中存在且相同
 
+    # 使用忽略ignore和隐藏hide参数设置
+    print(filecmp.dircmp('worka', 'workb', ignore=['work1'], hide=['work3']).report())
+    # diff worka workb
+    # Only in workb: ['work4']
+    # Common subdirectories: ['work2']
+
 
 if __name__ == '__main__':
     # exp_filecmp_cmpfiles()
-    exp_filecmp_dircmp()
+    # exp_filecmp_dircmp()
+    exp_filecmp_dircmp2()
