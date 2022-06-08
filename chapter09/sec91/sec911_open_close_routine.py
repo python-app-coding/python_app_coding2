@@ -15,11 +15,11 @@ def demo2_try_except_file(filename):
         for line in f:
             print(line)
     except FileNotFoundError as e:		# 截获异常
-        print(e)			                # 打印错误信息
+        print(e)			            # 打印错误信息
     except IOError as e:		        # 多次截获异常
-            print(e)
+        print(e)
     finally:			# 执行关闭文件操作
-        if f:
+        if f:           # 如果不设置检测，会再次触发异常
             f.close()
 
 
