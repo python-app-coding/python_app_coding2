@@ -91,7 +91,7 @@ def demo_open_read_with_newline(filename=demo_file, newline=None):
         readbytes = fp.read().encode('utf8')
         readbytes = str(readbytes)[1:]      # remove b at first pos
         if newline is None:
-            print("read  to:", readbytes, "\t# no replace")
+            print("read  to:", readbytes, "\t# replace: ...-->\\n")
         elif newline == "":
             print("read  to:", readbytes, "\t# no replace")
         elif newline == "\r":
