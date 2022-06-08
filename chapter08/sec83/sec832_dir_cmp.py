@@ -5,7 +5,7 @@ import filecmp
 from filecmp import dircmp
 
 
-def exp_filecmp_cmpfiles():
+def demo_filecmp_cmpfiles():
     if not os.path.isdir('work'):
         os.mkdir('work')
         with open("work/cmpfile1.txt", 'wt') as fp1, \
@@ -32,7 +32,7 @@ def exp_filecmp_cmpfiles():
                            ))
 
 
-def exp_filecmp_dircmp():
+def demo_filecmp_dircmp():
     print(filecmp.dircmp('work', 'work2').report())
     # diff work work2			# 差异比较目录
     # Only in work : ['cmpfile3.txt']	# 仅在一个目录的文件
@@ -40,7 +40,7 @@ def exp_filecmp_dircmp():
     # Differing files : ['cmpfile1.txt']	# 不相同的文件
 
 
-def exp_filecmp_dircmp2():
+def demo_filecmp_dircmp2():
     """
     ●─ worka [path] [files:0 dirs:3]
       └─◎─work1 [path] [files:2 dirs:0]
@@ -116,6 +116,6 @@ def exp_filecmp_dircmp2():
 
 
 if __name__ == '__main__':
-    # exp_filecmp_cmpfiles()
-    # exp_filecmp_dircmp()
-    exp_filecmp_dircmp2()
+    # demo_filecmp_cmpfiles()
+    # demo_filecmp_dircmp()
+    demo_filecmp_dircmp2()

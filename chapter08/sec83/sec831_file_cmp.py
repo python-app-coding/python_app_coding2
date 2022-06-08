@@ -6,7 +6,7 @@ import shutil
 import os
 
 
-def exp_filecmp():
+def demo_filecmp():
     if not os.path.isdir('work'):
         os.mkdir('work')
         with open("work/cmpfile1.txt", 'wt') as fp1, \
@@ -28,7 +28,7 @@ def exp_filecmp():
 
 
 
-def exp_difflib():
+def demo_difflib():
     with open("cmpfile01.txt", 'wt') as fp01, open("cmpfile02.txt", 'wt') as fp02:
          fp01.writelines(
              "this is line01\n"
@@ -66,5 +66,5 @@ def exp_difflib():
 
 
 if __name__ == '__main__':
-    exp_filecmp()
-    # exp_difflib()
+    demo_filecmp()
+    # demo_difflib()
