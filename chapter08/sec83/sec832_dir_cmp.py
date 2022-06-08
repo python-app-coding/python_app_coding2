@@ -89,7 +89,7 @@ def exp_filecmp_dircmp2():
     # {'work1': <filecmp.dircmp object at 0x0000024E18C6E438>,
     #  'work2': <filecmp.dircmp object at 0x0000024E18C6ECC0>,
     #  'work3': <filecmp.dircmp object at 0x0000024E18C6E898>}
-    
+
     print(cmp.subdirs['work2'].report())		    # 报告具体子目录比较结果
     # diff worka\work2 workb\work2
     # Only in workb\work2 : ['cmpfile2.txt']  		# 文件cmpfile2.txt仅在workb\work2中存在
