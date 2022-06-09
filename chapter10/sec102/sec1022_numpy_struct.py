@@ -9,30 +9,43 @@ def demo0_dtype_char():
     >>> np.dtype(np.float_)
     dtype('float64')
 
-    >>> [np.dtype(t) for t in (np.float16, np.str_, np.int32)]
-    [dtype('float16'), dtype('<U'), dtype('int32')]
-    >>> [np.dtype(t).char for t in (np.float16, np.str_, np.int32)]
-    ['e', 'U', 'l']
-
     >>> type21 = [np.bool, np.int_, np.intc, np.intp, np.int8, np.int16, np.int32, np.int64,
     ...           np.uint8, np.uint16, np.uint32, np.uint64,
     ...           np.float, np.float16, np.float32, np.float64,
     ...           np.complex_, np.complex64, np.complex128,
     ...           np.str_, np.string_]
+
     >>> [np.dtype(t).char for t in type21]
     ['?', 'l', 'i', 'q', 'b', 'h', 'l', 'q', 'B', 'H', 'L', 'Q', 'd', 'e', 'f', 'd', 'D', 'F', 'D', 'U', 'S']
+
     >>> for t in type21:
     ...     print(f'{np.dtype(t).char}: {np.dtype(t).name}')
+    ?: bool
+    l: int32
+    i: int32
+    q: int64
+    b: int8
+    h: int16
+    l: int32
+    q: int64
+    B: uint8
+    H: uint16
+    L: uint32
+    Q: uint64
+    d: float64
+    e: float16
+    f: float32
+    d: float64
+    D: complex128
+    F: complex64
+    D: complex128
+    U: str
+    S: bytes
 
-    # 使用dtype.char属性，可以查看各种类型的单字母名称
-    >>> ctype = "?, B, bool, D, e, F"
-    >>> a = np.array([(1, 2, 0, 3+2j, 3, 2j)], dtype=ctype)
-
-    >>> [a['f'+str(i)][0].dtype for i in range(6)]
-    [dtype('bool'), dtype('uint8'), dtype('bool'), dtype('complex128')]
-
-    >>> [a['f'+str(i)][0].dtype.char for i in range(6)]
-    ['?', 'B', '?', 'D']
+    >>> [np.dtype(t).str for t in type21[:10]]
+    ['|b1', '<i4', '<i4', '<i8', '|i1', '<i2', '<i4', '<i8', '|u1', '<u2']
+    >>> [np.dtype(t).str for t in type21[10:]]
+    ['<u4', '<u8', '<f8', '<f2', '<f4', '<f8', '<c16', '<c8', '<c16', '<U0', '|S0']
     """
 
 
