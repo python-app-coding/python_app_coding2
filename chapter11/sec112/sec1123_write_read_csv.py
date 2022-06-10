@@ -105,4 +105,15 @@ def demo4_dtypes():
      4   zf      3 non-null      uint16
     dtypes: object(1), uint16(1), uint8(3)
     memory usage: 63.0+ bytes
+
+    >>> df5.to_csv('temp_csv_file_2.csv')
+    >>> df5.index
+    Index(['0101', '0102', '0103'], dtype='object', name='sno')
+
+    >>> df6 = pd.read_csv('temp_csv_file_2.csv', dtype={'sno': np.str_})		# 读出存储后的文件内容
+    >>> df6
+        sno         name  yw  sx  wy   zf
+    0  0101  Zhai Linwei  80  87  92  259
+    1  0102  Zhou Geshan  90  80  88  258
+    2  0103  Zang Keting  67  73  70  210
     """
