@@ -1,37 +1,8 @@
 # coding = utf8
+
 import openpyxl
 import pandas as pd
 import numpy as np
-from openpyxl import load_workbook
-
-
-def demo_openpyxl():
-    wk = openpyxl.load_workbook("temp_demo_write_sheets.xlsx")
-    sh = wk.active
-
-    # get data
-    for row in sh.rows:
-        for cell in row:
-            print(cell.value, end=', ')
-        print('')
-
-    # set data
-    for i, row in enumerate(sh.rows):
-        for j, cell in enumerate(row):
-            if j == 3:
-                cell.value = cell.value + '123'
-
-    # get data
-    for row in sh.rows:
-        for cell in row:
-            print(cell.value, end=', ')
-        print('')
-
-    wk.close()
-
-
-
-
 
 
 def demo_fill_data_to_excel():
@@ -71,7 +42,7 @@ def demo_fill_data_to_excel():
                     )
 
     # add title to excel_file0
-    book = load_workbook(filename=excel_file0)
+    book = openpyxl.load_workbook(filename=excel_file0)
     worksheet = book.worksheets[0]
     # -- 在第一行前面插入一行， 准备给Excel表添加总标题
     worksheet.insert_rows(1)
@@ -87,7 +58,7 @@ def demo_fill_data_to_excel():
                         dtype={'sno': str})
 
     # add title and score to excel_file from excel_file0
-    book = load_workbook(filename=excel_file0)
+    book = openpyxl.load_workbook(filename=excel_file0)
     worksheet = book.worksheets[0]
     # worksheet.insert_rows(1)
     for inx, row in enumerate(worksheet.rows):
@@ -162,5 +133,4 @@ def demo_fill_data_to_excel():
 
 
 if __name__ == '__main__':
-    demo_openpyxl()
-    # demo_fill_data_to_excel()
+    demo_fill_data_to_excel()
