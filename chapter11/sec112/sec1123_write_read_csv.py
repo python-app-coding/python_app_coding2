@@ -20,7 +20,7 @@ def demo1_to_csv():
     0103  Zang Keting  67  73  70  210
 
     # 使用数据集方法to_csv写csv文件
-    >>> df.to_csv('temp_csv_file_1.csv')
+    >>> df.to_csv('temp.csv')
 
     # csv file content:
     ,name,yw,sx,wy,zf
@@ -32,7 +32,7 @@ def demo1_to_csv():
 
 def demo2_read_csv():
     """
-    >>> df2 = pd.read_csv('temp_csv_file_1.csv')
+    >>> df2 = pd.read_csv('temp.csv')
 
     # 由于没有指定index,原索引标签被作为第一列读出
     # 在标题行中没有第一列的名称，赋予一个临时名称
@@ -46,7 +46,7 @@ def demo2_read_csv():
 
 def demo3_column_type():
     """
-    >>> df3 = pd.read_csv('temp_csv_file_1.csv', index_col=0, dtype={0: str})
+    >>> df3 = pd.read_csv('temp.csv', index_col=0, dtype={0: str})
 
 	# 将第一列读出为索引标签，但识别为整数类型, 设置dtype不能限制索引列的推断过程
     >>> df3
@@ -56,7 +56,7 @@ def demo3_column_type():
     103  Zang Keting  67  73  70  210
 
     # 正确读出索引列为字符类型，需要先按照设置类型读出列，然后置为索引列
-    >>> df4 = pd.read_csv('temp_csv_file_1.csv', dtype={'sno': str},
+    >>> df4 = pd.read_csv('temp.csv', dtype={'sno': str},
     ...                   header=0, names=['sno', 'name', 'yw', 'sx', 'wy', 'zf'])
     >>> df4
         sno         name  yw  sx  wy   zf
@@ -79,7 +79,7 @@ def demo4_dtypes():
     """
     # 根据数据情况设置类型
     >>> df5 = pd.read_csv(
-    ...		'temp_csv_file_1.csv',
+    ...		'temp.csv',
     ...		 dtype={'yw':np.uint8,
     ...		        'sx':np.uint8,
     ...		        'wy':np.uint8,
