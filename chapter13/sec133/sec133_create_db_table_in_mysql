@@ -1,0 +1,16 @@
+# create MySql database and table
+# with MySql tools -- WorkBench
+# you must start MySql service before using WorkBench
+
+mysql> create database students;
+
+mysql> use students;
+
+mysql> create table score (id varchar(10), name varchar(20), math int, art float);
+
+mysql> insert into score (id, name, math, art) values ('211001', 'MengBoli', 120, 56.2);
+mysql> insert into score (id, name, math, art) values ('211002', 'DengTong', 110, 86.7);
+
+mysql> commit;
+
+mysql> grant select on students.score to 'test'@'127.0.0.1';
