@@ -1,4 +1,5 @@
-# coding: utf-8
+# coding = utf8
+
 
 import time
 import struct
