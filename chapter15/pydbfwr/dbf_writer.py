@@ -81,7 +81,7 @@ class DbfWriter:
         >>> dbw = DbfWriter()
         >>> dbw.to_dbf(df, 'demo.dbf')
         >>> dbr = DbfReader()
-        >>> dbr.use('demo.dbf')
+        >>> dbr.open('demo.dbf')
         >>> dbr.data['serial_no'][0:2]
         0    10101
         1    10102

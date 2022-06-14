@@ -132,9 +132,9 @@ class Dbf:
     调用示例：
     (Examples)
     >>> dbf = Dbf()
-    >>> dbf.use('demo.dbf')
-    >>> dbf.load(1, 20)
-    >>> dbf.use()
+    >>> dbf.open('demo.dbf')
+    >>> dbf.fetchmany(1, 20)
+    >>> dbf.open()
     """
 
     def __init__(self, encoding='gbk'):
@@ -490,9 +490,9 @@ class DbfReader:
         :param beg: 开始年
         :param end: 结束年
         :return: 闰年年份的列表
-        >>> DbfReader.get_leap_year(1, 20)
+        >>> DbfReader.get_leap_years(1, 20)
         [4, 8, 12, 16, 20]
-        >>> DbfReader.get_leap_year(-10, -1)
+        >>> DbfReader.get_leap_years(-10, -1)
         [-9, -5, -1]
         """
         beg = 1 if not beg else beg
@@ -629,7 +629,7 @@ class DbfWriter:
         >>> dbw = DbfWriter()
         >>> dbw.to_dbf(df, 'demo.dbf')
         >>> dbr = DbfReader()
-        >>> dbr.use('demo.dbf')
+        >>> dbr.open('demo.dbf')
         >>> dbr.data['serial_no'][0:2]
         0    10101
         1    10102

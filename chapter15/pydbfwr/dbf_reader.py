@@ -16,137 +16,6 @@ import pandas as pd
 decimal.getcontext().rounding = decimal.ROUND_HALF_UP
 
 
-def get_date_from_days(date_days):
-    """
-    get year, month, day from ellapsed days
-    max value of date_days is 3652058, that is datetime(9999, 12, 31) - datetime(1,1,1)
-    >>> DbfReader().get_date_from_days(721906)
-    (1977, 7, 7)
-    """
-    month_day = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
-    # set upper value of year to max year in datetime
-    year_max, year_min = 9999, 1
-    # year_no = 0     # initialize to 0, raise exception if not found in searching
-    while True:
-        year_mean = int((year_max+year_min)/2)
-        diff = (datetime.datetime(year_mean, 1, 1) - datetime.datetime(1, 1, 1)).days
-        if diff > date_days:
-            year_max = year_mean
-        else:
-            year_min = year_mean
-        if (year_max - year_min) <= 1:
-            year_no = year_min
-            break
-    else_days = date_days - (datetime.datetime(year_no, 1, 1) - datetime.datetime(1, 1, 1)).days
-    # set leap_year month_day
-    if year_no in get_leap_year(year_no, year_no):
-        month_day[1] = 29
-    year_days = sum(month_day)
-    if else_days >= year_days:
-        year_no += 1
-        else_days -= year_days
-    # find month no by cumulate month_days util sum>else_days
-    month_no = 1
-    for i, m in enumerate(month_day):
-        if sum(month_day[:i+1]) > else_days:
-            month_no = i + 1
-            break
-    # set remain days to day_no
-    day_no = else_days - sum(month_day[:month_no-1]) + 1
-    return year_no, month_no, day_no
-
-
-def get_leap_year(beg, end):
-    """
-    calculate leap years from begin year(beg) to end year(end)
-    based on principle:
-    leap year merges for every 4 years
-    the year with year//100 == year is not leap year
-    the year with year//400 == year is a leap year
-    leap year with 366 days, other years with 365
-
-    计算从 beg 到 end 之间的闰年
-    基于的原则：4年一闰，100年不闰，400年闰
-    公元前年份：除4余数1的年份闰，除100余1的年份不闰，除400余1的年份闰
-    闰年366天，平年365天
-    :param beg: 开始年
-    :param end: 结束年
-    :return: 闰年年份的列表
-    >>> get_leap_year(1, 20)
-    [4, 8, 12, 16, 20]
-    >>> get_leap_year(-10, -1)
-    [-9, -5, -1]
-    """
-    beg = 1 if not beg else beg
-    end = datetime.datetime.now().year if not end else end
-    if end < beg:
-        raise ValueError('end-year={} < beg-year={}'.format(end, beg))
-    leap = []
-    for y in range(beg, end + 1):
-        if y == 0:
-            continue
-        if y > -100:
-            _y = y - 3 if y < 0 else y
-        else:
-            _y = y + 1 if y < 0 else y
-        if ((_y % 100) and (_y % 4 == 0)) | (_y % 400 == 0):
-            leap.append(y)
-    return leap
-
-
-def get_datetime_from_dbftime(dbftime):
-    """
-    valid year range returned: 1-9999
-    date valid value in dBase: year 0001-9999, hour 00-23, minute 00-59, second 00-59
-    dBasetime = date_value(integer) + time_value(integer)
-    parse datetime.date from date_value:
-      the value of year in dBase is the days, that is ellapsed days from BC 4713 (not confirmed!)
-      1721426 days is the days from date(1-1-1) to some BC time point(4712.11.22) defined in dBase
-      for any date x, there si an equation:
-        dbase.time.year(days) - 1721426 == (x - datetime(1,1,1)).days
-        set x in DataFrame
-        get dBase.days from the equation
-    parse datetime.time from time_value:
-      dBase-time-value: hour*3600000 + minute*60000 + seconds*1000
-      time_hour = time_value // 3600000
-      time_min  = (time_value - time_hour*3600000) // 60000
-      time_sec  = (time_value - time_hour*3600000 - time_min*60000 + 1) // 1000
-      Note: the value in dBasetime is real value minus 1, that is verified by comparing real value
-    """
-
-    # parse date_value and time_value separately
-    _date_days, _time_value = struct.unpack('<ii', dbftime)
-
-    # only support AC date: BC date is invalid in dbf and datetime
-    if _date_days >= 1721426:
-        # module-time can not be used,
-        # because of time.localtime(v) limits v start from 1970.1.1
-        #            datetime range is 1.1.1 0:0:0 - 9999.12.31 59:59:999999
-        # module-time code:
-        #   _date_time = time.localtime((_date_days-1721426)*24*3600)
-        #   _date = _date_time.tm_year, _date_time.tm_mon, _date_time.tm_mday
-        # python-func maybe run slower, C-extend code should be used in future
-        _date = get_date_from_days(_date_days - 1721426)
-        _time_h = _time_value // 3600000
-        _time_m = (_time_value - _time_h * 3600000) // 60000
-        _time_s = (_time_value - _time_h * 3600000 - _time_m * 60000 + 1) // 1000
-        if _time_s >= 60:
-            _time_s = 0
-            _time_m += 1
-        if _time_m >= 60:
-            _time_m = 0
-            _time_h += 1
-        if _time_h >= 24:
-            print(_time_h)
-            _time_h = 0
-        _time = _time_h, _time_m, _time_s
-        # print(_date, _time)
-        return datetime.datetime(*_date, *_time)
-    else:
-        return None
-
-
-
 class DbfReader:
 
     dbf_version = {
@@ -183,11 +52,12 @@ class DbfReader:
         self.file_handle = None
         self.filename = None
         self.file_info = None
-        self.data = None
+
         self.file_info = None
         self.field_info = []
         self.field_astype = None
         self.field_unpack_format = None
+
         self.data = None
         self.report = ''
         self.runtime = 0
@@ -203,7 +73,7 @@ class DbfReader:
         if isinstance(self.file_handle, io.BufferedIOBase):
             self.file_handle.close()
 
-    def use(self, filename=None):
+    def open(self, filename=None):
         """
         open dbf and load 10 rows of records to data
         :param filename: dbf file name
@@ -220,12 +90,12 @@ class DbfReader:
             self.report = repr(e)
             raise FileNotFoundError('Error: dbf file [{}] not found!'.format(filename))
         else:
-            self.read_header()
-            self.get_some(1, 10)
+            self.parse_header()
+            self.fetchmany(1, 10)
             self.report = 'use {}'.format(filename)
             self.filename = filename
 
-    def get_all(self):
+    def fetchall(self):
         st = time.localtime()
         self.runtime = 'read data start: {}-{}-{} {}:{}:{}\n'. \
             format(st.tm_year, st.tm_mon, st.tm_mday, st.tm_hour, st.tm_min, st.tm_sec)
@@ -236,7 +106,7 @@ class DbfReader:
         fp = self.file_handle
         fp.seek(self.file_info.header_len)
         for i in range(self.file_info.record_count):
-            result = self.read_record(fp)
+            result = self.parse_record(fp)
             for fi, field in enumerate(self.field_info):
                 data_dict[field.name].append(result[fi])
         self.runtime += 'read data from dbf ellapsed={:5.2f}\n'.format(time.time() - st)
@@ -249,7 +119,7 @@ class DbfReader:
             format(st.tm_year, st.tm_mon, st.tm_mday, st.tm_hour, st.tm_min, st.tm_sec)
         self.report += self.runtime
 
-    def get_some(self, begin=1, count=10):
+    def fetchmany(self, begin=1, count=10):
         if not self.file_handle:
             raise FileNotFoundError('Error: no file handle found!')
         record_count = self.file_info.record_count
@@ -264,12 +134,12 @@ class DbfReader:
         fp = self.file_handle
         fp.seek(self.file_info.header_len + (begin - 1) * self.file_info.record_len)
         for ri in range(get_record_num):
-            result = self.read_record(fp)
+            result = self.parse_record(fp)
             for fi, field in enumerate(self.field_info):
                 data_dict[field.name].append(result[fi])
         self.data = pd.DataFrame(data_dict)
 
-    def read_header(self):
+    def parse_header(self):
         fp = self.file_handle
 
         # read file info
@@ -306,7 +176,7 @@ class DbfReader:
         self.field_astype = {fd.name: self.type_map.get(fd.type, str)
                              for fd in self.field_info}
 
-    def read_record(self, fp):
+    def parse_record(self, fp):
         """
         convert data from dBase types to pandas types:
             dBase  type: C, V, N, F, D, L, I, B, O, T, @
@@ -388,3 +258,135 @@ class DbfReader:
             # set value to result
             result.append(field_value)
         return result
+
+
+def get_date_from_epoch_days(date_days):
+    """
+    get year, month, day from ellapsed days from epoch datetime(1, 1, 1)
+    max value of date_days is 3652058, that is datetime(9999, 12, 31) - datetime(1,1,1)
+
+    >>> get_date_from_epoch_days(721906)
+    (1977, 7, 7)
+    """
+    month_day = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
+    # set upper value of year to max year in datetime
+    year_max, year_min = 9999, 1
+    # year_no = 0     # initialize to 0, raise exception if not found in searching
+    while True:
+        year_mean = int((year_max+year_min)/2)
+        diff = (datetime.datetime(year_mean, 1, 1) - datetime.datetime(1, 1, 1)).days
+        if diff > date_days:
+            year_max = year_mean
+        else:
+            year_min = year_mean
+        if (year_max - year_min) <= 1:
+            year_no = year_min
+            break
+    else_days = date_days - (datetime.datetime(year_no, 1, 1) - datetime.datetime(1, 1, 1)).days
+    # set leap_year month_day
+    if year_no in get_leap_years(year_no, year_no):
+        month_day[1] = 29
+    year_days = sum(month_day)
+    if else_days >= year_days:
+        year_no += 1
+        else_days -= year_days
+    # find month no by cumulate month_days util sum>else_days
+    month_no = 1
+    for i, m in enumerate(month_day):
+        if sum(month_day[:i+1]) > else_days:
+            month_no = i + 1
+            break
+    # set remain days to day_no
+    day_no = else_days - sum(month_day[:month_no-1]) + 1
+    return year_no, month_no, day_no
+
+
+def get_leap_years(beg, end):
+    """
+    calculate leap years from begin year(beg) to end year(end)
+    based on principle:
+    leap year merges for every 4 years
+    the year with year//100 == year is not leap year
+    the year with year//400 == year is a leap year
+    leap year with 366 days, other years with 365
+
+    计算从 beg 到 end 之间的闰年
+    基于的原则：4年一闰，100年不闰，400年闰
+    公元前年份：除4余数1的年份闰，除100余1的年份不闰，除400余1的年份闰
+    闰年366天，平年365天
+    :param beg: 开始年
+    :param end: 结束年
+    :return: 闰年年份的列表
+
+    >>> get_leap_years(1, 20)
+    [4, 8, 12, 16, 20]
+    >>> get_leap_years(-10, -1)
+    [-9, -5, -1]
+    """
+    beg = 1 if not beg else beg
+    end = datetime.datetime.now().year if not end else end
+    if end < beg:
+        raise ValueError('end-year={} < beg-year={}'.format(end, beg))
+    leap = []
+    for y in range(beg, end + 1):
+        if y == 0:
+            continue
+        if y > -100:
+            _y = y - 3 if y < 0 else y
+        else:
+            _y = y + 1 if y < 0 else y
+        if ((_y % 100) and (_y % 4 == 0)) | (_y % 400 == 0):
+            leap.append(y)
+    return leap
+
+
+def get_datetime_from_dbftime(dbftime):
+    """
+    valid year range returned: 1-9999
+    date valid value in dBase: year 0001-9999, hour 00-23, minute 00-59, second 00-59
+    dBasetime = date_value(integer) + time_value(integer)
+
+    parse datetime.date from date_value:
+      the value of year in dBase is the days, that is ellapsed days from BC 4713 (not confirmed!)
+      1721426 days is the days from date(1-1-1) to some BC time point(4712.11.22) defined in dBase
+      for any date x, there si an equation:
+        dbase.time.year(days) - 1721426 == (x - datetime(1,1,1)).days
+        set x in DataFrame
+        get dBase.days from the equation
+
+    parse datetime.time from time_value:
+      dBase-time-value: hour*3600000 + minute*60000 + seconds*1000
+      time_hour = time_value // 3600000
+      time_min  = (time_value - time_hour*3600000) // 60000
+      time_sec  = (time_value - time_hour*3600000 - time_min*60000 + 1) // 1000
+      Note: the value in dBasetime is real value minus 1, that is verified by comparing real value
+
+    Python-func maybe run slower, C-code should be used in future
+    """
+
+    # parse date_value and time_value separately
+    _date_days, _time_value = struct.unpack('<ii', dbftime)
+
+    # only support AC date in some range
+    # BC date is invalid in dbf and datetime
+    if _date_days >= 1721426:
+        # valid time range:
+        #     time.localtime(v) limits v start from 1970.1.1
+        #     datetime range is 1.1.1 0:0:0 - 9999.12.31 59:59:999999
+        # time conversion:
+        #   _date_time = time.localtime((_date_days-1721426)*24*3600)
+        #   _date = _date_time.tm_year, _date_time.tm_mon, _date_time.tm_mday
+        _date = get_date_from_epoch_days(_date_days - 1721426)
+        _time_h = _time_value // 3600000
+        _time_m = (_time_value - _time_h * 3600000) // 60000
+        _time_s = (_time_value - _time_h * 3600000 - _time_m * 60000 + 1) // 1000
+        if _time_s >= 60:
+            _time_s = 0
+            _time_m += 1
+        if _time_m >= 60:
+            _time_m = 0
+            _time_h += 1
+        if _time_h >= 24:
+            _time_h = 0
+        _time = _time_h, _time_m, _time_s
+        return datetime.datetime(*_date, *_time)

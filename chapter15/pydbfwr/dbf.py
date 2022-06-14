@@ -18,8 +18,8 @@ def read_dbf(dbf: str) -> pd.DataFrame:
     if not os.path.isfile(dbf):
         raise FileNotFoundError
     dbfobj = Dbf()
-    dbfobj.use(dbf)
-    dbfobj.load(count=-1)
+    dbfobj.open(dbf)
+    dbfobj.fetchmany(count=-1)
     return dbfobj.data
 
 
@@ -35,7 +35,7 @@ def to_dbf(df: pd.DataFrame, dbf: str):
     dbfobj = Dbf()
     dbfobj.data = df
     dbfobj.to_dbf(dbf)
-    dbfobj.use()
+    dbfobj.open()
 
 
 class Dbf:
@@ -125,8 +125,8 @@ class Dbf:
     调用示例：
     Examples:
     >>> dbf = Dbf()
-    >>> dbf.use('demo.dbf')
-    >>> dbf.load(1, 20)
+    >>> dbf.open('demo.dbf')
+    >>> dbf.fetchmany(1, 20)
     >>> print(dbf.data)
           serial_no       en_name ch_name   price            shipping
     0     10101  Refrigerator      冰箱  310.51 2020-03-01 01:00:00
@@ -134,49 +134,37 @@ class Dbf:
     2     10103         Stove      炉子  350.00 2020-03-03 00:30:00
     3     10104    Ventilator     通风机  210.40 2020-03-04 00:00:30
 
-    >>> dbf.use()
+    >>> dbf.close()
     """
 
-    def __init__(self, encoding='gbk'):
-        self.encoding = encoding
-        DbfReader.encoding = encoding
+    encoding = 'GBK'
+
+    def __init__(self):
         self.reader = DbfReader()
         self.data = None
-        self.delflag = None
-        self.writer = None
+        # self.delflag = None
 
-    def set_data(self, df):
-        """
-        set df to self.data
-        filter out the fields in df: _delflag
-        :param df: DataFrame to set to self.data
-        """
-        self.data = df
-        self.delflag = self.data['_delflag'] if '_delflag' in self.data.columns else None
-        self.data = self.data[[col for col in self.data.columns if col != '_delflag']]
-
-    def use(self, filename: str = ''):
+    def open(self, filename: str = ''):
         """
         open and load dbf to self.data
         :param filename:
         :return:
         """
-        if os.path.isfile(filename):
-            self.reader.use(filename=filename)
-            # self.data = self.reader.data[[fd.name for fd in self.reader.field_info
-            #                               if not fd.name.startswith('_delflag')]]
-            self.set_data(self.reader.data)
-        else:
-            self.reader.use()
-            self.data = None
+        self.reader.encoding = self.encoding
+        self.reader.open(filename=filename)
+        if self.reader:
+            self.__data_cleaning(self.reader.data)
 
-    def load(self, start=1, count=10):
+    def close(self):
+        self.data = None
+        self.reader = None
+
+    def fetchmany(self, start=1, count=10):
         if start < 0 or count < 0:
-            self.reader.get_all()
+            self.reader.fetchall()
         else:
-            self.reader.get_some(begin=start, count=count)
-        # self.data = self.reader.data
-        self.set_data(self.reader.data)
+            self.reader.fetchmany(begin=start, count=count)
+        self.__data_cleaning(self.reader.data)
 
     def to_csv(self, csvfile='temp.csv', sep=','):
         if not isinstance(self.data, pd.DataFrame):
@@ -186,6 +174,17 @@ class Dbf:
     def to_dbf(self, dbffile='temp.dbf'):
         if not isinstance(self.data, pd.DataFrame):
             raise FileNotFoundError('no data to save to csv!')
-        DbfWriter.encoding = self.encoding
-        self.writer = DbfWriter()
-        self.writer.to_dbf(df=self.data, dbffile=dbffile)
+        # DbfWriter.encoding = self.encoding
+        writer = DbfWriter()
+        writer.encoding = self.encoding
+        writer.to_dbf(df=self.data, dbffile=dbffile)
+
+    def __data_cleaning(self, df):
+        """
+        set df to self.data
+        filter out the fields in df: _delflag
+        :param df: DataFrame to set to self.data
+        """
+        self.data = df
+        self.data = self.data[[col for col in self.data.columns if col != '_delflag']]
+        # self.delflag = self.reader.data[['_delflag']] if '_delflag' in self.reader.data.columns else None

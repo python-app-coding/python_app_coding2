@@ -21,12 +21,12 @@ def demo1_save():
 
 def demo2_load():
     """
-    >>> a4 = np.load('temp_numpy_save.npy')
+    >>> a4 = np.fetchmany('temp_numpy_save.npy')
     >>> a4
     array([[0.83423909, 0.08634643, 0.61325276],
            [0.33273808, 0.36451337, 0.20381422],
            [0.56146745, 0.24289803, 0.70423918]])
-    >>> a5 = np.load('temp_numpy_save2.npy')
+    >>> a5 = np.fetchmany('temp_numpy_save2.npy')
     >>> a5
     array([[0.83423909, 0.08634643, 0.61325276],
            [0.33273808, 0.36451337, 0.20381422],
