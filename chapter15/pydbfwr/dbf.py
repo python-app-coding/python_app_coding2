@@ -2,8 +2,8 @@
 
 import os
 import pandas as pd
-from dbf_reader import DbfReader
-from dbf_writer import DbfWriter
+from .dbf_reader import DbfReader
+from .dbf_writer import DbfWriter
 
 
 def read_dbf(dbf: str) -> pd.DataFrame:
@@ -15,6 +15,8 @@ def read_dbf(dbf: str) -> pd.DataFrame:
     :param dbf: dbf file name, suffix .dbf is needed
     :return: DataFrame
     """
+    if not os.path.isfile(dbf):
+        raise FileNotFoundError
     dbfobj = Dbf()
     dbfobj.use(dbf)
     dbfobj.load(count=-1)
@@ -178,12 +180,12 @@ class Dbf:
 
     def to_csv(self, csvfile='temp.csv', sep=','):
         if not isinstance(self.data, pd.DataFrame):
-            raise FileNotFoundError('no data to save to csv ch3file!')
+            raise FileNotFoundError('no data to save to csv!')
         self.data.to_csv(csvfile, index=False, sep=sep)
 
     def to_dbf(self, dbffile='temp.dbf'):
         if not isinstance(self.data, pd.DataFrame):
-            raise FileNotFoundError('no data to save to csv ch3file!')
+            raise FileNotFoundError('no data to save to csv!')
         DbfWriter.encoding = self.encoding
         self.writer = DbfWriter()
         self.writer.to_dbf(df=self.data, dbffile=dbffile)

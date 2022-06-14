@@ -101,7 +101,7 @@ class DbfWriter:
         try:
             fp = open(dbffile, 'wb')
         except EOFError:
-            raise EOFError('Error: cannot create dbf ch3file {}'.format(dbffile))
+            raise EOFError('Error: cannot create dbf file {}'.format(dbffile))
 
         # get field info
         self.field_spec = DbfWriter.get_field_spec(self.df)
@@ -189,10 +189,10 @@ class DbfWriter:
         1. calculate record_count, field_count from df
         2. set time, version
         3. count field_len, header_len
-        4. write ch3file-info
+        4. write file-info
         5. write field-info by encoding and pack self.field_spec
         6. write terminator+263bytes
-        :param fp: ch3file handle
+        :param fp: file handle
         :param field_spec: field specification, list with items(name, size, type, decimal)
         :param data: data(DataFrame) to write
         """

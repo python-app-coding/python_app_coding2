@@ -218,7 +218,7 @@ class DbfReader:
             self.file_handle = open(filename, 'rb')
         except (FileNotFoundError, IOError) as e:
             self.report = repr(e)
-            raise FileNotFoundError('Error: dbf ch3file [{}] could not be opened!'.format(filename))
+            raise FileNotFoundError('Error: dbf file [{}] not found!'.format(filename))
         else:
             self.read_header()
             self.get_some(1, 10)
@@ -230,7 +230,7 @@ class DbfReader:
         self.runtime = 'read data start: {}-{}-{} {}:{}:{}\n'. \
             format(st.tm_year, st.tm_mon, st.tm_mday, st.tm_hour, st.tm_min, st.tm_sec)
         if not self.file_handle:
-            raise FileNotFoundError('Error: no ch3file handle found!')
+            raise FileNotFoundError('Error: no file handle found!')
         st = time.time()
         data_dict = {field.name: [] for field in self.field_info}
         fp = self.file_handle
@@ -251,10 +251,10 @@ class DbfReader:
 
     def get_some(self, begin=1, count=10):
         if not self.file_handle:
-            raise FileNotFoundError('Error: no ch3file handle found!')
+            raise FileNotFoundError('Error: no file handle found!')
         record_count = self.file_info.record_count
         if begin not in range(1, record_count + 1):
-            self.report = 'begin record ={} is not in dbf ch3file!'.format(begin)
+            self.report = 'begin record ={} is not in dbf file!'.format(begin)
             return
         get_record_num = count
         if (begin + count - 1) > record_count:
@@ -272,7 +272,7 @@ class DbfReader:
     def read_header(self):
         fp = self.file_handle
 
-        # read ch3file info
+        # read file info
         file_type, year, month, day, record_count, header_len, record_len = \
             struct.unpack('<c3BLHH20x', fp.read(32))
         file_type = str(file_type) + '--' + self.dbf_version.get(file_type, file_type)
@@ -282,7 +282,7 @@ class DbfReader:
         self.field_info = [self.Record_Spec(field_delflag_name, 'L', 1, 0)]     # add field _delflag
         field_count = 1                                                         # including field _delflag
         for _ in range((header_len-33) // 32):                                  # field_count <= (header_len - 33) // 32
-            first_byte = fp.read(1)                                             # avoid to read out of ch3file-data
+            first_byte = fp.read(1)                                             # avoid to read out of file-data
             if first_byte == b'\r':
                 break
             # else:
@@ -326,7 +326,7 @@ class DbfReader:
                   parse to True if 'YyTt' else False
            other: remain to binary byte string, including(G,P,M,Y,...)
 
-        :param fp: ch3file handle
+        :param fp: file handle
         :return: list with field-data
         """
         _record = struct.unpack(self.field_unpack_format,
