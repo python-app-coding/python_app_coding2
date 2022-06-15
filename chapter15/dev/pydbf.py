@@ -627,7 +627,7 @@ class DbfWriter:
                                })
         >>> DbfWriter.encoding = 'gbk'
         >>> dbw = DbfWriter()
-        >>> dbw.to_dbf(df, 'demo.dbf')
+        >>> dbw.write_dbf(df, 'demo.dbf')
         >>> dbr = DbfReader()
         >>> dbr.open('demo.dbf')
         >>> dbr.data['serial_no'][0:2]

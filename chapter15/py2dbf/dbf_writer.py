@@ -11,6 +11,8 @@ from collections import OrderedDict
 import decimal
 import numpy as np
 import pandas as pd
+from .dbf_reader import DbfReader
+
 
 # set to normal 四舍五入 mode
 decimal.getcontext().rounding = decimal.ROUND_HALF_UP
@@ -21,10 +23,9 @@ class DbfWriter:
     encoding = 'GBK'
     max_decimal = 4
 
-    # interior parameters
-    # check out 6 types from pandas used to write data to dBase
-    # other types remained to parse furtherly, for example, decimal.Decimal
-    _type_checker = OrderedDict(
+    # infer 6 types for dbf from DataFrame dtypes
+    # other types remained to str
+    __type_checker = OrderedDict(
         N=[pd._libs.lib.is_integer_array],
         B=[pd._libs.lib.is_float_array],
         L=[pd._libs.lib.is_bool_array],
@@ -32,8 +33,8 @@ class DbfWriter:
         T=[pd._libs.lib.is_datetime_array, pd._libs.lib.is_datetime64_array],
         C=[pd._libs.lib.is_string_array],
     )
-    _Field_Spec = namedtuple('Field', ['name', 'type', 'size', 'decmial'])
-    _missing_value_map = OrderedDict(
+
+    missing_value_map = OrderedDict(
         N=0,
         C='',
         F=0,
@@ -42,6 +43,8 @@ class DbfWriter:
         D='00010101',
         L=False
     )
+
+    __Field_Spec = namedtuple('Field', ['name', 'type', 'size', 'decmial'])
 
     def __init__(self):
         self.df = None
@@ -77,9 +80,10 @@ class DbfWriter:
                                'shipping': [dt(2020, 3, 1, 1, 0, 0), dt(2020, 3, 2, 1, 0, 0), \
                                             dt(2020, 3, 3, 0, 30, 0), dt(2020, 3, 4, 0, 0, 30)]\
                                })
-        >>> DbfWriter.encoding = 'gbk'
         >>> dbw = DbfWriter()
         >>> dbw.to_dbf(df, 'demo.dbf')
+
+        # read for checking
         >>> dbr = DbfReader()
         >>> dbr.open('demo.dbf')
         >>> dbr.data['serial_no'][0:2]
@@ -123,10 +127,11 @@ class DbfWriter:
     def get_field_spec(df):
         """
         use some strategies to set field type,size,decimal
+        use type for dbf, dtype for DataFrame in following:
         for each column in data(DataFrame.columns)
-        0. set type='G', decimal=0 for initialization, mean to set other types to G (not in type_check.keys)
-        1. set type=_type if DbfWriter.type_check[_type][data.column], that is in {N,B,L,D,T,C}
-           where need to filter None/NaN from data.column
+        0. set type='G', decimal=0 for initial, that means to set any dtypes to G if type_check.keys) return None
+        1. set type=_type if DbfWriter.type_check[_type][data.column] is in {N,B,L,D,T,C}
+           where need to filter NaN from data.column
         2. set len=8 for type(D, T)
         3. set len=4, type='I' if range(-2**32, 2**32) for type(N)
            set len=maxlen if abs >= 2**32 for type(N)
@@ -149,8 +154,8 @@ class DbfWriter:
             field_decimal = 0
             data = np.array(df.loc[df[col].notna(), col])
             # type D < T, checked type-datetime after type-date
-            for k in DbfWriter._type_checker.keys():
-                for checker in DbfWriter._type_checker[k]:
+            for k in DbfWriter.__type_checker.keys():
+                for checker in DbfWriter.__type_checker[k]:
                     if checker(data):
                         # print('field={} type={}'.format(col, k))
                         field_type = k
@@ -179,7 +184,7 @@ class DbfWriter:
                     field_type = 'N'
                 else:  # C, G
                     field_size = max(df[col].apply(lambda x: len(str(x).encode('gbk'))))
-            field_spec.append(DbfWriter._Field_Spec(col, field_type, field_size, field_decimal))
+            field_spec.append(DbfWriter.__Field_Spec(col, field_type, field_size, field_decimal))
         return field_spec
 
     @staticmethod
@@ -281,6 +286,12 @@ class DbfWriter:
                 fp.write(value)
 
     def get_dbf_type(self):
+        """
+        set dbf_type for each column in DataFrame to write to dbf file
+        get: _name, _type, _size, _decimal
+        set: field_spec
+             report
+        """
         df = self.df
         report = ''
         columns = [col for col in df if col not in ['_nullflags']]
@@ -317,7 +328,7 @@ class DbfWriter:
                 _type = 'G'
                 _size = max(data[col].apply(str).apply(len))
             report += 'info: set field {} type to {}\n'.format(col, _type)
-            field_info.append(DbfWriter._Field_Spec(_name, _type, _size, _decimal))
+            field_info.append(DbfWriter.__Field_Spec(_name, _type, _size, _decimal))
         self.field_spec = field_info
         self.report = report
 

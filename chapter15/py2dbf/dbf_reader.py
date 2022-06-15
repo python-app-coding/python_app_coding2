@@ -95,6 +95,10 @@ class DbfReader:
             self.report = 'use {}'.format(filename)
             self.filename = filename
 
+    def close(self):
+        if self.file_handle:
+            self.file_handle.close()
+
     def fetchall(self):
         st = time.localtime()
         self.runtime = 'read data start: {}-{}-{} {}:{}:{}\n'. \
@@ -119,20 +123,24 @@ class DbfReader:
             format(st.tm_year, st.tm_mon, st.tm_mday, st.tm_hour, st.tm_min, st.tm_sec)
         self.report += self.runtime
 
-    def fetchmany(self, begin=1, count=10):
+    def fetchmany(self, start=1, count=10):
+        """
+        :param start first record no in dbf table, record no is range(1, len(dbf)+1)
+        :param count record number fetched from dbf table, fetch record: start,...,start+count-1
+        """
         if not self.file_handle:
             raise FileNotFoundError('Error: no file handle found!')
         record_count = self.file_info.record_count
-        if begin not in range(1, record_count + 1):
-            self.report = 'begin record ={} is not in dbf file!'.format(begin)
+        if start not in range(1, record_count + 1):
+            self.report = 'begin record ={} is not in dbf file!'.format(start)
             return
         get_record_num = count
-        if (begin + count - 1) > record_count:
-            get_record_num = record_count - begin + 1
+        if (start + count - 1) > record_count:
+            get_record_num = record_count - start + 1
             self.report = 'Warning: record count is beyond bound!'
         data_dict = {field.name: [] for field in self.field_info}
         fp = self.file_handle
-        fp.seek(self.file_info.header_len + (begin - 1) * self.file_info.record_len)
+        fp.seek(self.file_info.header_len + (start - 1) * self.file_info.record_len)
         for ri in range(get_record_num):
             result = self.parse_record(fp)
             for fi, field in enumerate(self.field_info):

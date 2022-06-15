@@ -23,7 +23,7 @@ def read_dbf(dbf: str) -> pd.DataFrame:
     return dbfobj.data
 
 
-def to_dbf(df: pd.DataFrame, dbf: str):
+def write_dbf(df: pd.DataFrame, dbf: str):
     """
     将DataFrame数据写为DBF文件。
     write DataFrame to DBF file.
@@ -41,7 +41,7 @@ def to_dbf(df: pd.DataFrame, dbf: str):
 class Dbf:
     """
     ---------------------------------------------------------------------------------------------------------------
-    class Dbf(encoding='utf8')
+    class Dbf()
 
     A class used to read and write DBF file，its property data is DataFrame。
 
@@ -51,15 +51,19 @@ class Dbf:
     对象方法
     （object methods）
 
-    打开一个DBF文件。用于在方法load中读入数据，必须在load之前打开。
-    use(self, filename: str = '')
+    打开一个DBF文件。用于在方法fetch中读入数据，必须在fetch之前打开。
+    open(self, filename: str = '')
         open a DBF file, prework for load method
         参数
         :parameters
         filename: str, file name to open
 
-    读入在use方法中打开的DBF文件的数据，存入属性data之中。
-    load(self, start=1, count=10)
+    关闭打开的DBF文件。当不需要读取DBF文件数据时，可以关闭打开的DBF文件。
+    关闭之后，不能使用fetch方法获取数据
+    close()
+
+    读入在open方法中打开的DBF文件的数据，存入属性data之中。
+    fetch(self, start=1, count=10)
         read DBF file data from the file opened in use
 
         :parameters
@@ -88,8 +92,8 @@ class Dbf:
 
     调用方式（call procedure）：
     1. 初始化：          dbf = Dbf()                                 # 创建类Dbf的对象实例
-    2. 打开DBF文件：     dbf.use(filename)                           # 打开DBF文件
-    3. 读入数据：        dbf.load()                                  # 读入DBF文件中的数据
+    2. 打开DBF文件：     dbf.open(filename)                           # 打开DBF文件
+    3. 读入数据：        dbf.fetch()                                  # 读入DBF文件中的数据
     4. 访问数据          dbf.data                                    # 数据存储在属性变量data，格式为 DataFrame
     5. 切片数据:         dbf[start:end:skip]                         # 按照记录进行切片访问，记录号为 0 ~ record_count-1
     6. 写数据csv：       dbf.to_csv(csvname=csvfile，sep=',')        # 将数据写到文件csvfile,格式为 csv, 分隔符为sep
@@ -126,7 +130,7 @@ class Dbf:
     Examples:
     >>> dbf = Dbf()
     >>> dbf.open('demo.dbf')
-    >>> dbf.fetchmany(1, 20)
+    >>> dbf.fetch(1, 20)
     >>> print(dbf.data)
           serial_no       en_name ch_name   price            shipping
     0     10101  Refrigerator      冰箱  310.51 2020-03-01 01:00:00
@@ -142,13 +146,12 @@ class Dbf:
     def __init__(self):
         self.reader = DbfReader()
         self.data = None
-        # self.delflag = None
+        self.delflag = None
 
     def open(self, filename: str = ''):
         """
         open and load dbf to self.data
-        :param filename:
-        :return:
+        :param filename: dbf file name to read
         """
         self.reader.encoding = self.encoding
         self.reader.open(filename=filename)
@@ -156,14 +159,20 @@ class Dbf:
             self.__data_cleaning(self.reader.data)
 
     def close(self):
-        self.data = None
-        self.reader = None
+        """
+        close dbf file opened in self.reader
+        can not fetch data if reader closed
+        """
+        self.reader.close()
 
-    def fetchmany(self, start=1, count=10):
+    def fetch(self, start=1, count=10):
+        """
+        start in range(1, len(dbf)+1)
+        """
         if start < 0 or count < 0:
             self.reader.fetchall()
         else:
-            self.reader.fetchmany(begin=start, count=count)
+            self.reader.fetchmany(start=start, count=count)
         self.__data_cleaning(self.reader.data)
 
     def to_csv(self, csvfile='temp.csv', sep=','):
@@ -174,17 +183,16 @@ class Dbf:
     def to_dbf(self, dbffile='temp.dbf'):
         if not isinstance(self.data, pd.DataFrame):
             raise FileNotFoundError('no data to save to csv!')
-        # DbfWriter.encoding = self.encoding
         writer = DbfWriter()
         writer.encoding = self.encoding
         writer.to_dbf(df=self.data, dbffile=dbffile)
 
     def __data_cleaning(self, df):
         """
-        set df to self.data
-        filter out the fields in df: _delflag
+        fetch df to self.data from self.reader.data
+        filter out the fields _delflag in reader.data
+        save delflag in self._delflag
         :param df: DataFrame to set to self.data
         """
-        self.data = df
-        self.data = self.data[[col for col in self.data.columns if col != '_delflag']]
-        # self.delflag = self.reader.data[['_delflag']] if '_delflag' in self.reader.data.columns else None
+        self.data = df[[col for col in df.columns if col != '_delflag']]
+        self.delflag = df[['_delflag']] if '_delflag' in df.columns else None
