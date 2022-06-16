@@ -11,7 +11,7 @@ from collections import OrderedDict
 import decimal
 import numpy as np
 import pandas as pd
-from .dbf_reader import DbfReader
+from dbf_reader import DbfReader
 
 
 # set to normal 四舍五入 mode
@@ -25,15 +25,6 @@ class DbfWriter:
 
     # infer 6 types for dbf from DataFrame dtypes
     # other types remained to str
-    __type_checker = OrderedDict(
-        N=[pd._libs.lib.is_integer_array],
-        B=[pd._libs.lib.is_float_array],
-        L=[pd._libs.lib.is_bool_array],
-        D=[pd._libs.lib.is_date_array],
-        T=[pd._libs.lib.is_datetime_array, pd._libs.lib.is_datetime64_array],
-        C=[pd._libs.lib.is_string_array],
-    )
-
     missing_value_map = OrderedDict(
         N=0,
         C='',
@@ -45,6 +36,15 @@ class DbfWriter:
     )
 
     __Field_Spec = namedtuple('Field', ['name', 'type', 'size', 'decmial'])
+
+    __type_checker = OrderedDict(
+        N=[pd._libs.lib.is_integer_array],
+        B=[pd._libs.lib.is_float_array],
+        L=[pd._libs.lib.is_bool_array],
+        D=[pd._libs.lib.is_date_array],
+        T=[pd._libs.lib.is_datetime_array, pd._libs.lib.is_datetime64_array],
+        C=[pd._libs.lib.is_string_array],
+    )
 
     def __init__(self):
         self.df = None
@@ -86,10 +86,12 @@ class DbfWriter:
         # read for checking
         >>> dbr = DbfReader()
         >>> dbr.open('demo.dbf')
-        >>> dbr.data['serial_no'][0:2]
-        0    10101
-        1    10102
-        Name: serial_no, dtype: object
+        >>> dbr.data
+           _delflag serial_no       en_name ch_name   price                shipping
+        0     False     10101  Refrigerator      冰箱  310.51  b'2020-03-01 01:00:00'
+        1     False     10102        Washer     洗衣机  420.35  b'2020-03-02 01:00:00'
+        2     False     10103         Stove      炉子  350.00  b'2020-03-03 00:30:00'
+        3     False     10104    Ventilator     通风机  210.40  b'2020-03-04 00:00:30'
         """
         self.report = ''
 
@@ -108,23 +110,23 @@ class DbfWriter:
             raise EOFError('Error: cannot create dbf file {}'.format(dbffile))
 
         # get field info
-        self.field_spec = DbfWriter.get_field_spec(self.df)
+        self.field_spec = DbfWriter.get_field_spec_from_dataframe(self.df)
 
         # get data with fields in field_spec
         df = self.df[[fd.name for fd in self.field_spec]]
 
         # write dbf header
-        DbfWriter.write_header(fp, self.field_spec, df)
+        DbfWriter.write_dbf_header(fp, self.field_spec, df)
 
         # write dbf records
-        DbfWriter.write_records(fp, self.field_spec, df)
+        DbfWriter.write_dbf_records(fp, self.field_spec, df)
 
         # write dbf end char
         fp.write(b'\x1A')
         fp.close()
 
     @staticmethod
-    def get_field_spec(df):
+    def get_field_spec_from_dataframe(df):
         """
         use some strategies to set field type,size,decimal
         use type for dbf, dtype for DataFrame in following:
@@ -188,7 +190,7 @@ class DbfWriter:
         return field_spec
 
     @staticmethod
-    def write_header(fp, field_spec, data):
+    def write_dbf_header(fp, field_spec, data):
         """
         analyze and write header_info (including: file-info, field-inof, terminator, extended 263 bytes)
         1. calculate record_count, field_count from df
@@ -225,7 +227,7 @@ class DbfWriter:
         fp.write(b'\r' + b'\x00'*263)
 
     @staticmethod
-    def write_records(fp, field_spec, df):
+    def write_dbf_records(fp, field_spec, df):
         del_flag = b' '
         # write records
         for row_index, record in df.iterrows():
@@ -284,80 +286,3 @@ class DbfWriter:
                     len_diff = _size - len(value_encode)
                     value = value_encode + b'\x00' * len_diff
                 fp.write(value)
-
-    def get_dbf_type(self):
-        """
-        set dbf_type for each column in DataFrame to write to dbf file
-        get: _name, _type, _size, _decimal
-        set: field_spec
-             report
-        """
-        df = self.df
-        report = ''
-        columns = [col for col in df if col not in ['_nullflags']]
-        data = df[columns]
-        field_info = []
-        for col in columns:
-            _name = col
-            _size = 8
-            _decimal = 0
-            pandas_type = str(type(data[col][0]))
-            # print(pandas_type)
-            if 'bool' in pandas_type:
-                _type = 'L'
-                _size = 1
-            elif ('Decimal' in pandas_type) or ('float' in pandas_type):
-                _type = 'B'     # Foxpro=B, O maybe in dBase IV
-            elif 'int' in pandas_type:
-                _max = max(data[col])
-                _min = min(data[col])
-                if _max < 2**32 and _min > -2**32:
-                    _type = 'I'
-                    _size = 4
-                else:
-                    _type = 'N'
-                    _size = len(str(_max)) + (1 if _min < 0 else 0)
-            elif 'datetime.datetime' in pandas_type:
-                _type = 'T'
-            elif 'datetime.date' in pandas_type:
-                _type = 'D'
-            elif 'str' in pandas_type:
-                _type = 'C'
-                _size = max(data[col].apply(lambda x: len(x.encode(self.encoding))))
-            else:
-                _type = 'G'
-                _size = max(data[col].apply(str).apply(len))
-            report += 'info: set field {} type to {}\n'.format(col, _type)
-            field_info.append(DbfWriter.__Field_Spec(_name, _type, _size, _decimal))
-        self.field_spec = field_info
-        self.report = report
-
-    def reset_field_info(self, field_info):
-        """
-        set field_info
-        need to match dataframe to write to dbf
-        :param field_info: [(name, type, size, decimal), ...]
-        :return: None
-        set field_into to self.field_info, write self.report
-        """
-        self.report = ''
-        columns = []
-        for fd in field_info:
-            if fd[0] in self.df.columns:
-                columns.append(fd[0])
-            else:
-                self.report += 'Warning: field name {} not in data.columns!\n'.format(fd[0])
-        field_info = [fd for fd in field_info if fd[0] in columns]
-        # check field type compatibility
-        # set to type-G if conflict found
-        # set to type-G if not in 'NFODLCV'(donnt support else data-type)
-        for j, fd in enumerate(field_info):
-            type_str = str(type(self.df[fd[0]][0]))
-            if (fd[1] in 'N, F, O' and 'float' not in type_str) or \
-                    (fd[1] == 'D' and 'date' not in type_str) or \
-                    (fd[1] == 'L' and 'bool' not in type_str) or \
-                    (fd[1] in 'C, V' and 'str' not in type_str) or \
-                    fd[1] not in 'NFODLCV':
-                field_info[j][1] = 'G'
-        self.field_spec = field_info
-

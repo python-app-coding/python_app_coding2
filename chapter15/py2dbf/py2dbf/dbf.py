@@ -129,7 +129,7 @@ class Dbf:
     调用示例：
     Examples:
     >>> dbf = Dbf()
-    >>> dbf.open('demo.dbf')
+    >>> dbf.open('../demo.dbf')
     >>> dbf.fetch(1, 20)
     >>> print(dbf.data)
           serial_no       en_name ch_name   price            shipping
