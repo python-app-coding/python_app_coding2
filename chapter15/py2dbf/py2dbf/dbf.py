@@ -2,8 +2,8 @@
 
 import os
 import pandas as pd
-from .dbf_reader import DbfReader
-from .dbf_writer import DbfWriter
+from .dbfreader import DbfReader
+from .dbfwriter import DbfWriter
 
 
 def read_dbf(dbf: str) -> pd.DataFrame:
@@ -19,7 +19,7 @@ def read_dbf(dbf: str) -> pd.DataFrame:
         raise FileNotFoundError
     dbfobj = Dbf()
     dbfobj.open(dbf)
-    dbfobj.fetchmany(count=-1)
+    dbfobj.fetch(count=-1)
     return dbfobj.data
 
 
@@ -42,7 +42,7 @@ class Dbf:
     """
     ---------------------------------------------------------------------------------------------------------------
     class Dbf()
-
+    读写DBF文件的用户服务类
     A class used to read and write DBF file，its property data is DataFrame。
 
     属性
@@ -51,8 +51,8 @@ class Dbf:
     对象方法
     （object methods）
 
-    打开一个DBF文件。用于在方法fetch中读入数据，必须在fetch之前打开。
     open(self, filename: str = '')
+        打开一个DBF文件。用于在方法fetch中读入数据，必须在fetch之前打开。
         open a DBF file, prework for load method
         参数
         :parameters
@@ -62,24 +62,24 @@ class Dbf:
     关闭之后，不能使用fetch方法获取数据
     close()
 
-    读入在open方法中打开的DBF文件的数据，存入属性data之中。
     fetch(self, start=1, count=10)
+        读入在open方法中打开的DBF文件的数据，存入属性data之中。
         read DBF file data from the file opened in use
 
         :parameters
         start: int, positive, start record serial number to read from DBF file
         count: int, positive, record count to read from DBF file
 
-    将数据写入csv文件
     to_csv(self, csvfile='temp.csv', sep=',')
+        将数据写入csv文件
         write data to csv file
 
         :parameters
         csvfile: str. 'temp.csv'( default). file name to write.
         sep: str. ','( default).  length is 1. charater used to seperate field data in record line.
 
-    将数据写入DBF文件
     to_dbf(self, dbffile='temp.dbf')
+        将数据写入DBF文件
         write data to DBF file
 
         :parameters
@@ -95,9 +95,8 @@ class Dbf:
     2. 打开DBF文件：     dbf.open(filename)                           # 打开DBF文件
     3. 读入数据：        dbf.fetch()                                  # 读入DBF文件中的数据
     4. 访问数据          dbf.data                                    # 数据存储在属性变量data，格式为 DataFrame
-    5. 切片数据:         dbf[start:end:skip]                         # 按照记录进行切片访问，记录号为 0 ~ record_count-1
-    6. 写数据csv：       dbf.to_csv(csvname=csvfile，sep=',')        # 将数据写到文件csvfile,格式为 csv, 分隔符为sep
-    6. 写数据dfb：       dbf.to_dbf(dbfname=dbffile)                 # 将数据写到DBF文件
+    5. 写数据csv：       dbf.to_csv(csvname=csvfile，sep=',')        # 将data写到文件csvfile,格式为 csv, 分隔符为sep
+    6. 写数据dfb：       dbf.to_dbf(dbfname=dbffile)                 # 将data写到DBF文件
 
     ---------------------------------------------------------------------------------------------------------------
     数据与接口说明
@@ -121,8 +120,8 @@ class Dbf:
     ----------------------
     标记处理
     （flag field for delete and null flag）
-    1. 在从dbf读出数据时，忽略删除标记，不显示_delflag, _nullflag
-    2. 在向dbf写入数据时，忽略_delflag字段，不写删除标记（所有记录标记 b' '），即删除标记为未删除
+    1. 在从dbf读出数据时，将删除标记读入为一个字段_delflag, 忽略_nullflag
+    2. 在向dbf写入数据时，忽略_delflag字段，不写删除标记（所有记录标记 b' '），所有记录标记为未删除
 
     ---------------------------------------------------------------------------------------------------------------
 
@@ -175,10 +174,10 @@ class Dbf:
             self.reader.fetchmany(start=start, count=count)
         self.__data_cleaning(self.reader.data)
 
-    def to_csv(self, csvfile='temp.csv', sep=','):
+    def to_csv(self, csvfile='temp.csv', sep=',', **kwargs):
         if not isinstance(self.data, pd.DataFrame):
             raise FileNotFoundError('no data to save to csv!')
-        self.data.to_csv(csvfile, index=False, sep=sep)
+        self.data.to_csv(csvfile, index=False, sep=sep, **kwargs)
 
     def to_dbf(self, dbffile='temp.dbf'):
         if not isinstance(self.data, pd.DataFrame):

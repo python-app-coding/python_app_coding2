@@ -11,7 +11,7 @@ from collections import OrderedDict
 import decimal
 import numpy as np
 import pandas as pd
-from dbf_reader import DbfReader
+from .dbfreader import DbfReader
 
 
 # set to normal 四舍五入 mode
