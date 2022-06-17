@@ -23,7 +23,7 @@ class DbfWriter:
     encoding = 'GBK'
     max_decimal = 4
 
-    # infer 6 types for dbf from DataFrame dtypes
+    # infer 6 types for dbf_bak from DataFrame dtypes
     # other types remained to str
     missing_value_map = OrderedDict(
         N=0,
@@ -51,14 +51,14 @@ class DbfWriter:
         self.field_spec = None
         self.report = ''
 
-    def to_dbf(self, df, dbffile='tempdbf.dbf'):
+    def to_dbf(self, df, dbffile='tempdbf.dbf_bak'):
         """
         covert DataFrame to dBase file
 
         procedure:
         1. get field_spec for dBase from DataFrame columns dtype
-        2. write dbf header using DataFrame.len, field_spec
-        3. write dbf records according to DataFrame.row and field_spec
+        2. write dbf_bak header using DataFrame.len, field_spec
+        3. write dbf_bak records according to DataFrame.row and field_spec
            write delflag of dBase record to b' ' or b'\2a' when DataFrame._delflag is False or True
 
         field_spec, list with item: namedtuple(name, type, size, decimal)
@@ -81,11 +81,11 @@ class DbfWriter:
                                             dt(2020, 3, 3, 0, 30, 0), dt(2020, 3, 4, 0, 0, 30)]\
                                })
         >>> dbw = DbfWriter()
-        >>> dbw.to_dbf(df, 'demo.dbf')
+        >>> dbw.to_dbf(df, 'demo.dbf_bak')
 
         # read for checking
         >>> dbr = DbfReader()
-        >>> dbr.open('demo.dbf')
+        >>> dbr.open('demo.dbf_bak')
         >>> dbr.data
            _delflag serial_no       en_name ch_name   price                shipping
         0     False     10101  Refrigerator      冰箱  310.51  b'2020-03-01 01:00:00'
@@ -103,11 +103,11 @@ class DbfWriter:
         if len(self.df) == 0:
             raise ValueError('Warning: data is empty!')
 
-        # open dbf
+        # open dbf_bak
         try:
             fp = open(dbffile, 'wb')
         except EOFError:
-            raise EOFError('Error: cannot create dbf file {}'.format(dbffile))
+            raise EOFError('Error: cannot create dbf_bak file {}'.format(dbffile))
 
         # get field info
         self.field_spec = DbfWriter.get_field_spec_from_dataframe(self.df)
@@ -115,13 +115,13 @@ class DbfWriter:
         # get data with fields in field_spec
         df = self.df[[fd.name for fd in self.field_spec]]
 
-        # write dbf header
+        # write dbf_bak header
         DbfWriter.write_dbf_header(fp, self.field_spec, df)
 
-        # write dbf records
+        # write dbf_bak records
         DbfWriter.write_dbf_records(fp, self.field_spec, df)
 
-        # write dbf end char
+        # write dbf_bak end char
         fp.write(b'\x1A')
         fp.close()
 
@@ -129,7 +129,7 @@ class DbfWriter:
     def get_field_spec_from_dataframe(df):
         """
         use some strategies to set field type,size,decimal
-        use type for dbf, dtype for DataFrame in following:
+        use type for dbf_bak, dtype for DataFrame in following:
         for each column in data(DataFrame.columns)
         0. set type='G', decimal=0 for initial, that means to set any dtypes to G if type_check.keys) return None
         1. set type=_type if DbfWriter.type_check[_type][data.column] is in {N,B,L,D,T,C}
@@ -146,7 +146,7 @@ class DbfWriter:
            set len=max_str_encode_len for type(G)
 
         :param df: pandas.DataFrame
-        :return: dbf field specification [(name, type, size, decimal), ...]
+        :return: dbf_bak field specification [(name, type, size, decimal), ...]
         """
         field_spec = []
         for col in df.columns:

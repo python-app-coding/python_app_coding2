@@ -18,10 +18,10 @@ decimal.getcontext().rounding = decimal.ROUND_HALF_UP
 def read_dbf(dbf: str) -> pd.DataFrame:
     """
     读取dbf文件为DataFrame
-    read dbf file
+    read dbf_bak file
 
-    read_dbf(dbf: str) -> pd.DataFrame
-    :param dbf: dbf file name, suffix .dbf is needed
+    read_dbf(dbf_bak: str) -> pd.DataFrame
+    :param dbf: dbf_bak file name, suffix .dbf_bak is needed
     :return: DataFrame
     """
     dbfobj = Dbf()
@@ -35,7 +35,7 @@ def to_dbf(df: pd.DataFrame, dbf: str):
     将DataFrame数据写为DBF文件。
     write DataFrame to DBF file.
 
-    to_dbf(df: pd.DataFrame, dbf: str)
+    to_dbf(df: pd.DataFrame, dbf_bak: str)
     :param df: 类型为pandas.DataFrame。写入DBF文件的数据。
     :param dbf: 字符串。写入DBF文件的文件名。
     """
@@ -82,11 +82,11 @@ class Dbf:
         sep: str. ','( default).  length is 1. charater used to seperate field data in record line.
 
     将数据写入DBF文件
-    to_dbf(self, dbffile='temp.dbf')
+    to_dbf(self, dbffile='temp.dbf_bak')
         write data to DBF file
 
         :parameters
-        dbffile: str. 'temp.dbf'( default). file name to write.
+        dbffile: str. 'temp.dbf_bak'( default). file name to write.
 
     ---------------------------------------------------------------------------------------------------------------
     读写DBF文件数据过程说明
@@ -94,13 +94,13 @@ class Dbf:
     目前支持的DBF数据类型：C(字符)、N（数值）、F（浮点）、D（日期）、L（逻辑）、T（时间日期）、B（双精度）
 
     调用方式（call procedure）：
-    1. 初始化：          dbf = Dbf()                                 # 创建类Dbf的对象实例
-    2. 打开DBF文件：     dbf.use(filename)                           # 打开DBF文件
-    3. 读入数据：        dbf.load()                                  # 读入DBF文件中的数据
-    4. 访问数据          dbf.data                                    # 数据存储在属性变量data，格式为 DataFrame
-    5. 切片数据:         dbf[start:end:skip]                         # 按照记录进行切片访问，记录号为 0 ~ record_count-1
-    6. 写数据csv：       dbf.to_csv(csvname=csvfile，sep=',')        # 将数据写到文件csvfile,格式为 csv, 分隔符为sep
-    6. 写数据dfb：       dbf.to_dbf(dbfname=dbffile)                 # 将数据写到DBF文件
+    1. 初始化：          dbf_bak = Dbf()                                 # 创建类Dbf的对象实例
+    2. 打开DBF文件：     dbf_bak.use(filename)                           # 打开DBF文件
+    3. 读入数据：        dbf_bak.load()                                  # 读入DBF文件中的数据
+    4. 访问数据          dbf_bak.data                                    # 数据存储在属性变量data，格式为 DataFrame
+    5. 切片数据:         dbf_bak[start:end:skip]                         # 按照记录进行切片访问，记录号为 0 ~ record_count-1
+    6. 写数据csv：       dbf_bak.to_csv(csvname=csvfile，sep=',')        # 将数据写到文件csvfile,格式为 csv, 分隔符为sep
+    6. 写数据dfb：       dbf_bak.to_dbf(dbfname=dbffile)                 # 将数据写到DBF文件
 
     ---------------------------------------------------------------------------------------------------------------
     数据与接口说明
@@ -108,7 +108,7 @@ class Dbf:
     1. Dbf.data：从DBF文件读入的数据，格式为pandas.DataFrame ( read data to Dbf.data from dbase file)
     2. 从 DBF文件到DataFrame的数据类型转换使用Dbf.type_map，在初始化之前可以查看替换，须保证能够进行类型映射
     3. 对 DBF文件字符内容的解码使用 Dbf.codeset，缺省值为 GBK，初始化之前可以替换
-    4. 打开 DBF文件后，可以通过 dbf.file_info查看文件结构信息，通过field_info查看字段结构信息
+    4. 打开 DBF文件后，可以通过 dbf_bak.file_info查看文件结构信息，通过field_info查看字段结构信息
     5. 读出的数据中包括DBF表的删除和删除标记列，名称为 _delflag、_nullflab，如果原DBF文件中有重名字段，会增加'_'的数量
     6. 切片访问按照切片格式，可以使用下标，小标范围，或索引号, 切片下标使用0开始记录号，而list使用1开始记录号
     7. 写数据到DBF文件，执行结果是将当前data的数据写到一个csv文件。
@@ -130,10 +130,10 @@ class Dbf:
     ---------------------------------------------------------------------------------------------------------------
     调用示例：
     (Examples)
-    >>> dbf = Dbf()
-    >>> dbf.open('demo.dbf')
-    >>> dbf.fetchmany(1, 20)
-    >>> dbf.open()
+    >>> dbf_bak = Dbf()
+    >>> dbf_bak.open('demo.dbf_bak')
+    >>> dbf_bak.fetchmany(1, 20)
+    >>> dbf_bak.open()
     """
 
     def __init__(self, encoding='gbk'):
@@ -156,7 +156,7 @@ class Dbf:
 
     def use(self, filename: str = ''):
         """
-        open and load dbf to self.data
+        open and load dbf_bak to self.data
         :param filename:
         :return:
         """
@@ -182,7 +182,7 @@ class Dbf:
             raise FileNotFoundError('no data to save to csv ch3file!')
         self.data.to_csv(csvfile, index=False, sep=sep)
 
-    def to_dbf(self, dbffile='temp.dbf'):
+    def to_dbf(self, dbffile='temp.dbf_bak'):
         if not isinstance(self.data, pd.DataFrame):
             raise FileNotFoundError('no data to save to csv ch3file!')
         DbfWriter.encoding = self.encoding
@@ -248,8 +248,8 @@ class DbfReader:
 
     def use(self, filename=None):
         """
-        open dbf and load 10 rows of records to data
-        :param filename: dbf file name
+        open dbf_bak and load 10 rows of records to data
+        :param filename: dbf_bak file name
         :return: None
         """
         if not filename:
@@ -261,7 +261,7 @@ class DbfReader:
             self.file_handle = open(filename, 'rb')
         except (FileNotFoundError, IOError) as e:
             self.report = repr(e)
-            raise FileNotFoundError('Error: dbf ch3file [{}] could not be opened!'.format(filename))
+            raise FileNotFoundError('Error: dbf_bak ch3file [{}] could not be opened!'.format(filename))
         else:
             self.read_header()
             self.get_some(1, 10)
@@ -282,7 +282,7 @@ class DbfReader:
             result = self.read_record(fp)
             for fi, field in enumerate(self.field_info):
                 data_dict[field.name].append(result[fi])
-        self.runtime += 'read data from dbf ellapsed={:5.2f}\n'.format(time.time() - st)
+        self.runtime += 'read data from dbf_bak ellapsed={:5.2f}\n'.format(time.time() - st)
         st = time.time()
         self.data = pd.DataFrame(data_dict)
         self.data = self.data.astype(self.field_astype)
@@ -297,7 +297,7 @@ class DbfReader:
             raise FileNotFoundError('Error: no ch3file handle found!')
         record_count = self.file_info.record_count
         if begin not in range(1, record_count + 1):
-            self.report = 'begin record ={} is not in dbf ch3file!'.format(begin)
+            self.report = 'begin record ={} is not in dbf_bak ch3file!'.format(begin)
             return
         get_record_num = count
         if (begin + count - 1) > record_count:
@@ -335,7 +335,7 @@ class DbfReader:
             _name = _record[0].replace(b'\x00', b'').decode(self.encoding).lower()
             _type = _record[1].decode(self.encoding)
             _record = self.Record_Spec(_name, _type, *_record[2:])
-            # no _delflag in dbf
+            # no _delflag in dbf_bak
             if _name == field_delflag_name:
                 self.field_info[0] = self.Record_Spec('_'+field_delflag_name, 'L', 1, 0)
                 # print(_name, field_delflag_name)
@@ -355,7 +355,7 @@ class DbfReader:
             dBase  type: C, V, N, F, D, L, I, B, O, T, @
             pandas type: str, int64, decimal.Decimal, np.date, datetime, bool, np.float64
 
-        parse dbf data to pandas:
+        parse dbf_bak data to pandas:
             C, V: decode to str by bytes.decode
             N, F: decode to str by bytes.decode
                   parse to Decimal if decimal > 0 else to int
@@ -534,7 +534,7 @@ class DbfReader:
         # parse date_value and time_value separately
         _date_days, _time_value = struct.unpack('<ii', dbftime)
 
-        # only support AC date: BC date is invalid in dbf and datetime
+        # only support AC date: BC date is invalid in dbf_bak and datetime
         if _date_days >= 1721426:
             # module-time can not be used,
             # because of time.localtime(v) limits v start from 1970.1.1
@@ -595,14 +595,14 @@ class DbfWriter:
         self.field_spec = None
         self.report = ''
 
-    def to_dbf(self, df, dbffile='tempdbf.dbf'):
+    def to_dbf(self, df, dbffile='tempdbf.dbf_bak'):
         """
         covert DataFrame to dBase file
 
         procedure:
         1. get field_spec for dBase from DataFrame columns dtype
-        2. write dbf header using DataFrame.len, field_spec
-        3. write dbf records according to DataFrame.row and field_spec
+        2. write dbf_bak header using DataFrame.len, field_spec
+        3. write dbf_bak records according to DataFrame.row and field_spec
            write delflag of dBase record to b' ' or b'\2a' when DataFrame._delflag is False or True
 
         field_spec, list with item: namedtuple(name, type, size, decimal)
@@ -626,9 +626,9 @@ class DbfWriter:
                                })
         >>> DbfWriter.encoding = 'gbk'
         >>> dbw = DbfWriter()
-        >>> dbw.write_dbf(df, 'demo.dbf')
+        >>> dbw.write_dbf(df, 'demo.dbf_bak')
         >>> dbr = DbfReader()
-        >>> dbr.open('demo.dbf')
+        >>> dbr.open('demo.dbf_bak')
         >>> dbr.data['serial_no'][0:2]
         0    10101
         1    10102
@@ -644,11 +644,11 @@ class DbfWriter:
         if len(self.df) == 0:
             raise ValueError('Warning: data is empty!')
 
-        # open dbf
+        # open dbf_bak
         try:
             fp = open(dbffile, 'wb')
         except EOFError:
-            raise EOFError('Error: cannot create dbf ch3file {}'.format(dbffile))
+            raise EOFError('Error: cannot create dbf_bak ch3file {}'.format(dbffile))
 
         # get field info
         self.field_spec = DbfWriter.get_field_spec(self.df)
@@ -656,13 +656,13 @@ class DbfWriter:
         # get data with fields in field_spec
         df = self.df[[fd.name for fd in self.field_spec]]
 
-        # write dbf header
+        # write dbf_bak header
         DbfWriter.write_header(fp, self.field_spec, df)
 
-        # write dbf records
+        # write dbf_bak records
         DbfWriter.write_records(fp, self.field_spec, df)
 
-        # write dbf end char
+        # write dbf_bak end char
         fp.write(b'\x1A')
         fp.close()
 
@@ -686,7 +686,7 @@ class DbfWriter:
            set len=max_str_encode_len for type(G)
 
         :param df: pandas.DataFrame
-        :return: dbf field specification [(name, type, size, decimal), ...]
+        :return: dbf_bak field specification [(name, type, size, decimal), ...]
         """
         field_spec = []
         for col in df.columns:
@@ -871,7 +871,7 @@ class DbfWriter:
     def reset_field_info(self, field_info):
         """
         set field_info
-        need to match dataframe to write to dbf
+        need to match dataframe to write to dbf_bak
         :param field_info: [(name, type, size, decimal), ...]
         :return: None
         set field_into to self.field_info, write self.report

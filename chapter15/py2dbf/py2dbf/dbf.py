@@ -9,10 +9,10 @@ from .dbfwriter import DbfWriter
 def read_dbf(dbf: str) -> pd.DataFrame:
     """
     读取dbf文件为DataFrame
-    read dbf file to DataFrame
+    read dbf_bak file to DataFrame
 
-    read_dbf(dbf: str) -> pd.DataFrame
-    :param dbf: dbf file name, suffix .dbf is needed
+    read_dbf(dbf_bak: str) -> pd.DataFrame
+    :param dbf: dbf_bak file name, suffix .dbf_bak is needed
     :return: DataFrame
     """
     if not os.path.isfile(dbf):
@@ -28,7 +28,7 @@ def write_dbf(df: pd.DataFrame, dbf: str):
     将DataFrame数据写为DBF文件。
     write DataFrame to DBF file.
 
-    to_dbf(df: pd.DataFrame, dbf: str)
+    to_dbf(df: pd.DataFrame, dbf_bak: str)
     :param df: 类型为pandas.DataFrame。写入DBF文件的数据。
     :param dbf: 字符串。写入DBF文件的文件名。
     """
@@ -78,12 +78,12 @@ class Dbf:
         csvfile: str. 'temp.csv'( default). file name to write.
         sep: str. ','( default).  length is 1. charater used to seperate field data in record line.
 
-    to_dbf(self, dbffile='temp.dbf')
+    to_dbf(self, dbffile='temp.dbf_bak')
         将数据写入DBF文件
         write data to DBF file
 
         :parameters
-        dbffile: str. 'temp.dbf'( default). file name to write.
+        dbffile: str. 'temp.dbf_bak'( default). file name to write.
 
     ---------------------------------------------------------------------------------------------------------------
     读写DBF文件数据过程说明
@@ -91,12 +91,12 @@ class Dbf:
     目前支持的DBF数据类型：C(字符)、N（数值）、F（浮点）、D（日期）、L（逻辑）、T（时间日期）、B（双精度）
 
     调用方式（call procedure）：
-    1. 初始化：          dbf = Dbf()                                 # 创建类Dbf的对象实例
-    2. 打开DBF文件：     dbf.open(filename)                           # 打开DBF文件
-    3. 读入数据：        dbf.fetch()                                  # 读入DBF文件中的数据
-    4. 访问数据          dbf.data                                    # 数据存储在属性变量data，格式为 DataFrame
-    5. 写数据csv：       dbf.to_csv(csvname=csvfile，sep=',')        # 将data写到文件csvfile,格式为 csv, 分隔符为sep
-    6. 写数据dfb：       dbf.to_dbf(dbfname=dbffile)                 # 将data写到DBF文件
+    1. 初始化：          dbf_bak = Dbf()                                 # 创建类Dbf的对象实例
+    2. 打开DBF文件：     dbf_bak.open(filename)                           # 打开DBF文件
+    3. 读入数据：        dbf_bak.fetch()                                  # 读入DBF文件中的数据
+    4. 访问数据          dbf_bak.data                                    # 数据存储在属性变量data，格式为 DataFrame
+    5. 写数据csv：       dbf_bak.to_csv(csvname=csvfile，sep=',')        # 将data写到文件csvfile,格式为 csv, 分隔符为sep
+    6. 写数据dfb：       dbf_bak.to_dbf(dbfname=dbffile)                 # 将data写到DBF文件
 
     ---------------------------------------------------------------------------------------------------------------
     数据与接口说明
@@ -104,7 +104,7 @@ class Dbf:
     1. Dbf.data：从DBF文件读入的数据，格式为pandas.DataFrame ( read data to Dbf.data from dbase file)
     2. 从 DBF文件到DataFrame的数据类型转换使用Dbf.type_map，在初始化之前可以查看替换，须保证能够进行类型映射
     3. 对 DBF文件字符内容的解码使用 Dbf.codeset，缺省值为 GBK，初始化之前可以替换
-    4. 打开 DBF文件后，可以通过 dbf.file_info查看文件结构信息，通过field_info查看字段结构信息
+    4. 打开 DBF文件后，可以通过 dbf_bak.file_info查看文件结构信息，通过field_info查看字段结构信息
     5. 读出的数据中包括DBF表的删除和删除标记列，名称为 _delflag、_nullflab，如果原DBF文件中有重名字段，会增加'_'的数量
     6. 切片访问按照切片格式，可以使用下标，小标范围，或索引号, 切片下标使用0开始记录号，而list使用1开始记录号
     7. 写数据到DBF文件，执行结果是将当前data的数据写到一个csv文件。
@@ -127,17 +127,17 @@ class Dbf:
 
     调用示例：
     Examples:
-    >>> dbf = Dbf()
-    >>> dbf.open('../demo.dbf')
-    >>> dbf.fetch(1, 20)
-    >>> print(dbf.data)
+    >>> dbf_bak = Dbf()
+    >>> dbf_bak.open('../demo.dbf_bak')
+    >>> dbf_bak.fetch(1, 20)
+    >>> print(dbf_bak.data)
           serial_no       en_name ch_name   price            shipping
     0     10101  Refrigerator      冰箱  310.51 2020-03-01 01:00:00
     1     10102        Washer     洗衣机  420.35 2020-03-02 01:00:00
     2     10103         Stove      炉子  350.00 2020-03-03 00:30:00
     3     10104    Ventilator     通风机  210.40 2020-03-04 00:00:30
 
-    >>> dbf.close()
+    >>> dbf_bak.close()
     """
 
     encoding = 'GBK'
@@ -149,8 +149,8 @@ class Dbf:
 
     def open(self, filename: str = ''):
         """
-        open and load dbf to self.data
-        :param filename: dbf file name to read
+        open and load dbf_bak to self.data
+        :param filename: dbf_bak file name to read
         """
         self.reader.encoding = self.encoding
         self.reader.open(filename=filename)
@@ -159,14 +159,14 @@ class Dbf:
 
     def close(self):
         """
-        close dbf file opened in self.reader
+        close dbf_bak file opened in self.reader
         can not fetch data if reader closed
         """
         self.reader.close()
 
     def fetch(self, start=1, count=10):
         """
-        start in range(1, len(dbf)+1)
+        start in range(1, len(dbf_bak)+1)
         """
         if start < 0 or count < 0:
             self.reader.fetchall()
@@ -179,7 +179,7 @@ class Dbf:
             raise FileNotFoundError('no data to save to csv!')
         self.data.to_csv(csvfile, index=False, sep=sep, **kwargs)
 
-    def to_dbf(self, dbffile='temp.dbf'):
+    def to_dbf(self, dbffile='temp.dbf_bak'):
         if not isinstance(self.data, pd.DataFrame):
             raise FileNotFoundError('no data to save to csv!')
         writer = DbfWriter()
