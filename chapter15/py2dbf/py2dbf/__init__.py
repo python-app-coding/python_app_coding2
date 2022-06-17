@@ -17,7 +17,8 @@ Dbf： 读写dbf文件的类。调用DbfReader和DbfWriter。
 DbfReader：读取dbf文件底层类。
 DbfWriter：写DataFrame到dbf文件的底层类。
 """
-
+__version__ = '1.0.1'
+__author__ = 'Wang Xichang'
 
 from .dbf import Dbf, read_dbf, write_dbf, DbfReader, DbfWriter
 
