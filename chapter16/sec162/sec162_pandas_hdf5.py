@@ -220,9 +220,8 @@ def demo7_():
     1  002  窦建军    90  98.20 1998-02-01  False
     2  003  张梦想    92  87.77 2002-12-15   True
 
+    # 指定HDF5文件名查询(需要先关闭hdfstore对象，除非是以只读方式打开)
     >>> h5store.close()
-
-    # 指定HDF5文件名查询
     >>> pd.read_hdf(hdf5file, key='df3', where=['art >= 80', 'math > 90'], columns=['name', 'math', 'art'])
       name  math    art
     2  张梦想    92  87.77
@@ -233,42 +232,35 @@ def demo8_():
     """
     >>> h5store = pd.HDFStore(hdf5file)
 
+    # 调用drop方法删除一个数据列
+    >>> h5store['df3'] = h5store['df3'].drop(labels=['pass'], axis=1)
+    >>> h5store.flush()	# 保存
+    >>> h5store['df3']	# 查看删除情况
+        id name  math    art      birth
+    0  001  程柳青   100  77.50 2001-03-05
+    1  002  窦建军    90  98.20 1998-02-01
+    2  003  张梦想    92  87.77 2002-12-15
 
-    >>> h5store.close()
-    """
+    # 设置axis=0，按照行号删除行
+    >>> h5store['df3'] = h5store['df3'].drop(labels=[0, 2], axis=0)
+    >>> h5store.flush()
+    >>> h5store['df3']
+        id name  math   art      birth
+    1  002  窦建军    90  98.2 1998-02-01
 
+    # 删除数据集
+    >>> h5store['sr'] = pd.Series(list('abc'))
+    >>> h5store['sr']
+    0    a
+    1    b
+    2    c
+    dtype: object
 
-def demo9_():
-    """
-    >>> h5store = pd.HDFStore(hdf5file)
+    >>> h5store.remove(key='sr')
 
-
-    >>> h5store.close()
-    """
-
-
-def demo10_():
-    """
-    >>> h5store = pd.HDFStore(hdf5file)
-
-
-    >>> h5store.close()
-    """
-
-
-def demo11_():
-    """
-    >>> h5store = pd.HDFStore(hdf5file)
-
-
-    >>> h5store.close()
-    """
-
-
-def demo12_():
-    """
-    >>> h5store = pd.HDFStore(hdf5file)
-
+    # 删除后不能再引用
+    # >>> h5store['sr']
+    # KeyError: 'No object named group3/sr in the file'
 
     >>> h5store.close()
     """
