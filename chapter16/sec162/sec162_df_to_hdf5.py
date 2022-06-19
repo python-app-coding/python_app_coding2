@@ -189,24 +189,43 @@ def demo6_():
 def demo7_():
     """
     >>> h5store = pd.HDFStore(hdf5file)
+    >>> h5store.close()
 
-    >>> h5store['group2/df'].query('index==1')
+    # 将DataFrame对象写为HDF5数据集，并指定可查询列
+    >>> df.to_hdf(h5store, key='df3', data_columns=['math', 'art'], mode='w', format='table')
+
+    >>> h5store = pd.HDFStore(hdf5file)
+
+    >>> h5store['df3'].query('index==1')
         id name  math   art      birth   pass
     1  002  窦建军    90  98.2 1998-02-01  False
 
-    >>> h5store['df2'].query('name=="程柳青"')
+    >>> h5store['df3'].query('name=="程柳青"')
         id name  math   art      birth  pass
     0  001  程柳青   100  77.5 2001-03-05  True
-    0  001  程柳青   100  77.5 2001-03-05  True
 
-    >>> h5store.select('df2', where=["index > 1 & columns in ['id']"])
+    >>> h5store.select('df3', where=["index > 1 & columns in ['id']"])
         id
     2  003
-    2  003
 
-    >>> h5store.select('df', where=["data_column > 90"])
+    # 调用data_columns中定义的列
+    >>> h5store.select('df3', where=["math > 90"])
+        id name  math    art      birth  pass
+    0  001  程柳青   100  77.50 2001-03-05  True
+    2  003  张梦想    92  87.77 2002-12-15  True
+
+    # 从HDFStore对象查询
+    >>> pd.read_hdf(h5store, key='df3', where=['art >= 80'])
+        id name  math    art      birth   pass
+    1  002  窦建军    90  98.20 1998-02-01  False
+    2  003  张梦想    92  87.77 2002-12-15   True
 
     >>> h5store.close()
+
+    # 指定HDF5文件名查询
+    >>> pd.read_hdf(hdf5file, key='df3', where=['art >= 80', 'math > 90'], columns=['name', 'math', 'art'])
+      name  math    art
+    2  张梦想    92  87.77
     """
 
 
