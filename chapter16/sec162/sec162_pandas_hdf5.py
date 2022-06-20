@@ -178,16 +178,21 @@ def demo6_():
     """
 
 
-def demo7_():
+def demo7_query_select():
     """
+    使用to_hdf写HDF5，在数据格式table时，可以设置查询数据列
+    使用query、select查询HDF5数据集，
+    使用read_hdf读取HDF5数据集
+
+    # 将DataFrame写入HDF5，可以使用HDFStore对象，但该对象需要在关闭状态
     >>> h5store = pd.HDFStore(hdf5file)
     >>> h5store.close()
-
-    # 将DataFrame对象写为HDF5数据集，并指定可查询列
     >>> df.to_hdf(h5store, key='df3', data_columns=['math', 'art'], mode='w', format='table')
 
+    # 打开HDF5
     >>> h5store = pd.HDFStore(hdf5file)
 
+    # 使用query查询
     >>> h5store['df3'].query('index==1')
         id name  math   art      birth   pass
     1  002  窦建军    90  98.2 1998-02-01  False
@@ -196,6 +201,7 @@ def demo7_():
         id name  math   art      birth  pass
     0  001  程柳青   100  77.5 2001-03-05  True
 
+    # 使用select查询
     >>> h5store.select('df3', where=["index > 1 & columns in ['id']"])
         id
     2  003
@@ -206,7 +212,7 @@ def demo7_():
     0  001  程柳青   100  77.50 2001-03-05  True
     2  003  张梦想    92  87.77 2002-12-15  True
 
-    # 从HDFStore对象查询
+    # 使用read_hdf查询
     >>> pd.read_hdf(h5store, key='df3', where=['art >= 80'])
         id name  math    art      birth   pass
     1  002  窦建军    90  98.20 1998-02-01  False
@@ -220,7 +226,7 @@ def demo7_():
     """
 
 
-def demo8_():
+def demo8_drop_remove():
     """
     >>> h5store = pd.HDFStore(hdf5file)
 
