@@ -102,7 +102,7 @@ def demo4_walk():
     """
 
 
-def demo5_():
+def demo5_append():
     """
     >>> h5store = pd.HDFStore(hdf5file)
 
@@ -125,7 +125,7 @@ def demo5_():
     """
 
 
-def demo6_():
+def demo6_put_append():
     """
     >>> h5store = pd.HDFStore(hdf5file, mode='a')
 
