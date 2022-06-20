@@ -40,20 +40,14 @@ def demo1_data():
     0  001  程柳青   100  77.50  2001-03-05   True
     1  002  窦建军    90  98.20  1998-02-01  False
     2  003  张梦想    92  87.77  2002-12-15   True
-
-
-      id_numstr name_cnstr  math_int  art_float birth_datetime  pass_bool
-    0       000        程柳青       100      77.50     2001-03-05       True
-    1       001        窦建军        90      98.20     1998-02-01      False
-    2       002        张梦想        92      87.77     2002-12-15       True
     """
 
 
-def demo2_h5store():
+def demo2_h5store_create_hd5_file():
     """
     # 注意：有些类型不能序列化，如datetime.date
 
-     >>> h5store = pd.HDFStore(hdf5file)
+     >>> h5store = pd.HDFStore(hdf5file, mode='w')
      >>> h5store.put('group1/sr', sr)                   # 使用put方法创建，缺省格式为series
      >>> h5store['group2/df'] = df                      # 直接赋值创建, 缺省格式为frame
      >>> h5store.put('sr', sr, format='table')          # 使用put创建table格式数据集
@@ -63,7 +57,7 @@ def demo2_h5store():
     """
 
 
-def demo3_():
+def demo3_keys_pandas_type():
     """
     >>> h5store = pd.HDFStore(hdf5file)
 
@@ -85,7 +79,7 @@ def demo3_():
     """
 
 
-def demo4_():
+def demo4_walk():
     """
     >>> h5store = pd.HDFStore(hdf5file)
 
@@ -98,13 +92,11 @@ def demo4_():
     /group5/group51 ['group511'] []
     /group5/group51/group511 [] ['df']
 
-
-    ['group1', 'group2', 'group5'], ['sr', 'df']      	    # 根组
-    /group1, [], ['sr']                            	        # group1组
-    /group2, [], ['df']                                 	# group2组
-    /group5, ['group51'], []                            	# group5组
-    /group5/group51, ['group511'], []                   	# group5/group51组
-    /group5/group51/group511, [], ['df']                	# group5/group51/group511组
+    >>> for group, subgroups, objects in h5store.walk(where='/group5'):
+    ...     print(group, subgroups, objects)   	# 各组的组名、子组名列表、对象名列表
+    /group5 ['group51'] []
+    /group5/group51 ['group511'] []
+    /group5/group51/group511 [] ['df']
 
     >>> h5store.close()
     """
