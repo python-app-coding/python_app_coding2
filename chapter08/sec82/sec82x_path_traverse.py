@@ -30,7 +30,7 @@ def traverse_dir(path):
             traverse_dir(path+'/'+d)
 
 
-def get_dirtree_by_listdir(pathname, include_dir=None, include_files=None, sort=False, indent_level=0):
+def dirtree_by_listdir(pathname, include_dir=None, include_files=None, sort=False, indent_level=0):
     """
     使用os.listdir方法生成目录结构树形。
     根据节点层级生成'| '间隔符，节点项前为 '|--'
@@ -56,15 +56,15 @@ def get_dirtree_by_listdir(pathname, include_dir=None, include_files=None, sort=
         if include_dir:
             if dr not in include_dir:
                 continue
-        dir_tree += get_dirtree_by_listdir(pathname + '/' + dr,
-                                           include_dir=include_dir,
-                                           include_files=include_files,
-                                           sort=sort,
-                                           indent_level=indent_level + 1)
+        dir_tree += dirtree_by_listdir(pathname + '/' + dr,
+                                       include_dir=include_dir,
+                                       include_files=include_files,
+                                       sort=sort,
+                                       indent_level=indent_level + 1)
     return dir_tree
 
 
-def get_dirtree_by_walk(pathname, sort=False):
+def dirtree_by_walk(pathname, sort=False):
     """
     使用os.walk方法生成目录结构树形。
     根据节点层级生成'| '间隔符，节点项前为 '|--'
@@ -87,7 +87,7 @@ def get_dirtree_by_walk(pathname, sort=False):
     return dir_tree
 
 
-def get_dirtree(pathname='.', sort=False, include_dir=None, include_files=None):
+def dirtree_graph(pathname='.', sort=False, include_dir=None, include_files=None):
     """
     使用中文制表符生成目录树 use china table char
     \u2500:─, \u2514:└, \u251c:├, \u2502:│
@@ -99,7 +99,7 @@ def get_dirtree(pathname='.', sort=False, include_dir=None, include_files=None):
     :return:
     """
     # include = [] if not include_dir else include_dir
-    dir_text = get_dirtree_by_listdir(pathname, include_dir=include_dir, include_files=include_files, sort=sort)
+    dir_text = dirtree_by_listdir(pathname, include_dir=include_dir, include_files=include_files, sort=sort)
     # print(dir_text)
 
     # remove left char and replace to China tab char
@@ -202,13 +202,16 @@ def get_dir_files(pathname, suff_list=None):
 
 if __name__ == '__main__':
     # get path-tree for command line: python argv[1]
-    path = os.path.abspath('../..')
+    path = os.path.abspath('./work')
     if len(argv) > 1:
         path = argv[1]
     print(path)
+
     print('get path-tree by os.listdir:')
-    print(get_dirtree_by_listdir(path))
+    print(dirtree_by_listdir(path))
+
     print('get path-tree by os.walk:')
-    print(get_dirtree_by_walk(path))
-    print('get path-tree:{}'.format(path))
-    print(get_dirtree(path))
+    print(dirtree_by_walk(path))
+
+    print('get path-tree-graph:\n{}'.format(path))
+    print(dirtree_graph(path))
