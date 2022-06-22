@@ -3,7 +3,7 @@
 import importlib as pb
 
 
-class WithObject:
+class WithClass:
     def __init__(self):
         self.time = pb.import_module('time')
         self.start = None
@@ -22,6 +22,10 @@ class WithObject:
         return True
 
 
-with WithObject():
-    1/0
-    print(sum([x for x in range(1000000)]))
+if __name__ == '__main__':
+    with WithClass():
+        print(sum([x for x in range(1000000)]))
+
+    with WithClass():
+        1 / 0
+        print(sum([x for x in range(1000000)]))
