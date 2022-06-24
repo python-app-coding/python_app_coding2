@@ -17,7 +17,7 @@ class TestRepayLoan(unittest.TestCase):
                          "200wan, 30years, 0.06rate")
 
     def tearDown(self) -> None:
-        print('test house_loan is finished!')
+        print('tests house_loan is finished!')
 
 
 if __name__ == '__main__':

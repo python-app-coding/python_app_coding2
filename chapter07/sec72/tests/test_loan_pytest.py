@@ -48,7 +48,7 @@ class Test1:
         assert run_result.month_repay[0] == self.result2_month_repay
 
     def teardown(self):
-        print('test loan.repay finished!')
+        print('tests loan.repay finished!')
 
 
 class Test2:

@@ -10,8 +10,8 @@ def demo1_conn_mysql():
     # 建立于MySql的连接
     conn = pymysql.connect(
             host='127.0.0.1',
-            user='test',
-            passwd='test',
+            user='tests',
+            passwd='tests',
             db='students',
             port=3306,
             charset='utf8'

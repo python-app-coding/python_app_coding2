@@ -48,7 +48,7 @@ def test3(n=100000):
 
 
 if __name__ == "__main__":
-    print("run test:")
+    print("run tests:")
     test()
 
     print("run test2:")

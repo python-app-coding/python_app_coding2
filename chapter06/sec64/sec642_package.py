@@ -1,6 +1,6 @@
 # coding = utf8
 
-# test fuzzy import
+# tests fuzzy import
 from .pkm import *
 
 try:

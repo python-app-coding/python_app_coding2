@@ -36,7 +36,7 @@ def make_sqlite_table():
 
 
 def demo_read_sql():
-    # test table read
+    # tests table read
     # print("\n--- read by cursor.execute(sql) ---")
     # conn = sqlite3.connect('students.db')
     # cursor = conn.cursor()

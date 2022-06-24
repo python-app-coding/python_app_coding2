@@ -1,0 +1,11 @@
+README.md
+pyproject.toml
+setup.cfg
+package_foo.egg-info/PKG-INFO
+package_foo.egg-info/SOURCES.txt
+package_foo.egg-info/dependency_links.txt
+package_foo.egg-info/entry_points.txt
+package_foo.egg-info/top_level.txt
+src/foo/__init__.py
+src/foo/__main__.py
+src/foo/main.py

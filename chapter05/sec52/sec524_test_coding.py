@@ -1,3 +1,3 @@
 # coding: utf3
 
-print("test assign coding")
+print("tests assign coding")
