@@ -9,6 +9,8 @@ authors = [
   { name="Author", email="author@example.com" },
 ]
 description = "foo is a example project for demo"
+long_description=long_description
+long_description_content_type='text/x-rst'
 readme = "README.md"
 requires-python = ">=3.8"
 classifiers = [
