@@ -1,5 +1,5 @@
 # coding = utf8
-"""test foo"""
+"""test appdemo"""
 
 import pytest
 

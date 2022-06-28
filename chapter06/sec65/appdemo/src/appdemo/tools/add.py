@@ -7,7 +7,7 @@ main是foo的模块，作为main的入口模块
 def add(*args):
     """
     函数，位于foo包的__main__文件内
-    function in foo.__main__
+    function in appdemo.__main__
 
     Args:
         args：sequence
