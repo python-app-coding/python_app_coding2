@@ -12,7 +12,7 @@ class Foo:
 
 
 foo = Foo(100)
-print("appdemo.x = ", foo.x)
+print("demo_project.x = ", foo.x)
 
 
 class Foo2:

@@ -1,14 +1,17 @@
 [build-system]
-requires = ["setuptools>=61.0"]
+requires = [
+    "setuptools>=61.0",
+    "wheel",
+    ]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "package_foo"
+name = "demo_package_author"
 version = "0.0.1"
 authors = [
-  { name="Author", email="author@example.com" },
+  { name="Author", email="author@demo.com" },
 ]
-description = "foo is a example project for demo"
+description = "this is a demo project for temperature conversion"
 readme = "README.rst"
 requires-python = ">=3.8"
 classifiers = [
@@ -35,9 +38,9 @@ classifiers = [
 
 # 指定发行包路径
 [tool.setuptools]
-packages = ["foo"]
+packages = ["demo_package_author"]
 package-dir = {"" = "src"}
 
 # 设置程序运行入口点
 [project.scripts]
-hello = "foo:hello"
+fc = "demo_package_author.f2c:fc"
