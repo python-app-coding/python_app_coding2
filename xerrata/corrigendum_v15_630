@@ -5,3 +5,6 @@
         3） ROUND_CEILING: 向正无穷大靠近舍入..., round(dc.Decimal('-1.14'), 1) is Decimal('-1.1')
         4) 重新更改Rounding叙述
 
+    2. appendix-d
+        1) blank_operand: 括号内的冒号，视为运算符，前后不留空格。 删去：ham[lower + offset : upper + offset]
+        2) 以单下划线结束的变量: 合并行， 更改：如使用“import *”，
