@@ -1,0 +1,5 @@
+# 2022-7-1
+    1. appendix-b
+        1) command result: dc.Decimal() --> Decimal()
+        2) missing right bracket: Decimal(..,
+        3） ROUND_CEILING: 向正无穷大靠近舍入..., round(dc.Decimal('-1.14'), 1) is Decimal('-1.1')
