@@ -35,4 +35,4 @@ namespaces = false          # true by default
 
 # 设置程序运行入口点
 [project.scripts]
-hello = "foo.main:hello"
+hello = "foo:hello"
