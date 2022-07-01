@@ -1,2 +1,2 @@
 [console_scripts]
-hello = foo.main:hello
+hello = foo:hello

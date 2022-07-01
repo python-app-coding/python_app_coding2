@@ -1,9 +1,9 @@
-README.md
+README.rst
 pyproject.toml
-setup.cfg
 src/foo/__init__.py
-src/foo/__main__.py
-src/foo/main.py
+src/foo/add.py
+src/foo/tools/__init__.py
+src/foo/tools/h2c.py
 src/package_foo.egg-info/PKG-INFO
 src/package_foo.egg-info/SOURCES.txt
 src/package_foo.egg-info/dependency_links.txt
