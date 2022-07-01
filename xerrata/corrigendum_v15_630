@@ -27,4 +27,7 @@
         4) REO.match
             raw: ps1 ='\w{3}'
             new: ps2 ='\w{3}'
+        5) REO.sub
+            raw: ..repeat split example
+            new:
 
