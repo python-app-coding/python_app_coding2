@@ -51,3 +51,23 @@
         12) MO: MO.method expand Êý×Ö·´ÏòÒýÓÃ
             raw: mo16.expand(r'\g<first_group>\2c\3')
             new: mo16.expand(r'\g<first_group>\\2c')
+        13) Group: (?#...)
+            raw: result.group()
+            new: result.group()/'BBC'
+        14) Group:
+            raw: r.group('g1')/'ºº×Ö'
+            new: r.group('g2')/'ºº×Ö'
+        15) Group:
+            raw: re.match('(?P<g1>[a-zA-Z]{3})\w{2}(?P=g1)', 'AbCºº×Öabc')/None
+            new: re.match('(?P<g1>[a-zA-Z]{3})\w{2}(?P=g1)', 'AbCºº×Öabc')/
+        16) Group:
+            raw: re.match('Isaac (?=Newton)', 'Isaac newton')/None
+            new: re.match('Isaac (?=Newton)', 'Isaac newton')/
+        17) Group:
+            raw: (? < ! ...)    /None
+            new: (? < ! ...)    /
+        18) Group:
+            raw: re.search('(<)?(\w+@\w+(?:\.\w+)+)(?(1)>|$)','user@host.com')/
+                 <re.Match object; span=(0, 15), match='user@host.com'>
+            new: re.search('(<)?(\w+@\w+(?:\.\w+)+)(?(1)>|$)','user@host.com')/
+                 <re.Match object; span=(0, 13), match='user@host.com'>
