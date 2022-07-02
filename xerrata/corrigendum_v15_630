@@ -29,5 +29,25 @@
             new: ps2 ='\w{3}'
         5) REO.sub
             raw: ..repeat split example
-            new:
-
+            new: 更新为'aaa'替换'abc'
+        6) REO.flab-groupindex(groupindex（分组索引字典）)
+            raw: groupindexs
+            new: groupindex
+        7) MO: MO.attr-mo5
+            raw: mo5.group(0), mo.groups()
+            new: mo5.group(0), mo5.groups()
+        8) MO: MO.attr
+            raw: mo1.pos/0,12   mo1.endpos/0,12
+            new: mo1.pos/0      mo1.endpos/14
+        9) MO: MO.attr
+            raw: mo5.group(0), mo5.groups()/'ab', ()
+            new: mo5.group(0), mo5.groups()/('ab', ())
+        10) MO: MO.attr 多一个括号
+            raw: mo8 = re.search('[a-z]{2})','ab')
+            new: mo8 = re.search('[a-z]{2}','ab')
+        11) MO: MO.attr 在>>>和ipython中显示结果不同
+            raw: re.compile(r'[0-9]{3}\w{2}', re.UNICODE)
+            new: re.compile(r'[0-9]{3}\w{2}')
+        12) MO: MO.method expand 数字反向引用
+            raw: mo16.expand(r'\g<first_group>\2c\3')
+            new: mo16.expand(r'\g<first_group>\\2c')
