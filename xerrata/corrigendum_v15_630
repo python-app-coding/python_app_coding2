@@ -71,3 +71,13 @@
                  <re.Match object; span=(0, 15), match='user@host.com'>
             new: re.search('(<)?(\w+@\w+(?:\.\w+)+)(?(1)>|$)','user@host.com')/
                  <re.Match object; span=(0, 13), match='user@host.com'>
+        19) Greedy:
+            raw: re.search(ps1,'|a|bbb|c|')/span(0, 6)
+            new: re.search(ps1,'|a|bbb|c|')/span(0, 9)
+            raw: re.search(ps4,'|a|bbb|c|')/span(0, 3)
+            new: re.search(ps4,'|a|bbb|c|')/span(0, 4)
+            raw: re.search(ps6,'<a>b<c>')/span(0, 7)
+            new: re.search(ps6,'<a>b<c>')/span(0, 3)
+            raw: re.search(ps7,..)/span(0, 7)
+            new: re.search(ps7,..)/span(0, 8)
+
