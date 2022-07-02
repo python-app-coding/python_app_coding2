@@ -82,6 +82,7 @@
 >>> s='code代码and编程program'
 >>> regex='[\u0001-\u00FF]+'
 >>> re.findall(regex, s)# 返回结果：['code','and','program']
+['code', 'and', 'program']
 
 # ◎ 匹配中文字符。
 # Unicode基本汉字编码范围为U+4e00-U+9fa5，故用“[\u4e00-\u9fa5]+”检测常用中文字符。
@@ -93,9 +94,8 @@
 # 【示例】
 >>> s='super超级程序员super-programmer超级程序xprogram'
 >>> re.findall('[\u4e00-\u9fa5]+', s)
-# ['超级程序员','超级程序']
+['超级程序员', '超级程序']
 
+>>> re.match('[\U00020000-\U0002a6d6]', '\U00020001')   # 有些环境不支持扩展编码，结果可能会显示为空格
+<re.Match object; span=(0, 1), match='𠀁'>
 """
-
-# >>> re.match('[\U00020000-\U0002a6d6]', '\U00020001')   # 有些环境不支持扩展编码，结果可能会显示为空格
-# <re.Matchobject; span=(0, 1), match='��'>
