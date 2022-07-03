@@ -45,6 +45,20 @@
             new: ({'name': 'Wang', 'score': [100, 90, 85]}, {'name': 'Sun', 'score': [100, 90, 85]})
             raw: ({'name': 'Wang', 'score': [300, 90, 85]}, {'name': 'Wang', 'score': [300, 90, 85]})
             new: ({'name': 'Sun', 'score': [300, 90, 85]}, {'name': 'Wang', 'score': [300, 90, 85]})
+            raw: 100, 200
+            new: 100 200
+            raw: [200], [100]
+            new: [200] [100]
+        6) slice
+            raw: x[4:0:-1]		# 返回原列表的倒序列表，但不包含序号0的元素！/[5,4,3,2,1]
+            new: x[4:0:-1]		# 返回原列表的倒序列表，但不包含序号0的元素！/[4,3,2,1]
+            raw: x[4:-2:-1]
+            new: x[4:-3:-1]
+        7) time-date
+            raw: time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())/
+            new: time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())/<result>
+            raw: time.strftime("%a %b %d %H:%M:%S %Y", time.localtime()))
+            new: time.strftime("%a %b %d %H:%M:%S %Y", time.localtime())
 
 
     a1. appendix-b
