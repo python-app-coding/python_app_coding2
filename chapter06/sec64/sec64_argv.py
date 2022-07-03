@@ -1,5 +1,9 @@
 # coding: utf8
 
+"""
+模块可以通过导入、主程序等方式运行，
+不同运行方式下，其有关属性的值是不同的。
+"""
 
 import os
 import os.path as osp
@@ -31,7 +35,7 @@ def argv(byimport=True):
     # os: current work path
     print('current path:')
     print('          os.getcwd() = {}'.format(os.getcwd()))
-    print(' os.path.abspath(".") = {}'.format(osp.abspath(".")))
+    print(' os.path.abspath(".") = {}'.format(osp.abspath("../../chapter03")))
     print('         sys.path[-1] = {}\n'.format(sys.path[-1]))
 
 

@@ -14,8 +14,9 @@ def demo_python():
     >>> print(f"The sum of 1-100 is {s}")
     The sum of 1-100 is 5050
 
-    # 求1-12345之间平方数的个数
-    >>> c = [k for k in range(12345) if math.sqrt(k) == int(math.sqrt(k))]
+    # 求1-n之间平方数的个数
+    >>> n = 12345
+    >>> c = [k for k in range(n) if math.sqrt(k) == int(math.sqrt(k))]
     >>> print(f"The count of square number of 0-12345 is {len(c)}, [{c[0]}, {c[1]}, {c[2]}, {c[3]}, ...]")
     The count of square number of 0-12345 is 112, [0, 1, 4, 9, ...]
     """
