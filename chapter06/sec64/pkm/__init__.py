@@ -12,3 +12,4 @@ __all__ = ['m1', 'm2']
 
 print('Welcome to pkm.__init__!')
 print("__name__ = ", __name__)
+print("__path__ = ", __path__)

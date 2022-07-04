@@ -1,70 +1,88 @@
 # 2022-7-1
-    01. chp05
-        1) 5.3 list:
-            raw: 0, 4, 9
-            new: 0, 5, 9
-        2) 5.4 tuple:
-            raw: >>> x[0], x[5], x[-1]/(0, 4, 9)
-            new: >>> x[0], x[5], x[-1]/(0, 5, 9)
-            raw: MyScore(lang=10, math=1, sci=1)
-            new: MyScore(lang=100, math=80, sci=60)
-        3) 5.6 set:
-            raw: >>> set1/{}
-            new: >>> set1/set()
-            raw: {1,2, 3} .. set1.add(5)/{1, 2, 3, 5}
-            new: {1, 2, 3} .. set1.add(5)/set1/{1, 2, 3, 5)
-            raw: set1.difference(set2)/set1/..
-            new: set1.difference(set2)/..
-        4) 5.7 func
-            raw: >>> help(fun5)
-            new: >>> help(sum_power)
-            raw: >>> fun5(**b)/.../ypeError:
-            new: >>> fun5(**b)/.../TypeError:
-            raw: type(sum_power)../function
-            new: type(sum_power)../<class 'function'>
-            raw: fun(3)../3, 1
-            new: fun(3)../3 1
-            raw: fun(x=3)../3, 1
-            new: fun(x=3)../3 1
-            raw: fun(y=2, 3)../3, 2
-            new: fun(y=2, 3)../3 2
-        5) 5.9 obj_rec
-            raw: x =100, y = 100
-            new: x =100; y = 100
-            raw: x1 =1000, y1 = 1000
-            new: x1 =1000; y1 = 1000
-            raw: 指向不同的对象
-            new: 指向不同的对象(有时也会分配相同地址！)
-            raw: a1.__weakref
-            new: a1.__weakref__
-            raw:  >>> c()        		# 调用无效弱引用，返回值None/None
-            new:  >>> c()        		# 调用无效弱引用，无返回值/
-            raw: ({'name': 'Wang', 'score': [95, 90, 85]}, {'name': 'Li', 'score': [95, 90, 85]})
-            new: ({'name': 'Wang', 'score': [100, 90, 85]}, {'name': 'Li', 'score': [100, 90, 85]})
-            raw: ({'name': 'Wang', 'score': [100, 90, 85]}, {'name': 'Wang', 'score': [100, 90, 85]})
-            new: ({'name': 'Wang', 'score': [100, 90, 85]}, {'name': 'Sun', 'score': [100, 90, 85]})
-            raw: ({'name': 'Wang', 'score': [300, 90, 85]}, {'name': 'Wang', 'score': [300, 90, 85]})
-            new: ({'name': 'Sun', 'score': [300, 90, 85]}, {'name': 'Wang', 'score': [300, 90, 85]})
-            raw: 100, 200
-            new: 100 200
-            raw: [200], [100]
-            new: [200] [100]
-            -----
-            slice
-            raw: x[4:0:-1]		# 返回原列表的倒序列表，但不包含序号0的元素！/[5,4,3,2,1]
-            new: x[4:0:-1]		# 返回原列表的倒序列表，但不包含序号0的元素！/[4,3,2,1]
-            raw: x[4:-2:-1]
-            new: x[4:-3:-1]
-        6) 5-10 time-date
-            raw: time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())/
-            new: time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())/<result>
-            raw: time.strftime("%a %b %d %H:%M:%S %Y", time.localtime()))
-            new: time.strftime("%a %b %d %H:%M:%S %Y", time.localtime())
-        7) 5-11 operation
-            raw: >>> +(-3)	# 第一个+号../3
-            new: >>> +(-3)	# 第一个+号../-3
-            raw: >>> 3 + 2	# +号为运算符，3和2为输入对象/3
-            new: >>> 3 + 2	# +号为运算符，3和2为输入对象/5
+ch01
+
+
+
+
+ch05
+    1) 5.3 list:
+        raw: 0, 4, 9
+        new: 0, 5, 9
+    2) 5.4 tuple:
+        raw: >>> x[0], x[5], x[-1]/(0, 4, 9)
+        new: >>> x[0], x[5], x[-1]/(0, 5, 9)
+        raw: MyScore(lang=10, math=1, sci=1)
+        new: MyScore(lang=100, math=80, sci=60)
+    3) 5.6 set:
+        raw: >>> set1/{}
+        new: >>> set1/set()
+        raw: {1,2, 3} .. set1.add(5)/{1, 2, 3, 5}
+        new: {1, 2, 3} .. set1.add(5)/set1/{1, 2, 3, 5)
+        raw: set1.difference(set2)/set1/..
+        new: set1.difference(set2)/..
+    4) 5.7 func
+        raw: >>> help(fun5)
+        new: >>> help(sum_power)
+        raw: >>> fun5(**b)/.../ypeError:
+        new: >>> fun5(**b)/.../TypeError:
+        raw: type(sum_power)../function
+        new: type(sum_power)../<class 'function'>
+        raw: fun(3)../3, 1
+        new: fun(3)../3 1
+        raw: fun(x=3)../3, 1
+        new: fun(x=3)../3 1
+        raw: fun(y=2, 3)../3, 2
+        new: fun(y=2, 3)../3 2
+    5) 5.9 obj_rec
+        raw: x =100, y = 100
+        new: x =100; y = 100
+        raw: x1 =1000, y1 = 1000
+        new: x1 =1000; y1 = 1000
+        raw: 指向不同的对象
+        new: 指向不同的对象(有时也会分配相同地址！)
+        raw: a1.__weakref
+        new: a1.__weakref__
+        raw:  >>> c()        		# 调用无效弱引用，返回值None/None
+        new:  >>> c()        		# 调用无效弱引用，无返回值/
+        raw: ({'name': 'Wang', 'score': [95, 90, 85]}, {'name': 'Li', 'score': [95, 90, 85]})
+        new: ({'name': 'Wang', 'score': [100, 90, 85]}, {'name': 'Li', 'score': [100, 90, 85]})
+        raw: ({'name': 'Wang', 'score': [100, 90, 85]}, {'name': 'Wang', 'score': [100, 90, 85]})
+        new: ({'name': 'Wang', 'score': [100, 90, 85]}, {'name': 'Sun', 'score': [100, 90, 85]})
+        raw: ({'name': 'Wang', 'score': [300, 90, 85]}, {'name': 'Wang', 'score': [300, 90, 85]})
+        new: ({'name': 'Sun', 'score': [300, 90, 85]}, {'name': 'Wang', 'score': [300, 90, 85]})
+        raw: 100, 200
+        new: 100 200
+        raw: [200], [100]
+        new: [200] [100]
+        -----
+        slice
+        raw: x[4:0:-1]		# 返回原列表的倒序列表，但不包含序号0的元素！/[5,4,3,2,1]
+        new: x[4:0:-1]		# 返回原列表的倒序列表，但不包含序号0的元素！/[4,3,2,1]
+        raw: x[4:-2:-1]
+        new: x[4:-3:-1]
+    6) 5-10 time-date
+        raw: time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())/
+        new: time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())/<result>
+        raw: time.strftime("%a %b %d %H:%M:%S %Y", time.localtime()))
+        new: time.strftime("%a %b %d %H:%M:%S %Y", time.localtime())
+    7) 5-11 operation
+        raw: >>> +(-3)	# 第一个+号../3
+        new: >>> +(-3)	# 第一个+号../-3
+        raw: >>> 3 + 2	# +号为运算符，3和2为输入对象/3
+        new: >>> 3 + 2	# +号为运算符，3和2为输入对象/5
+
+ch11
+    1) 11-3-2
+        raw: <page break>
+        new: <lines break>
+
+
+ch12
+    1) 12-2
+        raw: 有关python-docx.../...index.html
+        new: <delete>
+
+
 
     a1. appendix-b
         1) command result: dc.Decimal() --> Decimal()
