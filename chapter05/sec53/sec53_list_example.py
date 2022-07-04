@@ -45,8 +45,9 @@ False
 >>> len(mylist)		# 求序列的长度
 3
 
-# >>> max(mylist)
-# ...
+>>> max(mylist)
+Traceback (most recent call last):
+...
 TypeError: '>' not supported between instances of 'int' and 'str'
 
 >>> mylist2 = [5, 3, 10]

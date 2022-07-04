@@ -49,17 +49,22 @@
             new: 100 200
             raw: [200], [100]
             new: [200] [100]
-        6) slice
+            -----
+            slice
             raw: x[4:0:-1]		# 返回原列表的倒序列表，但不包含序号0的元素！/[5,4,3,2,1]
             new: x[4:0:-1]		# 返回原列表的倒序列表，但不包含序号0的元素！/[4,3,2,1]
             raw: x[4:-2:-1]
             new: x[4:-3:-1]
-        7) time-date
+        6) 5-10 time-date
             raw: time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())/
             new: time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())/<result>
             raw: time.strftime("%a %b %d %H:%M:%S %Y", time.localtime()))
             new: time.strftime("%a %b %d %H:%M:%S %Y", time.localtime())
-
+        7) 5-11 operation
+            raw: >>> +(-3)	# 第一个+号../3
+            new: >>> +(-3)	# 第一个+号../-3
+            raw: >>> 3 + 2	# +号为运算符，3和2为输入对象/3
+            new: >>> 3 + 2	# +号为运算符，3和2为输入对象/5
 
     a1. appendix-b
         1) command result: dc.Decimal() --> Decimal()

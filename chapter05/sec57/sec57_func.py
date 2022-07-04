@@ -39,15 +39,13 @@ sum_power(a, b=1, c=1)
 ...     print(x, y)
 
 关键字参数在位置参数之前定义，触发异常
-# >>> def fun2(x=1, y):
-#
-#   File "<ipython-input-7-838cdf34aa67>", line 1
-#     def fun2(x=1, y):
-#                    ^
-# SyntaxError: non-default argument follows default argument
+>>> def fun2(x=1, y):
+Traceback (most recent call last):
+    ...
+SyntaxError: non-default argument follows default argument
 
 （2）调用函数时，位置参数可以按照参数所在位置对应赋值，不需要指定参数名。位置参数可以使用参数名称进行赋值，相当于关键字参数。
->>> fun(3)		# 位置参数直接按照位置赋值，关键字参数不赋值，使用缺省值
+>>> fun(3)		    # 位置参数直接按照位置赋值，关键字参数不赋值，使用缺省值
 3 1
 >>> fun(x=3)		# 使用关键字参数赋值
 3 1
@@ -57,11 +55,10 @@ sum_power(a, b=1, c=1)
 3 2
 
 不能在关键字参数之后使用位置参数赋值，函数不能判断参数位置，触发语法异常SyntaxError。
-# >>> fun(y=2, 3)		# 作为位置参数，位置不能改变，否则触发语法异常SyntaxError
-# File "<ipython-input-6-f9985fff4ba4>", line 1
-#     fun(y=2, 3)
-#               ^
-# SyntaxError: positional argument follows keyword argument
+>>> fun(y=2, 3)		# 作为位置参数，位置不能改变，否则触发语法异常SyntaxError
+Traceback (most recent call last):
+    ...
+SyntaxError: positional argument follows keyword argument
 
 4）关键字参数前面的参数都按照位置参数使用，则该参数也可以按照位置参数使用，即不使用参数名称赋值。
 >>> def fun3(x, y=1, z=1):
@@ -92,12 +89,15 @@ sum_power(a, b=1, c=1)
 220
 
 使用解包赋值参数时，序列必须与参数的位置相对应，字典中的键必须在函数参数中能够找到匹配的关键字参数，否则会触发异常。
-# >>> a = (1, 2, 3， 4)
-# >>> fun5(*a)
-# ...
-# TypeError: fun5() takes from 1 to 3 positional arguments but 4 were given
-# >>> b = {'x': 10, 'z': 20, 'w': 100}
-# >>> fun5(**b)
-# ...
-# TypeError: fun5() got an unexpected keyword argument 'w'
+>>> a = (1, 2, 3, 4)
+>>> fun5(*a)
+Traceback (most recent call last):
+    ...
+TypeError: fun5() takes from 1 to 3 positional arguments but 4 were given
+
+>>> b = {'x': 10, 'z': 20, 'w': 100}
+>>> fun5(**b)
+Traceback (most recent call last):
+    ...
+TypeError: fun5() got an unexpected keyword argument 'w'
 """
