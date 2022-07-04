@@ -24,15 +24,15 @@ Windows：<br>
 (2) 选择安装选项；
 
 ### 3. 运行
-(1) 方式1
-> python
+(1) 方式1<br>
+\> python<br>
 Python 3.10.5 (tags/v3.10.5:f377153, Jun  6 2022, 16:14:13) [MSC v.1929 64 bit (AMD64)] on win32
 Type "help", "copyright", "credits" or "license" for more information.<br>
 \>>>
 
 
-(2) 方式2
-> py
+(2) 方式2<br>
+\> py<br>
 Python 3.10.5 (tags/v3.10.5:f377153, Jun  6 2022, 16:14:13) [MSC v.1929 64 bit (AMD64)] on win32
 Type "help", "copyright", "credits" or "license" for more information.<br>
 \>>>
@@ -48,7 +48,7 @@ Windows Menu:<br>
 ---------------------
 
 ### 使用pip更新扩展包 pip update to specific version
-pip install -U package==x.x.x
+pip install -U package==x.x.x<br>
 pip install --upgrade psycopg2==2.7.5
 
 ### 国内常用的镜像网站 pip from tsinghua, aliyun
