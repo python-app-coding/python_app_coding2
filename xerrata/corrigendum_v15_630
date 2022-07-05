@@ -48,14 +48,14 @@ ch05
         raw: x1 =1000, y1 = 1000
         new: x1 =1000; y1 = 1000
 
-        raw:
+        raw: # x1和y1的标签不相同，指向不同的对象
         new: # x1和y1的标签不相同，指向不同的对象(有时也会分配相同地址！)
 
         raw: a1.__weakref
         new: a1.__weakref__
 
-        raw:  >>> c()        		# ������Ч�����ã�����ֵNone/None
-        new:  >>> c()        		# 调用无效弱引用，无返回值
+        raw:  >>> c()        		# 调用无效弱引用，返回值None/None
+        new:  >>> c()        		# 调用无效弱引用，无返回值/
 
         raw: ({'name': 'Wang', 'score': [95, 90, 85]}, {'name': 'Li', 'score': [95, 90, 85]})
         new: ({'name': 'Wang', 'score': [100, 90, 85]}, {'name': 'Li', 'score': [100, 90, 85]})
@@ -74,8 +74,8 @@ ch05
 
         -----
         slice
-        raw: x[4:0:-1]		# ����ԭ�б�ĵ����б������������0��Ԫ�أ�/[5,4,3,2,1]
-        new: x[4:0:-1]		# ����ԭ�б�ĵ����б������������0��Ԫ�أ�/[4,3,2,1]
+        raw: x[4:0:-1]		# 返回原列表的倒序列表，但不包含序号0的元素！/[5,4,3,2,1]
+        new: x[4:0:-1]		# 返回原列表的倒序列表，但不包含序号0的元素！/[4,3,2,1]
 
         raw: x[4:-2:-1]
         new: x[4:-3:-1]
@@ -88,48 +88,49 @@ ch05
         new: time.strftime("%a %b %d %H:%M:%S %Y", time.localtime())
 
     7) 5-11 operation
-        raw: >>> +(-3)	# ��һ��+��../3
-        new: >>> +(-3)	# ��һ��+��../-3
+        raw: >>> +(-3)	# 第一个+号../3
+        new: >>> +(-3)	# 第一个+号../-3
 
-        raw: >>> 3 + 2	# +��Ϊ�������3��2Ϊ�������/3
-        new: >>> 3 + 2	# +��Ϊ�������3��2Ϊ�������/5
+        raw: >>> 3 + 2	# +号为运算符，3和2为输入对象/3
+        new: >>> 3 + 2	# +号为运算符，3和2为输入对象/5
 
 ch6
     1) 6-1-6
-        raw: ִ�����װ������with_statements...
-        new: ִ�����װ������,...
-
-        raw: with����ִ������
-        new: with���ִ�й���
-
-        raw: with���ִ������
-        new: with���ִ������ͼʾ
+        raw: 执行其封装的语句块with_statements... 
+        new: 执行其封装的语句块,...               
+                                         
+        raw: with语句的执行流程                 
+        new: with语句执行过程                  
+                                         
+        raw: with语句执行流程                  
+        new: with语句执行流程图示                
 
         raw: statements
         new: with_statements
 
-        raw: [3, 4��5, 6, 7, 6, 9]
-        new: [3, 4��5, 6, 7, 8, 9]
+    2) 6-2-4
+        raw: [3, 4, 5, 6, 7, 6, 9]
+        new: [3, 4, 5, 6, 7, 8, 9]
 
         raw: FloatRange...
         new: FloatRange <__iter__: _next=0/result = self.start + _next ... _next += self.step>
 
-    2�� 6-2-5
+    3) 6-2-5
         raw: a ['a', 'a', 'a'] ...
-        new: a �� ['a', 'a', 'a'] ...
+        new: a: ['a', 'a', 'a'] ...
 
-    3) 6-5
-        raw: ?.git��Git��Դ�������Ŀ¼��/?.github����Ŀ����Ŀ¼��
+    4) 6-5
+        raw: ?.git.../?.github...
         new: /
 
-        raw: ��Ŀ¼�����У���Сд�ǲ����еģ�ʾ���и�Ŀ¼��ʹ��Foo����Ϊ���������µ���Ӧ����Ŀ¼foo��
+        raw: Foo大写是为了...
         new: /
 
-        raw: ��README�У����������ṩ���¼������������:...
-        new: ��README�У����������ṩ���¼������������: <�����޸�>
+        raw: README:...
+        new: README: <修改>
 
-        raw: �ڿ�������ԱPaul Bagwell����../no graph
-        new: �ڿ�������ԱPaul Bagwell����../<graph>
+        raw: Paul Bagwell../no graph
+        new: Paul Bagwell../<graph>
 
 
 ch11
@@ -140,7 +141,7 @@ ch11
 
 ch12
     1) 12-2
-        raw: �й�python-docx.../...index.html
+        raw: python-docx.../...index.html
         new: <delete>
 
 
@@ -148,25 +149,26 @@ ch12
     a1. appendix-b
         1) command result: dc.Decimal() --> Decimal()
         2) missing right bracket: Decimal(..,
-        3�� ROUND_CEILING: ��������󿿽�����..., round(dc.Decimal('-1.14'), 1) is Decimal('-1.1')
-        4) ���¸���Rounding����
+        3） ROUND_CEILING: 向正无穷大靠近舍入..., round(dc.Decimal('-1.14'), 1) is Decimal('-1.1')
+        4)  重新更改Rounding叙述
 
     a2. appendix-d
-        1) blank_operand: �����ڵ�ð�ţ���Ϊ�������ǰ�����ո� ɾȥ��ham[lower + offset : upper + offset]
-        2) �Ե��»��߽����ı���: �ϲ��У� ���ģ���ʹ�á�import *����
+        1) blank_operand: 括号内的冒号，视为运算符，前后不留空格。 删去：ham[lower + offset : upper + offset]
+        2) 以单下划线结束的变量: 合并行， 更改：如使用“import *”，
 
     a3. appendix-e
-        1) re.compile: ʾ��
+        1) re.compile:
             re.match(cp,��person is a word.��)
             error: 'person'
             correct: <re.Match object; span=(0, 6), match='person'>
-        2) re.escape: ʾ��
+        2) re.escape:
             re.escape('exp.com [1]{2}(3)')
             raw: 'exp\\.com\\ \\[1\\]\\{2\\}\\(3\\)'
             print: 'exp\.com\ \[1\]\{2\}\(3\)'
-        3) REO������������search
-            raw: �����ַ������ҵ�
-            new: �����ַ���string���ҵ�
+
+        3) REO对象搜索方法search
+            raw: 搜索字符串，找到
+            new: 搜索字符串string，找到
 
             raw: <re.Match object; span=(5, 9), match='B-02'>
             new: <re.Match object; span=(2, 6), match='B-02'>
@@ -177,9 +179,9 @@ ch12
 
         5) REO.sub
             raw: ..repeat split example
-            new: ����Ϊ'aaa'�滻'abc'
+            new: 更新为'aaa'替换'abc'
 
-        6) REO.flab-groupindex(groupindex�����������ֵ䣩)
+        6) REO.flab-groupindex(groupindex（分组索引字典）)
             raw: groupindexs
             new: groupindex
 
@@ -195,15 +197,15 @@ ch12
             raw: mo5.group(0), mo5.groups()/'ab', ()
             new: mo5.group(0), mo5.groups()/('ab', ())
 
-        10) MO: MO.attr ��һ������
+        10) MO: MO.attr 多一个括号
             raw: mo8 = re.search('[a-z]{2})','ab')
             new: mo8 = re.search('[a-z]{2}','ab')
 
-        11) MO: MO.attr ��>>>��ipython����ʾ�����ͬ
+        11) MO: MO.attr 在>>>和ipython中显示结果不同
             raw: re.compile(r'[0-9]{3}\w{2}', re.UNICODE)
             new: re.compile(r'[0-9]{3}\w{2}')
 
-        12) MO: MO.method expand ���ַ�������
+        12) MO: MO.method expand 数字反向引用
             raw: mo16.expand(r'\g<first_group>\2c\3')
             new: mo16.expand(r'\g<first_group>\\2c')
 
@@ -212,12 +214,12 @@ ch12
             new: result.group()/'BBC'
 
         14) Group:
-            raw: r.group('g1')/'����'
-            new: r.group('g2')/'����'
+            raw: r.group('g1')/'汉字'
+            new: r.group('g2')/'汉字'
 
         15) Group:
-            raw: re.match('(?P<g1>[a-zA-Z]{3})\w{2}(?P=g1)', 'AbC����abc')/None
-            new: re.match('(?P<g1>[a-zA-Z]{3})\w{2}(?P=g1)', 'AbC����abc')/
+            raw: re.match('(?P<g1>[a-zA-Z]{3})\w{2}(?P=g1)', 'AbC'汉字'abc')/None
+            new: re.match('(?P<g1>[a-zA-Z]{3})\w{2}(?P=g1)', 'AbC'汉字'abc')/
 
         16) Group:
             raw: re.match('Isaac (?=Newton)', 'Isaac newton')/None
