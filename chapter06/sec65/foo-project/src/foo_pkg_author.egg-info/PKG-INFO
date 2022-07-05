@@ -12,41 +12,65 @@ Description-Content-Type: text/x-rst
 Temperature Conversion between Fahrenheit and Celsius
 =====================================================
 
-1. Api Functions
-------------------
-f_c(f): 华氏温度转为摄氏温度
+1. Foo
+----------
+Foo is a demo project.
 
-c_f(c): 摄氏温度转为华氏温度
+2. install
+----------
 
-2.How to Run
-------------
-安装：
-pip install demo_package_author
+download and install foo by pip: ::
 
-命令行方式：
+ > pip install foo_pkg_author
 
-> f2c -c 100     # 摄氏温度转为华氏温度
+3. import ro run
+----------
+Import:
 
-> f2c -f 100     # 华氏温度转为摄氏温度
+>>> import foo
+>>> foo.hell()
 
-模块方式：
+Run::
 
->>> import demo_package_author.f2c as f2c
->>> f2c.c_f(100)
-212.0
->>> f2c.f_c(100)
-37.7777777777777778
+ > hello
 
-
-3. Directories
+4. Project
 ---------------
-...
+Foo structure ::
+
+  foo
+  |-- LICENSE
+  |-- README.rst
+  |-- pyproject.toml
+  |-- src
+       |-- foo
+           |-- __init__.py
+           |-- hello.py
+       |-- tests
+           |-- test_hello.py
+  |-- docs/
+       |-- index.rst
 
 5. FAQ
 -------
-1) What is Fahrenheit temperature?
+1) Where to download foo_pkg_author ?
 
-2) How to install the module?
+   foo_pkg_author is on PyPI，please use pip to install.
 
-3) How to call f_c or c_f?
+2) How to import foo ?
+
+>>> import foo_pkg
+
+3) How to call module in foo_pkg ?
+
+   hello is an only module of foo_pkg, import it as follow:
+
+   >>> import foo_pkg.hello as hello
+
+   then call method hello: ::
+
+   python code:
+
+   >>> hello.hello()
+   Hello, World!
 

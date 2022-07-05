@@ -13,4 +13,4 @@ class TestHello:
         self.hello = importlib.import_module("hello")
 
     def test_hello(self):
-        assert self.hello.hello() == None
+        assert self.hello.hello() is None
