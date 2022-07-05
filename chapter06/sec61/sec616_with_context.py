@@ -4,6 +4,22 @@ import importlib as pb
 
 
 class WithClass:
+    """
+    >>> with WithClass():
+    ...    print(sum([x for x in range(1000000)]))  # doctest: +ELLIPSIS
+    program start
+    499999500000
+    program end
+    use time:0.0...
+
+    >>> with WithClass():
+    ...    1 / 0
+    ...    print(sum([x for x in range(1000000)]))  # doctest: +ELLIPSIS
+    program start
+    <class 'ZeroDivisionError'> division by zero
+    program end
+    use time:0.0...
+    """
     def __init__(self):
         self.time = pb.import_module('time')
         self.start = None

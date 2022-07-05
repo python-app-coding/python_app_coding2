@@ -3,7 +3,7 @@
 
 def gen1():
     """
-    可无限迭代生成器的生成器函数
+    创建可无限迭代生成器的生成器函数
 
     >>> g1 = gen1()
     >>> for j in range(5):
@@ -22,7 +22,7 @@ def gen1():
 
 def gen1b():
     """
-    有限迭代生成器的生成器函数
+    创建有限迭代生成器的生成器函数
 
     >>> g = gen1b()
     >>> try:
@@ -41,13 +41,15 @@ def gen1b():
         start += 1
 
 
-# 也可以使用(j for j in range(1,3))
+# 使用推导式创建生成器
+# generator = (j for j in range(1,3))
 g2 = (j for j in range(1, 10, 2))
 
 
 def gen3(start=1, step=1):
     """
-    等距数列生成器
+    创建等距数列生成器的生成器函数
+
     >>> g = gen3(10, 2)
     >>> [next(g) for _ in range(5)]
     [10, 12, 14, 16, 18]
@@ -67,15 +69,16 @@ def gen3(start=1, step=1):
 
 def gen3b(init_step=0, end=100):
     """
-    Fibonacci Sequence with step: an = an-1 + an-1 + step
+    创建有限长度斐波那契序列的生成器函数，起始步长init_step=0， 截止值end=100
+    Limited length Fibonacci Sequence with step: an = an-1 + an-1 + step
 
     >>> g = gen3b()
     >>> [next(g) for _ in range(6)]
     [1, 1, 2, 3, 5, 8]
     >>> g.send(3)
-    10
+    1
     >>> [g.send(5)] + [next(g) for _ in range(5)]
-    (1, 1, 7, 13, 25, 43)
+    [1, 5, 9, 17, 29, 49]
     """
     a, b = 1, 1
     yield a
