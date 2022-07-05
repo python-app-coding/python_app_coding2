@@ -32,11 +32,11 @@
 >>> group = itt.groupby('aaacccdddaabbb')
 >>> for k, g in group:
 ...     print(k, '：', list(g))
-a ['a', 'a', 'a']
-c ['c', 'c', 'c']
-d ['d', 'd', 'd']
-a ['a', 'a']
-b ['b', 'b', 'b']
+a ： ['a', 'a', 'a']
+c ： ['c', 'c', 'c']
+d ： ['d', 'd', 'd']
+a ： ['a', 'a']
+b ： ['b', 'b', 'b']
 
 # 无穷等距增长数列迭代器
 >>> c = itt.count(0, 10)		# 从0开始，步长为10

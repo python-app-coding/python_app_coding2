@@ -1,41 +1,65 @@
 Temperature Conversion between Fahrenheit and Celsius
 =====================================================
 
-1. Api Functions
-------------------
-f_c(f): 华氏温度转为摄氏温度
+1. Foo
+----------
+Foo 是个示例第三方库，演示Python项目的基本目录结构及组成文件
 
-c_f(c): 摄氏温度转为华氏温度
+2. 下载安装
+----------
 
-2.How to Run
-------------
-安装：
-pip install demo_package_author
+可以使用pip安装第三方库Foo: ::
 
-命令行方式：
+ > pip install foo_pkg_author
 
-> f2c -c 100     # 摄氏温度转为华氏温度
+3. 调用方式
+----------
+导入方式:
 
-> f2c -f 100     # 华氏温度转为摄氏温度
+>>> import foo
+>>> foo.hell()
 
-模块方式：
+直接运行::
 
->>> import demo_package_author.f2c as f2c
->>> f2c.c_f(100)
-212.0
->>> f2c.f_c(100)
-37.7777777777777778
+ > hello
 
-
-3. Directories
+4. 项目结构
 ---------------
-...
+Foo包含下面的目录和文件 ::
+
+  foo
+  |-- LICENSE
+  |-- README.rst
+  |-- pyproject.toml
+  |-- src
+       |-- foo
+           |-- __init__.py
+           |-- hello.py
+       |-- tests
+           |-- test_hello.py
+  |-- docs/
+       |-- index.rst
 
 5. FAQ
 -------
-1) What is Fahrenheit temperature?
+1) 从哪里下载foo_pkg_author ?
 
-2) How to install the module?
+   foo_pkg_author已经上传PyPI，可以使用pip install直接安装.
 
-3) How to call f_c or c_f?
+2) 如何导入foo ?
+
+>>> import foo_pkg
+
+3) 如何调用foo_pkg的模块 ?
+
+   foo_pkg只有模块hello, 使用下面的方式导入 :
+
+   >>> import foo_pkg.hello as hello
+
+   然后调用模块hello的方法hello: ::
+
+   python code:
+
+   >>> hello.hello()
+   Hello, World!
 

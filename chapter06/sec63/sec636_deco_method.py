@@ -1,5 +1,11 @@
 # coding = utf8
 
+"""
+>>> uc = UserClass()
+>>> uc.m1(-3), UserClass.m2(3), UserClass.m3(3)
+(0, 1009, 1027)
+"""
+
 
 def dec_fun(fun):
     def wrapper(obj, *args, **kwargs):
@@ -27,7 +33,3 @@ class UserClass:
     @dec_fun
     def m3(x):
         return x**3
-
-
-uc = UserClass()
-print(uc.m1(-3), UserClass.m2(3), UserClass.m3(3))

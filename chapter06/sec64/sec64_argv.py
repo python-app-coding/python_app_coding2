@@ -36,7 +36,7 @@ def argv(byimport=True):
     print('current path:')
     print('          os.getcwd() = {}'.format(os.getcwd()))
     print(' os.path.abspath(".") = {}'.format(osp.abspath("../../chapter03")))
-    print('         sys.path[-1] = {}\n'.format(sys.path[-1]))
+    print('          sys.path[0] = {}\n'.format(sys.path[0]))
 
 
 # module.__name__

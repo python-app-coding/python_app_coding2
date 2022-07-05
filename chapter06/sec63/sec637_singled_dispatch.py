@@ -17,6 +17,14 @@ def _(arg):
 @basefun.register		        # Python 3.7之后的版本中，可以使用类型注释的方式绑定
 def _(arg: vartype):
     pass
+
+# 调用单分派函数：
+>>> print(add12(2, 3))
+5
+>>> print(add12([2, 3], [1, 2]))
+[3, 5]
+>>> print(add12((2, 3), [1, 2]))
+(3, 5)
 """
 
 
@@ -38,12 +46,3 @@ def _(x: list, y):
 @add12.register
 def _(x: tuple, y):
     return tuple(v1+v2 for v1, v2 in zip(x, y))
-
-
-# 调用单分派函数：
-print(add12(2, 3))
-# 5
-print(add12([2, 3], [1, 2]))
-# [3, 5]
-print(add12((2, 3), [1, 2]))
-# (3, 5]
