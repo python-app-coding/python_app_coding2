@@ -8,8 +8,8 @@ def fun_add(*args):
 def compound_score(*args):
     """
     计算合成分数
-    :param args: tuple[(score, coefficient)]
-    :return: compound score
+    :param args: tuple[(score, coefficient)] 每个元素为二元元组，分别为成绩和合成系数
+    :return: compound score 返回值为综合分数
     >>> compound_score((90, 0.5),(80, 0.3),(85, 0.2))
     86.0
     """
@@ -20,14 +20,14 @@ def fun_paras(x, y, z, k1=1, k2=30):
     """
     演示参数设置与调用
     三个位置参数，2个关键字参数，位置参数必须在前面
-    :param x:
-    :param y:
-    :param z:
-    :param k1:
-    :param k2:
-    :return:
-    >>> x, y, z = 1, 2, 3
-    >>> fun_paras(y, x, z, k2=100)  # 使用关键字参数的缺省值，关键字参数可以忽略位置
+    :param x: 第1个位置参数
+    :param y: 第2个位置参数
+    :param z: 第3个位置参数
+    :param k1: 关键字参数
+    :param k2: 关键字参数
+    :return: (x, y, z, k1, k2)
+    >>> a, b, c = 1, 2, 3
+    >>> fun_paras(b, a, c, k2=100)  # 使用关键字参数的缺省值，关键字参数可以忽略位置
     (2, 1, 3, 1, 100)
     """
     return x, y, z, k1, k2

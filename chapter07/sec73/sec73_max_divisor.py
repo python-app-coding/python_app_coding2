@@ -19,16 +19,18 @@ def max_divisor1(x, y):
 
 
 def max_divisor2(x, y):
-     """
-     求最大公约数算法（递归方式）
-     Euclid Max_divisor Algorithm（recursive mode）
+    """
+    求最大公约数算法（递归方式）
+    Euclid Max_divisor Algorithm（recursive mode）
 
-     >>> max_divisor2(21, 51)
-     3
-     >>> max_divisor2(11, 31)
-     1
-     >>> max_divisor1(11, 0)
-     10
-     """
-     r = x % y
-     return y if r == 0 else max_divisor2(y, r)
+    >>> max_divisor2(21, 51)
+    3
+    >>> max_divisor2(11, 31)
+    1
+    >>> max_divisor1(11, 0)
+    Traceback (most recent call last):
+       ...
+    ZeroDivisionError: integer division or modulo by zero
+    """
+    r = x % y
+    return y if r == 0 else max_divisor2(y, r)

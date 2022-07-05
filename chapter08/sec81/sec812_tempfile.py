@@ -1,5 +1,6 @@
 # coding = utf8
 
+"""
 import tempfile as tpf
 import os
 
@@ -33,11 +34,13 @@ with tpf.TemporaryFile() as fp:		        # 创建临时文件，命名文件描�
 # b'Hello world!'				            # 运行结果是读出内容。with语句自动关闭删除文件
 
 # 使用temptoryDirectory创建临时目录
-dname = []
-with tpf.TemporaryDirectory() as tmpdirname:		# 创建临时目录
-    print('temporary directory', tmpdirname)		# 输出目录名（在系统指定目录中）
-    dname.append(tmpdirname)
-    print(os.path.isdir(dname[0]))
-    # True
-print(os.path.isdir(dname[0]))
-# False					# 目录已经删除
+>>> dname = []
+>>> with tpf.TemporaryDirectory() as tmpdirname:		# 创建临时目录
+...     print('temporary directory', tmpdirname)		# 输出目录名（在系统指定目录中）
+...     dname.append(tmpdirname)
+...     print(os.path.isdir(dname[0]))
+True
+
+>>> print(os.path.isdir(dname[0]))					# 目录已经删除
+False
+"""

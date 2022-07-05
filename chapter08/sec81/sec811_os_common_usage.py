@@ -6,8 +6,8 @@ import tempfile as tpf
 def test_os_op():
     """
     实现目录基本操作示例：
-    >>> os.mkdir('temp_path')		# 创建子目录
-    >>> os.chdir('temp_path')		# 进入子目录
+    >>> os.mkdir('temp_path')		            # 创建子目录
+    >>> os.chdir('temp_path')		            # 进入子目录
     >>> os.chdir('..')		                    # 进入上一级目录
     >>> os.rename('temp_path', 'temp_new_path')	# 将子目录mypath改名为newpath
     >>> os.rmdir('temp_new_path')		        # 删除子目录
