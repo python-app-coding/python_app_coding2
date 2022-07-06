@@ -18,15 +18,15 @@ def demo2_try_except_file(filename):
         print(e)			            # 打印错误信息
     except IOError as e:		        # 多次截获异常
         print(e)
-    finally:			# 执行关闭文件操作
-        if f:           # 如果不设置检测，会再次触发异常
+    finally:			                # 执行关闭文件操作
+        if f:                           # 如果不设置检测，会再次触发异常
             f.close()
 
 
 def demo3_with_file(filename):
     with open(filename, 'r', encoding='utf8') as f:
         for line in f:
-            print(line, end='')		# 不打印最后的字符'\n'
+            print(line, end='')		    # 不打印最后的字符'\n'
 
 
 if __name__ == '__main__':

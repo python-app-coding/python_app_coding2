@@ -26,13 +26,15 @@ def punc_swop(from_str, to_chinese=True):
 
 
 def file_punc_swop(from_file, to_file, to_chinese=True, encoding='utf8'):
+    """
+    将文件中的标点符号转换
+    >>> en_punc = '''!"#$%&\'()*+,-./:;<=>?@[\\]^_`{|}~'''
+    >>> with open('temp_punc_en.txt', 'w') as fp:
+    ...    fp.write(en_punc)
+    >>> file_punc_swop('temp_punc_en.txt', 'temp_punc_cn.txt')	    # 将文件temp.txt中的英文标点转为汉语标点
+
+    """
     with open(from_file, 'r', encoding=encoding) as f1, \
             open(to_file, 'w', encoding=encoding) as f2:
         for line in f1:
             f2.write(punc_swop(line, to_chinese))
-
-
-if __name__ == '__main__':
-    with open('temp_punc_en.txt', 'w') as fp:
-        fp.write('''!"#$%&\'()*+,-./:;<=>?@[\\]^_`{|}~''')
-    file_punc_swop('temp_punc_en.txt', 'temp_punc_cn.txt')	    # 将文件temp.txt中的英文标点转为汉语标点
