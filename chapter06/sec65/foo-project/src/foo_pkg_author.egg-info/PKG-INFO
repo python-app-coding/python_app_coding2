@@ -1,6 +1,6 @@
 Metadata-Version: 2.1
 Name: foo-pkg-author
-Version: 0.0.1
+Version: 0.0.3
 Summary: this is a demo project
 Author-email: Author <author@foo.com>
 Classifier: Programming Language :: Python :: 3
@@ -9,68 +9,77 @@ Classifier: Operating System :: OS Independent
 Requires-Python: >=3.8
 Description-Content-Type: text/x-rst
 
-Temperature Conversion between Fahrenheit and Celsius
-=====================================================
+pypi_seed
+=========
 
-1. Foo
-----------
-Foo is a demo project.
+Hey, this is a seed generator to generate pypi seed  for you to quick start on sharing lib development \
 
-2. install
-----------
+- it provides 'cli' to customize the seed before generation
 
-download and install foo by pip: ::
+- a seed project that available to upload to pypi.org
 
- > pip install foo_pkg_author
+- support the standard python project generation or CLI python lib generation( run with '--cli' option)
 
-3. import ro run
-----------
-Import:
+您好，这是一个pypi的种子项目，它能帮你快速生成python库模板，生成的项目稍微修改，就能上传到pypi分享自己的项目了 \
 
->>> import foo
->>> foo.hell()
+用途：
 
-Run::
+- 提供了cli（命令行工具帮你生成符合pypi上传要求的库）
 
- > hello
+- 本示例库有社区维护，还有大量专业的Python大佬一起合作。
 
-4. Project
----------------
-Foo structure ::
+- 支持生成普通标准Python模块或者cli库模版项目（加上--cli选项）
 
-  foo
-  |-- LICENSE
-  |-- README.rst
-  |-- pyproject.toml
-  |-- src
-       |-- foo
-           |-- __init__.py
-           |-- hello.py
-       |-- tests
-           |-- test_hello.py
-  |-- docs/
-       |-- index.rst
 
-5. FAQ
--------
-1) Where to download foo_pkg_author ?
 
-   foo_pkg_author is on PyPI，please use pip to install.
+[ContactProjectTeam](https://github.com/py4ever/pypi_seed)
 
-2) How to import foo ?
+[联系作者](https://blog.csdn.net/geeklevin)
 
->>> import foo_pkg
+QQ交流：https://jq.qq.com/?_wv=1027&k=lYdDWNQc
 
-3) How to call module in foo_pkg ?
 
-   hello is an only module of foo_pkg, import it as follow:
 
-   >>> import foo_pkg.hello as hello
 
-   then call method hello: ::
+Installation / 安装
+--------------------------
 
-   python code:
+::
 
-   >>> hello.hello()
-   Hello, World!
+    pip install pypi_seed
 
+
+
+Usage / 使用
+--------------------------
+
+We can call the cli 'pypiseed' or 'pyseed' to generate 'demo_project' on dir '/tmp'：
+
+调用下面任意一个命令行即可，作用是生成demo_project 到/tmp目录
+
+::
+
+    pypiseed --project=demo_project --author=testuser --dir=/tmp
+
+
+Yet another option / 另一种方式：
+
+::
+
+    ppc --project=demo_project --author=testuser --dir=/tmp
+
+
+'ppc' here is a shortcut, short for PyPiSeed(P-P-C).
+
+Further discussion / 更多
+--------------------------
+
+
+Please raise PR or find the tencent group chat : `QQGroupChat`_
+
+其他问题可以找qq：【`Python全栈技术学习交流`_】
+
+
+.. _`链接文本`: https://your_site_link_here
+.. _`QQGroupChat`: https://jq.qq.com/?_wv=1027&k=ISjeG32x
+.. _`Python全栈技术学习交流`: https://jq.qq.com/?_wv=1027&k=ISjeG32x

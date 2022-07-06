@@ -1,65 +1,55 @@
-Temperature Conversion between Fahrenheit and Celsius
-=====================================================
+Foo
+=========
 
-1. Foo
-----------
-Foo is a demo project.
+Foo is a demo project for creating and distributing python lib:
 
-2. install
-----------
+- it provides a directories to make a project.
 
-download and install foo by pip: ::
+- a demo project that available to upload to pypi.org
 
- > pip install foo_pkg_author
+Foo 是一个演示项目，用于展示创建和分发Python第三方库:
 
-3. import ro run
-----------
-Import:
+- 提供了一个Python第三方库项目目录文件样板
 
->>> import foo
->>> foo.hell()
+- 打包后可以上传到pypi.org
 
-Run::
 
- > hello
+[ContactProjectAuthor](https://gitee.com/applied/python_app_coding)
 
-4. Project
----------------
-Foo structure ::
+[联系](applied_python@163.com)
 
-  foo
-  |-- LICENSE
-  |-- README.rst
-  |-- pyproject.toml
-  |-- src
-       |-- foo
-           |-- __init__.py
-           |-- hello.py
-       |-- tests
-           |-- test_hello.py
-  |-- docs/
-       |-- index.rst
 
-5. FAQ
--------
-1) Where to download foo_pkg_author ?
+Installation / 安装
+--------------------------
 
-   foo_pkg_author is on PyPI，please use pip to install.
+::
 
-2) How to import foo ?
+    pip install foo_pkg_author
 
->>> import foo_pkg
 
-3) How to call module in foo_pkg ?
 
-   hello is an only module of foo_pkg, import it as follow:
+Usage / 使用
+--------------------------
 
-   >>> import foo_pkg.hello as hello
 
-   then call method hello: ::
+import mode / 导入方式 :
 
-   python code:
+::
 
-   >>> hello.hello()
-   Hello, World!
+    >>> from foo_pkg import hello
+    >>> hello.hello()
+    Hello, World!
 
+run mode / 运行方式：
+
+::
+
+    > hello
+    Hello, World!
+
+
+Further discussion / 更多
+--------------------------
+more problems to issues on gitee
+
+.. *ref*: ..\docs\index.rst

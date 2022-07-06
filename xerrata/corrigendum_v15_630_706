@@ -1,0 +1,17 @@
+ch65
+
+    raw: foo-package-USERNAME   <in pyproject.toml>
+    new: foo-pkg-author
+
+    raw: authors = [/{ name="Author", email="author@example.com" },/]
+    new: authors = [{ name="Author", email="author@example.com" }]
+
+    raw: import foo
+    new: import foo_pkg as foo
+
+
+ch83    cmp files
+    raw: filecmp.cmp('cmpfile1.txt','cmpfile2.txt')/True
+    new: ../False
+
+    raw:

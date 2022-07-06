@@ -113,10 +113,10 @@
  >>> print(a, b)
  [1, [1, [...]]] [1, [1, [...]]]
 
- # >>> a == b
- # Traceback (most recent call last):
- # ......
- #  a == b
- # RecursionError: maximum recursion depth exceeded in comparison
+ >>> a == b
+ Traceback (most recent call last):
+    ...
+ RecursionError: maximum recursion depth exceeded in comparison
+
  # # 递归错误：在比较运算中超过了（系统允许的）最大递归深度
 """
