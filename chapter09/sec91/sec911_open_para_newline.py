@@ -17,6 +17,7 @@ def demo_open_read_with_newline(newline=None):
     分别设置为None, “”， "\n", "\r"时，文本文件读出数据的情况
     demo what happens when reading text from text file if newline is set to None, "\n", "", "\r", "\r\n"
 
+    【设置newline】
     设置newline对open.read和readline(s)的影响 newline behaviors in reading text file by open.read or readline:
     newline=None，将文本中的'\r', '\n' '\r\n'都视为行结束符，读出后都转换为'\n';
     newline='', 将文本中的'\r', '\n' '\r\n'都视为行结束符，读出内容不做转换;
@@ -24,10 +25,14 @@ def demo_open_read_with_newline(newline=None):
     newline='\n', 将文本中的'\n'视为行结束符，读出内容不做转换;
     newline='\r\n', 将文本中的'\r\n'视为行结束符，读出内容不做转换;
 
-    总结 Summary:
-    如果将文件中的'\r', '\n' '\r\n'都视为行结束符，读出后进仅使用'\n'做行结束符，使用newline=None读出最合适;
-    如果将文件中的'\r', '\n' '\r\n'都视为行结束符，对文件的内容不做改变，使用newline=''最合适；
-    如果针对文件的'\r', '\n' '\r\n'分别处理行结束符，需要按照配置使用newline。
+    【总结 Summary】
+    读出数据时，只有newline=None会进行换行符转换，
+    其余设置用于识别换行符，对分行读出内容产生作用。
+    如果将文件中的'\r', '\n' '\r\n'都视为行结束符，读出后都转为'\n'，使用newline=None;
+    如果将文件中的'\r', '\n' '\r\n'都视为行结束符，读出后不做改变，使用newline=''；
+    如果将文件种的'\r'视为行结束符，使用newline='\r';
+    如果将文件种的'\n'视为行结束符，使用newline='\n';
+    如果将文件种的'\r\n'视为行结束符，使用newline='\r\n'.
     """
 
     with open(demo_file, "w+", newline="", encoding="utf8") as fp:
@@ -40,11 +45,11 @@ def demo_open_read_with_newline(newline=None):
     print(f"newline={newline_str}")
     print("raw text:", str(demo_text_in_file)[1:])
     with open(demo_file, mode="r", newline=newline) as fp:
-        # read
+        # encode read text to bytestring for display
         readbytes = fp.read().encode('utf8')
         readbytes = str(readbytes)[1:]      # remove b at first pos
         if newline is None:
-            print("read  to:", readbytes, "\t# replace: ...-->\\n")
+            print("read  to:", readbytes, "\t# replace: \\n, \\r, \\r\\n --> \\n")
         elif newline == "":
             print("read  to:", readbytes, "\t# no replace")
         elif newline == "\r":
@@ -78,21 +83,24 @@ def demo_open_read_with_newline(newline=None):
 def demo_open_write_with_newline(newline=None):
     """
     展示使用open函数写文本文件时newline的作用
-    将newline分别设置为None, "\n", "", "\r"时，文本写入文件的情况
-    demo what happens when writing text by open to file if newline is set to None, "\n", "", "\r", "\r\n"
+    将newline有5种设置， 分别为{None "\n", "", "\r", "\r\n"}，对文本写入文件具有不同影响。
+    demo what happens when writing text file with open
+    if newline is set to 5 modes: None, "\n", "", "\r", "\r\n".
 
-    newline在写文本文件时的作用 newline behaviors in writing text file:
-    newline=None，使用universal Newline模式（PEP278），文本中的“\n”被视为换行符，写入时将其转换为os.linesep；
-    newline="\n", 写入时对文本内容不做任何替换；
-    newline="", 写入时对文本内容不做任何替换；
-    newline="\r", 写入时将"\n"转换为“\r”；
-    newline="\r\n", 写入时将"\n"转换为“\r\n”；
+    【设置newline对写文本文件的作用】
+    newline effect on writing text file
+    1) newline=None，使用universal Newline模式（PEP278），文本中的“\n”被视为换行符，写入时将其转换为os.linesep；
+    2) newline="\n", 写入时对文本内容不做任何替换；
+    3) newline="", 写入时对文本内容不做任何替换；
+    4) newline="\r", 写入时将"\n"转换为“\r”；
+    5) newline="\r\n", 写入时将"\n"转换为“\r\n”；
 
-    总结 Summary:
-    在将文本写入文件时，希望将'\n'转换为操作系统规定的换行符，可使用newline=None;
-    在将文本写入文件时，希望将'\n'转换为'\r'，可使用newline='\r'；
-    在将文本写入文件时，希望将'\n'转换为'\r\n'，可使用newline='\r\n'；
-    在将文本写入文件时，希望保持原文本不变，可使用newline='\n'或‘’。
+    【总结 Summary】
+    Python文本以'\n'为行分隔符，将文本写入文本文件时， 应考虑newline设置的影响。
+    1） 将文本写入文件时，希望将'\n'转换为操作系统规定的换行符，可使用newline=None;
+    2） 将文本写入文件时，希望将'\n'转换为'\r'，可使用newline='\r'；
+    3） 将文本写入文件时，希望将'\n'转换为'\r\n'，可使用newline='\r\n'；
+    4） 将文本写入文件时，希望保持原文本不变，可使用newline='\n'或''。
     """
 
     print("\n\nwrite text to file\n"+'-'*100)
@@ -101,13 +109,13 @@ def demo_open_write_with_newline(newline=None):
     newline_str = str(newline.encode('utf8')).replace('b', '') if isinstance(newline, str) else "None"
     print(f"newline={newline_str}", end='')
     if newline is None:
-        print("\t# "+r"\n ==> os.linesep ('\r\n' in Windows, '\n' in Linux, '\r' in Mac)")
+        print("\treplace: "+r"\n ==> os.linesep ('\r\n' in Windows, '\n' in Linux, '\r' in Mac)")
     elif newline in ("", "\n"):
-        print("\t# "+" no conversion")
+        print("\treplace: "+" no replace")
     elif  newline == "\r":
-        print("\t# " + r" \n ==> \r")
+        print("\treplace: " + r" \n ==> \r")
     elif newline == "\r\n":
-        print("\t# "+r" \n ==> \r\n")
+        print("\treplace: "+r" \n ==> \r\n")
     else:
         # so far, the legal_newline_char can be None, '', '\n', '\r', and '\r\n'
         print("\t# "+r" \n ==> "+str(newline.encode('utf8')))
@@ -164,7 +172,7 @@ def demo_open_u_mode():
 if __name__ == "__main__":
     print(f"os.linesep={os.linesep.encode()}")
 
-    demo1 = 1
+    demo1 = True
     if demo1:
         # demo write
         demo_open_write_with_newline(newline=None)
@@ -173,7 +181,7 @@ if __name__ == "__main__":
         demo_open_write_with_newline(newline='\r')
         demo_open_write_with_newline(newline='\r\n')
 
-    demo2 = 1
+    demo2 = True
     if demo2:
         # demo read
         demo_open_read_with_newline(newline=None)
@@ -182,6 +190,7 @@ if __name__ == "__main__":
         demo_open_read_with_newline(newline="\n")
         demo_open_read_with_newline(newline="\r\n")
 
-    demo3 = 0
+    demo3 = False
+    # mode u is deprecated now!
     if demo3:
         demo_open_u_mode()
