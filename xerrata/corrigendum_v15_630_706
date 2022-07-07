@@ -15,3 +15,11 @@ ch83    cmp files
     new: ../False
 
     raw:
+
+ch11
+    raw: df1[df1.score>=90].../... 95
+    new: df1[df1.score>=90].../... 100
+
+    raw: df.loc[(df.sno > '1001' &  (df.score > 90))...
+    new: df1.loc[(df1.sno > '1001' &  (df1.score > 90))...
+

@@ -2,8 +2,8 @@
 
 import os
 import pandas as pd
-from .dbfreader import DbfReader
-from .dbfwriter import DbfWriter
+from dbfreader import DbfReader
+from dbfwriter import DbfWriter
 
 
 def read_dbf(dbf: str) -> pd.DataFrame:
