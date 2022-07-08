@@ -156,7 +156,7 @@ class DbfWriter:
         for col in df.columns:
             if col == '_nullflags':
                 continue
-            field_type = 'G'
+            field_type = 'C'
             field_decimal = 0
             data = np.array(df.loc[df[col].notna(), col])
             # type D < T, checked type-datetime after type-date
@@ -188,8 +188,9 @@ class DbfWriter:
                         field_decimal = DbfWriter.max_decimal
                     field_size = field_int_len + field_decimal + 1
                     field_type = 'N'
-                else:  # C, G
-                    field_size = max(df[col].apply(lambda x: len(str(x).encode('gbk'))))
+                else:  # C
+                    field_size = max(df[col].apply(lambda x: len(str(x))))
+                    # field_size = max(df[col].apply(lambda x: len(str(x).encode('gbk'))))
             field_spec.append(DbfWriter.__Field_Spec(col, field_type, field_size, field_decimal))
         return field_spec
 
@@ -281,12 +282,12 @@ class DbfWriter:
                     value = value + b' ' * (_size - len(value))
                 elif _type in 'B':
                     value = struct.pack('<d', value)
-                else:
+                else:   # C -- object
                     value = str(value)
-                    value_encode = value.encode(DbfWriter.encoding)
-                    while len(value_encode) > _size:
-                        value = value[:-1]
-                        value_encode = value.encode(DbfWriter.encoding)
-                    len_diff = _size - len(value_encode)
-                    value = value_encode + b'\x00' * len_diff
+                    # value_encode = value.encode(DbfWriter.encoding)
+                    # while len(value_encode) > _size:
+                    #     value = value[:-1]
+                    #     value_encode = value.encode(DbfWriter.encoding)
+                    # len_diff = _size - len(value_encode)
+                    # value = value_encode + b'\x00' * len_diff
                 fp.write(value)

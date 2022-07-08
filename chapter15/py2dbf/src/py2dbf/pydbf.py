@@ -1,11 +1,12 @@
 # coding = utf8
-
+import importlib
 import os
 import sys
 import pandas as pd
 
 curpath = os.path.abspath(os.path.dirname(__file__))
-sys.path.insert(0, curpath)
+if curpath not in sys.path:
+    sys.path.insert(0, curpath)
 from dbfreader import DbfReader
 from dbfwriter import DbfWriter
 
@@ -133,17 +134,17 @@ class Dbf:
     调用示例：
     Examples:
     # read dbf to DataFrame
-    >>> dbf_bak = Dbf()
-    >>> dbf_bak.open('demo.dbf')
-    >>> dbf_bak.fetch(1, 20)
-    >>> print(dbf_bak.data)
+    >>> dbf = Dbf()
+    >>> dbf.open('../tests/demo_with_cn.dbf')
+    >>> dbf.fetch(1, 20)
+    >>> dbf.data    # doctest: +NORMALIZE_WHITESPACE
           serial_no       en_name ch_name   price            shipping
     0     10101  Refrigerator      冰箱  310.51 2020-03-01 01:00:00
     1     10102        Washer     洗衣机  420.35 2020-03-02 01:00:00
     2     10103         Stove      炉子  350.00 2020-03-03 00:30:00
     3     10104    Ventilator     通风机  210.40 2020-03-04 00:00:30
 
-    >>> dbf_bak.close()
+    >>> dbf.close()
     """
 
     encoding = 'GBK'
