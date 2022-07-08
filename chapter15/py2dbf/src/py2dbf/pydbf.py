@@ -1,7 +1,11 @@
 # coding = utf8
 
 import os
+import sys
 import pandas as pd
+
+curpath = os.path.abspath(os.path.dirname(__file__))
+sys.path.insert(0, curpath)
 from dbfreader import DbfReader
 from dbfwriter import DbfWriter
 
@@ -20,6 +24,7 @@ def read_dbf(dbf: str) -> pd.DataFrame:
     dbfobj = Dbf()
     dbfobj.open(dbf)
     dbfobj.fetch(count=-1)
+    dbfobj.close()
     return dbfobj.data
 
 
@@ -35,7 +40,7 @@ def write_dbf(df: pd.DataFrame, dbf: str):
     dbfobj = Dbf()
     dbfobj.data = df
     dbfobj.to_dbf(dbf)
-    dbfobj.open()
+    dbfobj.close()
 
 
 class Dbf:
@@ -127,8 +132,9 @@ class Dbf:
 
     调用示例：
     Examples:
+    # read dbf to DataFrame
     >>> dbf_bak = Dbf()
-    >>> dbf_bak.open('../demo.dbf_bak')
+    >>> dbf_bak.open('demo.dbf')
     >>> dbf_bak.fetch(1, 20)
     >>> print(dbf_bak.data)
           serial_no       en_name ch_name   price            shipping
@@ -179,7 +185,7 @@ class Dbf:
             raise FileNotFoundError('no data to save to csv!')
         self.data.to_csv(csvfile, index=False, sep=sep, **kwargs)
 
-    def to_dbf(self, dbffile='temp.dbf_bak'):
+    def to_dbf(self, dbffile='tempdbf.dbf'):
         if not isinstance(self.data, pd.DataFrame):
             raise FileNotFoundError('no data to save to csv!')
         writer = DbfWriter()

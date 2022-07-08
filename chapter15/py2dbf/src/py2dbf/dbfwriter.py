@@ -51,7 +51,7 @@ class DbfWriter:
         self.field_spec = None
         self.report = ''
 
-    def to_dbf(self, df, dbffile='tempdbf.dbf_bak'):
+    def to_dbf(self, df, dbffile='tempdbf.dbf'):
         """
         covert DataFrame to dBase file
 
@@ -80,12 +80,13 @@ class DbfWriter:
                                'shipping': [dt(2020, 3, 1, 1, 0, 0), dt(2020, 3, 2, 1, 0, 0), \
                                             dt(2020, 3, 3, 0, 30, 0), dt(2020, 3, 4, 0, 0, 30)]\
                                })
+        >>> df.dtypes
         >>> dbw = DbfWriter()
-        >>> dbw.to_dbf(df, 'demo.dbf_bak')
+        >>> dbw.to_dbf(df, 'demo.dbf')
 
         # read for checking
         >>> dbr = DbfReader()
-        >>> dbr.open('demo.dbf_bak')
+        >>> dbr.open('demo.dbf')
         >>> dbr.data
            _delflag serial_no       en_name ch_name   price                shipping
         0     False     10101  Refrigerator      冰箱  310.51  b'2020-03-01 01:00:00'
@@ -120,6 +121,9 @@ class DbfWriter:
 
         # write dbf_bak records
         DbfWriter.write_dbf_records(fp, self.field_spec, df)
+
+        # debug
+        print(self.field_spec)
 
         # write dbf_bak end char
         fp.write(b'\x1A')

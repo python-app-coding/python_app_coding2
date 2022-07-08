@@ -88,7 +88,7 @@ class DbfReader:
             self.file_handle = open(filename, 'rb')
         except (FileNotFoundError, IOError) as e:
             self.report = repr(e)
-            raise FileNotFoundError('Error: dbf_bak file [{}] not found!'.format(filename))
+            raise FileNotFoundError('Error: dbf file [{}] not found!'.format(filename))
         else:
             self.parse_header()
             self.fetchmany(1, 10)

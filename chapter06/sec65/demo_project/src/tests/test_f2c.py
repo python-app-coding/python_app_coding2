@@ -1,5 +1,5 @@
 # coding = utf8
-"""test demo_project"""
+"""tests demo_project"""
 
 import os
 import sys
