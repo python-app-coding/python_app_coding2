@@ -220,7 +220,7 @@ class DbfReader:
 
             # parsing-1: decode field_value to str for 'N,F,D,C,V'
             if _type in 'N,F,D,C,V':
-                print(field_value)
+                # print(field_value)
                 field_value = field_value.replace(b'\x00', b'').decode(self.encoding).strip()
 
             # parsing-2: convert field_value according to its type
