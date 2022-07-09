@@ -73,26 +73,43 @@ class DbfWriter:
         example:
         >>> import pandas as pd
         >>> from datetime import datetime as dt
-        >>> df = pd.DataFrame({'serial_no': ['10101', '10102', '10103', '10104'],\
+        >>> dft = pd.DataFrame({'serial_no': ['10101', '10102', '10103', '10104'],\
                                'en_name': ['Refrigerator', 'Washer', 'Stove', 'Ventilator'], \
                                'ch_name': ['冰箱', '洗衣机', '炉子', '通风机'], \
                                'price': [310.51, 420.35, 350, 210.4],\
                                'shipping': [dt(2020, 3, 1, 1, 0, 0), dt(2020, 3, 2, 1, 0, 0), \
                                             dt(2020, 3, 3, 0, 30, 0), dt(2020, 3, 4, 0, 0, 30)]\
                                })
-        >>> df.dtypes
+        >>> dft.dtypes
+        serial_no            object
+        en_name              object
+        ch_name              object
+        price               float64
+        shipping     datetime64[ns]
+        dtype: object
+
+        >>> DbfWriter.get_field_spec_from_dataframe(dft)        # doctest: +NORMALIZE_WHITESPACE
+        [Field(name='serial_no', type='C', size=5, decmial=0),
+        Field(name='en_name', type='C', size=12, decmial=0),
+        Field(name='ch_name', type='C', size=3, decmial=0),
+        Field(name='price', type='B', size=8, decmial=0),
+        Field(name='shipping', type='X', size=19, decmial=0)]
+
         >>> dbw = DbfWriter()
-        >>> dbw.to_dbf(df, 'demo.dbf')
+        >>> dbw.to_dbf(dft, 'demo_dbfwriter.dbf')
 
         # read for checking
         >>> dbr = DbfReader()
-        >>> dbr.open('demo.dbf')
-        >>> dbr.data
+        >>> dbr.open('demo_dbfwriter.dbf')
+        # >>> dbr.fetchall()
+        >>> dbr.data        # doctest: +NORMALIZE_WHITESPACE
            _delflag serial_no       en_name ch_name   price                shipping
-        0     False     10101  Refrigerator      冰箱  310.51  b'2020-03-01 01:00:00'
-        1     False     10102        Washer     洗衣机  420.35  b'2020-03-02 01:00:00'
-        2     False     10103         Stove      炉子  350.00  b'2020-03-03 00:30:00'
-        3     False     10104    Ventilator     通风机  210.40  b'2020-03-04 00:00:30'
+        0     False     10101  Refrigerator      冰箱  310.51  '2020-03-01 01:00:00'
+        1     False     10102        Washer     洗衣机  420.35  '2020-03-02 01:00:00'
+        2     False     10103         Stove      炉子  350.00  '2020-03-03 00:30:00'
+        3     False     10104    Ventilator     通风机  210.40  '2020-03-04 00:00:30'
+
+        >>> dbr.close()
         """
         self.report = ''
 
@@ -121,9 +138,6 @@ class DbfWriter:
 
         # write dbf_bak records
         DbfWriter.write_dbf_records(fp, self.field_spec, df)
-
-        # debug
-        print(self.field_spec)
 
         # write dbf_bak end char
         fp.write(b'\x1A')
@@ -156,7 +170,7 @@ class DbfWriter:
         for col in df.columns:
             if col == '_nullflags':
                 continue
-            field_type = 'C'
+            field_type = 'X'
             field_decimal = 0
             data = np.array(df.loc[df[col].notna(), col])
             # type D < T, checked type-datetime after type-date
@@ -188,7 +202,8 @@ class DbfWriter:
                         field_decimal = DbfWriter.max_decimal
                     field_size = field_int_len + field_decimal + 1
                     field_type = 'N'
-                else:  # C
+                # X: unknown type, convert to C by str() on write
+                else:
                     field_size = max(df[col].apply(lambda x: len(str(x))))
                     # field_size = max(df[col].apply(lambda x: len(str(x).encode('gbk'))))
             field_spec.append(DbfWriter.__Field_Spec(col, field_type, field_size, field_decimal))
@@ -222,8 +237,9 @@ class DbfWriter:
         # write header-field-info without _delflag
         header_field_info = b''
         for _name, _type, _size, _decimal in field_spec:
+            real_type = 'C' if _type == 'X' else _type      # treat unknown type as C
             value = (_name.encode(DbfWriter.encoding).ljust(11, b'\x00'),
-                     _type.encode(DbfWriter.encoding),
+                     real_type.encode(DbfWriter.encoding),
                      _size,
                      _decimal)
             header_field_info += struct.pack('<11sc4xBB14x', *value)
@@ -282,8 +298,12 @@ class DbfWriter:
                     value = value + b' ' * (_size - len(value))
                 elif _type in 'B':
                     value = struct.pack('<d', value)
-                else:   # C -- object
+                else:   # X -- object
                     value = str(value)
+                    # same as type C
+                    value = value.encode(DbfWriter.encoding)
+                    value = value + b' ' * (_size - len(value))
+                    # print(_type, value)
                     # value_encode = value.encode(DbfWriter.encoding)
                     # while len(value_encode) > _size:
                     #     value = value[:-1]
