@@ -76,6 +76,7 @@ class DbfWriter:
         >>> dft = pd.DataFrame({'serial_no': ['10101', '10102', '10103', '10104'],\
                                'en_name': ['Refrigerator', 'Washer', 'Stove', 'Ventilator'], \
                                'ch_name': ['冰箱', '洗衣机', '炉子', '通风机'], \
+                               'num': [100, 21, 333, 1234567],\
                                'price': [310.51, 420.35, 350, 210.4],\
                                'shipping': [dt(2020, 3, 1, 1, 0, 0), dt(2020, 3, 2, 1, 0, 0), \
                                             dt(2020, 3, 3, 0, 30, 0), dt(2020, 3, 4, 0, 0, 30)]\
@@ -84,6 +85,7 @@ class DbfWriter:
         serial_no            object
         en_name              object
         ch_name              object
+        num                   int64
         price               float64
         shipping     datetime64[ns]
         dtype: object
@@ -91,7 +93,8 @@ class DbfWriter:
         >>> DbfWriter.get_field_spec_from_dataframe(dft)        # doctest: +NORMALIZE_WHITESPACE
         [Field(name='serial_no', type='C', size=5, decmial=0),
         Field(name='en_name', type='C', size=12, decmial=0),
-        Field(name='ch_name', type='C', size=3, decmial=0),
+        Field(name='ch_name', type='C', size=6, decmial=0),
+        Field(name='num', type='I', size=4, decmial=0),
         Field(name='price', type='B', size=8, decmial=0),
         Field(name='shipping', type='X', size=19, decmial=0)]
 
@@ -99,17 +102,31 @@ class DbfWriter:
         >>> dbw.to_dbf(dft, 'demo_dbfwriter.dbf')
 
         # read for checking
-        >>> dbr = DbfReader()
-        >>> dbr.open('demo_dbfwriter.dbf')
-        # >>> dbr.fetchall()
-        >>> dbr.data        # doctest: +NORMALIZE_WHITESPACE
-           _delflag serial_no       en_name ch_name   price                shipping
-        0     False     10101  Refrigerator      冰箱  310.51  '2020-03-01 01:00:00'
-        1     False     10102        Washer     洗衣机  420.35  '2020-03-02 01:00:00'
-        2     False     10103         Stove      炉子  350.00  '2020-03-03 00:30:00'
-        3     False     10104    Ventilator     通风机  210.40  '2020-03-04 00:00:30'
+        >>> dbfr = DbfReader()
+        >>> dbfr.open('demo_dbfwriter.dbf')
 
-        >>> dbr.close()
+        >>> dbfr.data        # doctest: +NORMALIZE_WHITESPACE
+           _delflag serial_no       en_name  ...      num   price             shipping
+        0     False     10101  Refrigerator  ...      100  310.51  2020-03-01 01:00:00
+        1     False     10102        Washer  ...       21  420.35  2020-03-02 01:00:00
+        2     False     10103         Stove  ...      333  350.00  2020-03-03 00:30:00
+        3     False     10104    Ventilator  ...  1234567  210.40  2020-03-04 00:00:30
+        <BLANKLINE>
+        [4 rows x 7 columns]
+
+        >>> dbfr.data = dbfr.data.astype({'shipping': np.datetime64})
+        >>> dbfr.data.dtypes
+        _delflag               bool
+        serial_no            object
+        en_name              object
+        ch_name              object
+        num                   int64
+        price               float64
+        shipping     datetime64[ns]
+        dtype: object
+
+
+        >>> dbfr.close()
         """
         self.report = ''
 
@@ -157,15 +174,18 @@ class DbfWriter:
            set len=maxlen if abs >= 2**32 for type(N)
         4. set len=8 for type(B), double-float
         5. set len=1 for type(L)
-        6. for type(Decimal) by pandas._libs_lib.is_decimal(data.column):
-               get max_int_len, max_decimal_len from DataFrame
-               if max_decimal_len too large, set to default len: DbfWriter.max_decimal
-               set type='N', size=max_int_len+max_decimal_len+1 for type(Decimal)
-           set len=max_str_encode_len for type(G)
+        6. set len=max(str(df[column]).encode('GBK')) for type(X), write value as type(C)
+
+        # 6. for type(Decimal) by pandas._libs_lib.is_decimal(data.column):
+        #        get max_int_len, max_decimal_len from DataFrame
+        #        if max_decimal_len too large, set to default len: DbfWriter.max_decimal
+        #        set type='N', size=max_int_len+max_decimal_len+1 for type(Decimal)
+        #    set len=max_str_encode_len for type(G)
 
         :param df: pandas.DataFrame
         :return: dbf_bak field specification [(name, type, size, decimal), ...]
         """
+        report = ""
         field_spec = []
         for col in df.columns:
             if col == '_nullflags':
@@ -175,9 +195,9 @@ class DbfWriter:
             data = np.array(df.loc[df[col].notna(), col])
             # type D < T, checked type-datetime after type-date
             for k in DbfWriter.__type_checker.keys():
-                for checker in DbfWriter.__type_checker[k]:
+                for checker in DbfWriter.__type_checker[k]:     # there are more than 1 checkers for each type
                     if checker(data):
-                        # print('field={} type={}'.format(col, k))
+                        report += 'field={} type={}\n'.format(col, k)
                         field_type = k
             # check type and size
             if field_type in 'D,T':
@@ -193,20 +213,22 @@ class DbfWriter:
             elif field_type == 'L':
                 field_size = 1
             else:
-                # check Decimal type, size to fixed type(N, size, decimal)
-                data = df.loc[df[col].notna(), col]
-                if all([pd._libs.lib.is_decimal(x) for x in data]):
-                    field_int_len = max(data.apply(lambda x: len(str(int(x)))))
-                    field_decimal = max(data.apply(lambda x: 0 if x-int(x) == 0 else len(str(x-int(x)))-2))
-                    if field_decimal > DbfWriter.max_decimal:
-                        field_decimal = DbfWriter.max_decimal
-                    field_size = field_int_len + field_decimal + 1
-                    field_type = 'N'
-                # X: unknown type, convert to C by str() on write
-                else:
-                    field_size = max(df[col].apply(lambda x: len(str(x))))
-                    # field_size = max(df[col].apply(lambda x: len(str(x).encode('gbk'))))
+                field_size = max(df[col].apply(lambda x: len(str(x).encode('gbk'))))
+                # # check Decimal type, size to fixed type(N, size, decimal)
+                # data = df.loc[df[col].notna(), col]
+                # if all([pd._libs.lib.is_decimal(x) for x in data]):
+                #     field_int_len = max(data.apply(lambda x: len(str(int(x)))))
+                #     field_decimal = max(data.apply(lambda x: 0 if x-int(x) == 0 else len(str(x-int(x)))-2))
+                #     if field_decimal > DbfWriter.max_decimal:
+                #         field_decimal = DbfWriter.max_decimal
+                #     field_size = field_int_len + field_decimal + 1
+                #     field_type = 'N'
+                # # X: unknown type, convert to C by str() on write
+                # else:
+                #     # field_size = max(df[col].apply(lambda x: len(str(x))))
+                #     field_size = max(df[col].apply(lambda x: len(str(x).encode('gbk'))))
             field_spec.append(DbfWriter.__Field_Spec(col, field_type, field_size, field_decimal))
+        # print(field_spec)
         return field_spec
 
     @staticmethod
