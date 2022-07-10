@@ -23,9 +23,9 @@ dft = pd.DataFrame(
 class TestDbfreader:
 
     def setup(self):
-        pydbfdir = os.path.abspath('../py2dbf')
+        pydbfdir = os.path.abspath('../pddbf')
         sys.path.insert(0, pydbfdir)
-        self.pydbf = importlib.import_module('pydbf')
+        self.pydbf = importlib.import_module('pddbf')
         self.dfr = self.pydbf.read_dbf("demo_with_cn.dbf")
         self.dfr = self.dfr.astype({'price': float, 'shipping': np.datetime64})
 

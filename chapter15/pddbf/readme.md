@@ -1,5 +1,19 @@
-Py2Dbf
+pddbf
 =======
+
+Functions
+---------
+实现dbf文件数据到pandas.DataFrame的转换
+
+目前支持的dbf文件版本及字段格式：
+- Visual Foxpro 3-9，dBase III文件
+- C, N, D, B
+
+从dbf文件读取数据：
+- 不能解析的数据转换为object
+
+将DataFrame数据写为dbf文件数据
+- 不能转换格式的数据转换为字符串，写为C格式
 
 Requirements
 -------------
@@ -22,9 +36,9 @@ Package is uploaded on `PyPI <https://pypi.org/project/py2dbf>`_.
 
 You can install it with pip::
 
-    $ python3 -m pip install py2dbf
+    $ python3 -m pip install pddbf
 
-    > pip install py2dbf
+    > pip install pddbf
 
 
 

@@ -13,9 +13,9 @@ import time
 class TestDbfwriter:
 
     def setup(self):
-        dbfdir = os.path.abspath('../py2dbf')
+        dbfdir = os.path.abspath('../pddbf')
         sys.path.insert(0, dbfdir)
-        self.pydbf = importlib.import_module('pydbf')
+        self.pydbf = importlib.import_module('pddbf')
 
         fk = faker.Faker('zh_cn')
         record_num = 100000

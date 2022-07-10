@@ -1,4 +1,5 @@
 # coding = utf8
+
 """
 py2dbf提供的基本调用接口和类
 read_dbf： 读取dbf文件的函数接口，传递一个文件名参数，返回DataFrame数据集
@@ -17,9 +18,10 @@ Dbf： 读写dbf文件的类。调用DbfReader和DbfWriter。
 DbfReader：读取dbf文件底层类。
 DbfWriter：写DataFrame到dbf文件的底层类。
 """
+
 __version__ = '1.0.1'
 __author__ = 'Wang Xichang'
 
-from .pydbf import Dbf, read_dbf, to_dbf, DbfReader, DbfWriter
+from .pddbf import Dbf, read_dbf, to_dbf, DbfReader, DbfWriter
 
-__all__ = ['Dbf', read_dbf, to_dbf, 'DbfReader', 'DbfWriter']
+__all__ = ['read_dbf', 'to_dbf', 'Dbf',  'DbfReader', 'DbfWriter']
