@@ -20,6 +20,6 @@ DbfWriter：写DataFrame到dbf文件的底层类。
 __version__ = '1.0.1'
 __author__ = 'Wang Xichang'
 
-from .pydbf import Dbf, read_dbf, write_dbf, DbfReader, DbfWriter
+from .pydbf import Dbf, read_dbf, to_dbf, DbfReader, DbfWriter
 
-__all__ = ['Dbf', read_dbf, write_dbf, 'DbfReader', 'DbfWriter']
+__all__ = ['Dbf', read_dbf, to_dbf, 'DbfReader', 'DbfWriter']

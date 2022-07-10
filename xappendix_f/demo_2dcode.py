@@ -2,7 +2,7 @@
 
 import numpy as np
 from PIL import Image
-from pyzbar import pyzbar
+import pyzbar
 import qrcode
 from MyQR import myqr
 
@@ -28,6 +28,8 @@ def create_2dbar_with_qrcode(
         error_correction(int): 容许的错误率(0-15%, 1-7%, 2-30%)
         box_size: 二维码中每个小格子包含的像素数量
         border: 二维码到图片边框的小格子数，默认值为 4
+
+    >>> create_2dbar_with_qrcode('temp_bing_2dbar.png')
     """
     # create 2D barcode
     qr = qrcode.QRCode(version=version,
@@ -48,11 +50,14 @@ def create_2dbar_with_myqr(words, picture, colorsize=True, save_name='temp_myqr_
         picture(str): 背景图片文件名，作为背景，不然只是一个光秃秃的二维码
         colorsize(bool)：True，是否生成彩图二维码
         save_name(str)：生成二维码图像名称
+
+    >>> create_2dbar_with_myqr(words='www.baidu.com', picture='')
     """
     myqr.run(words=words,
              picture=picture,
              colorized=colorsize,
              save_name=save_name)
+
 
 def read_2dbar(bar_file='temp_2dbar.png'):
     """

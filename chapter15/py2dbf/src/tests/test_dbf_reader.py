@@ -12,6 +12,7 @@ dft = pd.DataFrame(
           'en_name': ['Refrigerator', 'Washer', 'Stove', 'Ventilator'],
           'ch_name': ['冰箱', '洗衣机', '炉子', '通风机'],
           'price': [310.51, 420.35, 350, 210.4],
+          'num': [100, 21, 333, 1234567],
           'shipping': [dt.datetime(2020, 3, 1, 1),
                        dt.datetime(2020, 3, 2, 1),
                        dt.datetime(2020, 3, 3, 0, 30),
@@ -19,11 +20,11 @@ dft = pd.DataFrame(
 )
 
 
-class TestReadDbf():
+class TestDbfreader:
 
     def setup(self):
-        dbfdir = os.path.abspath('../py2dbf')
-        sys.path.insert(0, dbfdir)
+        pydbfdir = os.path.abspath('../py2dbf')
+        sys.path.insert(0, pydbfdir)
         self.pydbf = importlib.import_module('pydbf')
         self.dfr = self.pydbf.read_dbf("demo_with_cn.dbf")
         self.dfr = self.dfr.astype({'price': float, 'shipping': np.datetime64})
@@ -47,7 +48,7 @@ class TestReadDbf():
         sys.path.pop(0)
 
 
-class TestWriteDbf():
+class TestDbfwriter:
 
     def setup(self):
         dbfdir = os.path.abspath('../py2dbf')
@@ -55,7 +56,7 @@ class TestWriteDbf():
         self.pydbf = importlib.import_module('pydbf')
 
         tempfile = os.path.join(dbfdir, 'temp_demo.dbf')
-        self.pydbf.write_dbf(dft, tempfile)
+        self.pydbf.to_dbf(dft, tempfile)
 
         self.dfr = self.pydbf.read_dbf(tempfile)
         self.dfr = self.dfr.astype({'price': float, 'shipping': np.datetime64})

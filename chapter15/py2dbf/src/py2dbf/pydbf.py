@@ -1,5 +1,5 @@
 # coding = utf8
-import importlib
+
 import os
 import sys
 import pandas as pd
@@ -11,13 +11,13 @@ from dbfreader import DbfReader
 from dbfwriter import DbfWriter
 
 
-def read_dbf(dbf: str) -> pd.DataFrame:
+def read_dbf(dbf: str, delflag: bool=False) -> pd.DataFrame:
     """
-    读取dbf文件为DataFrame
-    read dbf_bak file to DataFrame
+    读取dbf文件为DataFrame.
+    read dbf_bak file to DataFrame.
 
-    read_dbf(dbf_bak: str) -> pd.DataFrame
-    :param dbf: dbf_bak file name, suffix .dbf_bak is needed
+    :param dbf: str, dbf file name, suffix .dbf_bak is needed
+    :param delflag: bool, create a column _delflag for delflag in dbf table.
     :return: DataFrame
     """
     if not os.path.isfile(dbf):
@@ -26,15 +26,16 @@ def read_dbf(dbf: str) -> pd.DataFrame:
     dbfobj.open(dbf)
     dbfobj.fetch(count=-1)
     dbfobj.close()
+    if delflag and isinstance(dbfobj.delflag, pd.Series):
+        dbfobj.data['_delflag'] = dbfobj.delflag
     return dbfobj.data
 
 
-def write_dbf(df: pd.DataFrame, dbf: str):
+def to_dbf(df: pd.DataFrame, dbf: str):
     """
-    将DataFrame数据写为DBF文件。
+    将DataFrame数据写为DBF文件.
     write DataFrame to DBF file.
 
-    to_dbf(df: pd.DataFrame, dbf_bak: str)
     :param df: 类型为pandas.DataFrame。写入DBF文件的数据。
     :param dbf: 字符串。写入DBF文件的文件名。
     """
@@ -47,7 +48,6 @@ def write_dbf(df: pd.DataFrame, dbf: str):
 class Dbf:
     """
     ---------------------------------------------------------------------------------------------------------------
-    class Dbf()
     读写DBF文件的用户服务类
     A class used to read and write DBF file，its property data is DataFrame。
 
@@ -161,7 +161,7 @@ class Dbf:
         """
         self.reader.encoding = self.encoding
         self.reader.open(filename=filename)
-        if self.reader:
+        if isinstance(self.reader.data, pd.DataFrame):
             self.__data_cleaning(self.reader.data)
 
     def close(self):
@@ -200,5 +200,5 @@ class Dbf:
         save delflag in self._delflag
         :param df: DataFrame to set to self.data
         """
+        self.delflag = df['_delflag'] if '_delflag' in df.columns else None
         self.data = df[[col for col in df.columns if col != '_delflag']]
-        self.delflag = df[['_delflag']] if '_delflag' in df.columns else None
