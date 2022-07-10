@@ -46,32 +46,3 @@ class TestDbfreader:
 
     def teardown(self):
         sys.path.pop(0)
-
-
-class TestDbfwriter:
-
-    def setup(self):
-        dbfdir = os.path.abspath('../py2dbf')
-        sys.path.insert(0, dbfdir)
-        self.pydbf = importlib.import_module('pydbf')
-
-        tempfile = os.path.join(dbfdir, 'temp_demo.dbf')
-        self.pydbf.to_dbf(dft, tempfile)
-
-        self.dfr = self.pydbf.read_dbf(tempfile)
-        self.dfr = self.dfr.astype({'price': float, 'shipping': np.datetime64})
-
-    def test_read_dbf1(self):
-        assert all(self.dfr['serial_no'] == dft['serial_no'])
-
-    def test_read_dbf2(self):
-        assert all(self.dfr['en_name'] == dft['en_name'])
-
-    def test_read_dbf2b(self):
-        assert all(self.dfr['ch_name'] == dft['ch_name'])
-
-    def test_read_dbf3(self):
-        assert all(self.dfr['price'] == dft['price'])
-
-    def test_read_dbf4(self):
-        assert all(self.dfr['shipping'] == dft['shipping'])
