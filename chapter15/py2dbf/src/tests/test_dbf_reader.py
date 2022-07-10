@@ -12,6 +12,7 @@ dft = pd.DataFrame(
           'en_name': ['Refrigerator', 'Washer', 'Stove', 'Ventilator'],
           'ch_name': ['冰箱', '洗衣机', '炉子', '通风机'],
           'price': [310.51, 420.35, 350, 210.4],
+          'num': [100, 21, 333, 1234567],
           'shipping': [dt.datetime(2020, 3, 1, 1),
                        dt.datetime(2020, 3, 2, 1),
                        dt.datetime(2020, 3, 3, 0, 30),
@@ -19,11 +20,11 @@ dft = pd.DataFrame(
 )
 
 
-class TestReadDbf():
+class TestDbfreader:
 
     def setup(self):
-        dbfdir = os.path.abspath('../py2dbf')
-        sys.path.insert(0, dbfdir)
+        pydbfdir = os.path.abspath('../py2dbf')
+        sys.path.insert(0, pydbfdir)
         self.pydbf = importlib.import_module('pydbf')
         self.dfr = self.pydbf.read_dbf("demo_with_cn.dbf")
         self.dfr = self.dfr.astype({'price': float, 'shipping': np.datetime64})
@@ -45,32 +46,3 @@ class TestReadDbf():
 
     def teardown(self):
         sys.path.pop(0)
-
-
-class TestWriteDbf():
-
-    def setup(self):
-        dbfdir = os.path.abspath('../py2dbf')
-        sys.path.insert(0, dbfdir)
-        self.pydbf = importlib.import_module('pydbf')
-
-        tempfile = os.path.join(dbfdir, 'temp_demo.dbf')
-        self.pydbf.write_dbf(dft, tempfile)
-
-        self.dfr = self.pydbf.read_dbf(tempfile)
-        self.dfr = self.dfr.astype({'price': float, 'shipping': np.datetime64})
-
-    def test_read_dbf1(self):
-        assert all(self.dfr['serial_no'] == dft['serial_no'])
-
-    def test_read_dbf2(self):
-        assert all(self.dfr['en_name'] == dft['en_name'])
-
-    def test_read_dbf2b(self):
-        assert all(self.dfr['ch_name'] == dft['ch_name'])
-
-    def test_read_dbf3(self):
-        assert all(self.dfr['price'] == dft['price'])
-
-    def test_read_dbf4(self):
-        assert all(self.dfr['shipping'] == dft['shipping'])

@@ -75,8 +75,8 @@ class DbfReader:
 
     def open(self, filename=None):
         """
-        open dbf_bak and load 10 rows of records to data
-        :param filename: dbf_bak file name
+        open dbf and load 10 rows of records to data
+        :param filename: dbf file name
         :return: None
         """
         if not filename:
@@ -113,7 +113,7 @@ class DbfReader:
             result = self.parse_record(fp)
             for fi, field in enumerate(self.field_info):
                 data_dict[field.name].append(result[fi])
-        self.runtime += 'read data from dbf_bak ellapsed={:5.2f}\n'.format(time.time() - st)
+        self.runtime += 'read data from dbf ellapsed={:5.2f}\n'.format(time.time() - st)
         st = time.time()
         self.data = pd.DataFrame(data_dict)
         self.data = self.data.astype(self.field_astype)
@@ -125,14 +125,14 @@ class DbfReader:
 
     def fetchmany(self, start=1, count=10):
         """
-        :param start first record no in dbf_bak table, record no is range(1, len(dbf_bak)+1)
-        :param count record number fetched from dbf_bak table, fetch record: start,...,start+count-1
+        :param start first record no in dbf table, record no is range(1, len(dbf)+1)
+        :param count record number fetched from dbf table, fetch record: start,...,start+count-1
         """
         if not self.file_handle:
             raise FileNotFoundError('Error: no file handle found!')
         record_count = self.file_info.record_count
         if start not in range(1, record_count + 1):
-            self.report = 'begin record ={} is not in dbf_bak file!'.format(start)
+            self.report = 'begin record ={} is not in dbf file!'.format(start)
             return
         get_record_num = count
         if (start + count - 1) > record_count:
@@ -170,7 +170,7 @@ class DbfReader:
             _name = _record[0].replace(b'\x00', b'').decode(self.encoding).lower()
             _type = _record[1].decode(self.encoding)
             _record = self.Record_Spec(_name, _type, *_record[2:])
-            # no _delflag in dbf_bak
+            # no _delflag in dbf
             if _name == field_delflag_name:
                 self.field_info[0] = self.Record_Spec('_'+field_delflag_name, 'L', 1, 0)
                 # print(_name, field_delflag_name)
@@ -190,7 +190,7 @@ class DbfReader:
             dBase  type: C, V, N, F, D, L, I, B, O, T, @
             pandas type: str, int64, decimal.Decimal, np.date, datetime, bool, np.float64
 
-        parse dbf_bak data to pandas:
+        parse dbf data to pandas:
             C, V: decode to str by bytes.decode
             N, F: decode to str by bytes.decode
                   parse to Decimal if decimal > 0 else to int
@@ -377,7 +377,7 @@ def get_datetime_from_dbftime(dbftime):
     _date_days, _time_value = struct.unpack('<ii', dbftime)
 
     # only support AC date in some range
-    # BC date is invalid in dbf_bak and datetime
+    # BC date is invalid in dbf and datetime
     if _date_days >= 1721426:
         # valid time range:
         #     time.localtime(v) limits v start from 1970.1.1
