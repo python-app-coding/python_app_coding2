@@ -1,6 +1,6 @@
-=========================================
-Pandas DataFrame and DBF data Conversion
-=========================================
+=============================================
+pddbf: Pandas DataFrame and DBF Conversion
+=============================================
 
 pddbf named from Pandas.DataFrame and DBF data conversion tool.
 By pddbf interface functions or Classes, You can read DBF file to DataFrame,
