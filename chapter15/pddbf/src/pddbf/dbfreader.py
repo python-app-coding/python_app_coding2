@@ -37,7 +37,7 @@ class DbfReader:
         'D': np.datetime64,
         'L': bool,
         'F': float,
-        'I': float
+        'I': np.int64
     }
     File_Info = namedtuple(
         'File_Info',
@@ -188,12 +188,13 @@ class DbfReader:
         """
         convert data from dBase types to pandas types:
             dBase  type: C, V, N, F, D, L, I, B, O, T, @
-            pandas type: str, int64, decimal.Decimal, np.date, datetime, bool, np.float64
+            pandas type: np.str_, np.int64, np.date, datetime, bool, np.float64
 
         parse dbf data to pandas:
             C, V: decode to str by bytes.decode
             N, F: decode to str by bytes.decode
-                  parse to Decimal if decimal > 0 else to int
+                  parse to float64 if decimal > 0 for any record, else to int
+                  # parse to Decimal if decimal > 0 else to int
                I: decode to integer by unpack
                D: decode to str by bytes.decode
                   parse date by datetime.date(year, month, day)

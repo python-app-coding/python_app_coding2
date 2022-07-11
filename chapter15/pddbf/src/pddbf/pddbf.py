@@ -11,35 +11,35 @@ from dbfreader import DbfReader
 from dbfwriter import DbfWriter
 
 
-def read_dbf(dbf: str) -> pd.DataFrame:
+def read_dbf(dbffile: str) -> pd.DataFrame:
     """
     读取dbf文件为DataFrame.
     read dbf_bak file to DataFrame.
 
-    :param dbf: str, dbf file name, suffix .dbf_bak is needed
+    :param dbffile: str, dbf file name, suffix .dbf_bak is needed
     :return: DataFrame
     """
-    if not os.path.isfile(dbf):
+    if not os.path.isfile(dbffile):
         raise FileNotFoundError
-    dbfobj = Dbf()
-    dbfobj.open(dbf)
-    dbfobj.fetch(count=-1)
-    dbfobj.close()
-    return dbfobj.data
+    dbf = Dbf()
+    dbf.open(dbffile)
+    dbf.fetch(count=-1)
+    dbf.close()
+    return dbf.data
 
 
-def to_dbf(df: pd.DataFrame, dbf: str):
+def to_dbf(df: pd.DataFrame, dbffile: str):
     """
     将DataFrame数据写为DBF文件.
     write DataFrame to DBF file.
 
     :param df: 类型为pandas.DataFrame。写入DBF文件的数据。
-    :param dbf: 字符串。写入DBF文件的文件名。
+    :param dbffile: 字符串。写入DBF文件的文件名。
     """
-    dbfobj = Dbf()
-    dbfobj.data = df
-    dbfobj.to_dbf(dbf)
-    dbfobj.close()
+    dbf = Dbf()
+    dbf.data = df
+    dbf.to_dbf(dbffile)
+    dbf.close()
 
 
 def to_csv(dbf, csv='temp.csv'):
