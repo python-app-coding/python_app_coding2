@@ -39,8 +39,8 @@ classifiers = [
 # 指定发行包路径
 [tool.setuptools]
 packages = ["pddbf"]
-package-dir = {"" = "src"}
+package-dir = {"" = "src.pddbf"}
 
 # 设置程序运行入口点
 [project.scripts]
-fc = "demo_package_author.f2c:fc"
+fc = "pddbf.pddbf:to_csv"

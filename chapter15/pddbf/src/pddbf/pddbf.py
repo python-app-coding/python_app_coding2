@@ -11,13 +11,12 @@ from dbfreader import DbfReader
 from dbfwriter import DbfWriter
 
 
-def read_dbf(dbf: str, delflag: bool=False) -> pd.DataFrame:
+def read_dbf(dbf: str) -> pd.DataFrame:
     """
     读取dbf文件为DataFrame.
     read dbf_bak file to DataFrame.
 
     :param dbf: str, dbf file name, suffix .dbf_bak is needed
-    :param delflag: bool, create a column _delflag for delflag in dbf table.
     :return: DataFrame
     """
     if not os.path.isfile(dbf):
@@ -26,8 +25,6 @@ def read_dbf(dbf: str, delflag: bool=False) -> pd.DataFrame:
     dbfobj.open(dbf)
     dbfobj.fetch(count=-1)
     dbfobj.close()
-    if delflag and isinstance(dbfobj.delflag, pd.Series):
-        dbfobj.data['_delflag'] = dbfobj.delflag
     return dbfobj.data
 
 
@@ -43,6 +40,18 @@ def to_dbf(df: pd.DataFrame, dbf: str):
     dbfobj.data = df
     dbfobj.to_dbf(dbf)
     dbfobj.close()
+
+
+def to_csv(dbf, csv='temp.csv'):
+    """
+    从dbf文件读出数据，存储到csv文件
+
+    Ags:
+        dbf(str): dbf file to read
+        csv(str): csv file to write
+    """
+    df = read_dbf(dbf)
+    df.to_csv(csv)
 
 
 class Dbf:
