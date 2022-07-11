@@ -1,13 +1,104 @@
 # coding = utf8
+"""
+DbfReader is class for reading dbf file to DataFrame
 
+types map:
+    DBF ==> DataFrame
+    N --> np.float64 if deicmal_len > 0 else np.int64
+    C --> np.str_
+    D --> np.datetime64,
+    L --> bool,
+    F --> float,
+    I --> np.int64
+    else --> str() --> np.str_
+
+>>> import pandas as pd
+>>> dbfr = DbfReader()
+>>> dbfr.open('../tests/demo_with_cn.dbf')
+>>> dbfr.close()
+>>> dbfr.data.dtypes    # doctest: +NORMALIZE_WHITESPACE
+    _delflag               bool
+    serial_no            object
+    en_name              object
+    ch_name              object
+    price               float64
+    shipping     datetime64[ns]
+    dtype: object
+
+>>> dbfr.data
+   _delflag serial_no       en_name ch_name   price            shipping
+0     False     10101  Refrigerator      冰箱  310.51 2020-03-01 01:00:00
+1     False     10102        Washer     洗衣机  420.35 2020-03-02 01:00:00
+2     False     10103         Stove      炉子  350.00 2020-03-03 00:30:00
+3     False     10104    Ventilator     通风机  210.40 2020-03-04 00:00:30
+
+>>> dbfr.open('../tests/demo_with_null.dbf')
+>>> dbfr.close()
+>>> dbfr.data.dtypes    # doctest: +NORMALIZE_WHITESPACE
+    _delflag       bool
+    ksh          object
+    name         object
+    birth        object
+    time         object
+    km1           int64
+    km2         float64
+    zf           object
+    hcf          object
+    stat           bool
+    dtype: object
+
+>>> dbfr.data
+   _delflag          ksh name       birth  ...   km2      zf    hcf   stat
+0     False  3702693000a  张同志  2001-01-01  ...  43.0  107.00  58.75  False
+1     False  3712091000b  李产生  2001-01-02  ...  53.0  108.00  54.50  False
+2     False  37131510000  贺理论  2001-02-01  ...  62.0  102.00  45.50  False
+3     False  37077010000  孟自豪  1999-01-01  ...  52.0   97.00  46.75  False
+4     False  37015640000  程前进  2010-01-01  ...  47.0  102.00  53.00  False
+5     False  37050440000  胡德利  2020-01-01  ...  35.0   95.00  53.75  False
+6     False  37085740000  栾作文  1970-01-01  ...  60.0  121.00  60.75  False
+7     False  37081250001  苏成绩  1970-02-01  ...  53.0  108.00  54.50  False
+8     False  37043430000   成书  1971-01-01  ...  27.0   84.00  49.50  False
+9     False  37010100001  end        None  ...   0.0   99.99   0.00   True
+<BLANKLINE>
+[10 rows x 10 columns]
+
+>>> dbfr.data[['time', 'km1']]
+                  time  km1
+0  0011-01-01 23:01:02   64
+1  1990-01-02 11:01:02   55
+2  1901-02-01 00:59:06   40
+3  1999-01-01 01:10:10   45
+4  2010-01-01 12:01:02   55
+5  2020-01-01 12:00:00   60
+6  1969-01-01 12:00:00   61
+7  0001-01-01 00:00:00   55
+8  2071-01-01 00:59:59   57
+9                 None    0
+
+>>> dbfr.data['time'].astype(np.datetime64)
+Traceback (most recent call last):
+   ...
+pandas._libs.tslibs.np_datetime.OutOfBoundsDatetime: Out of bounds nanosecond timestamp: 11-01-01 23:01:02
+
+>>> pd.to_datetime(dbfr.data['time'], errors='ignore')
+0    0011-01-01 23:01:02
+1    1990-01-02 11:01:02
+2    1901-02-01 00:59:06
+3    1999-01-01 01:10:10
+4    2010-01-01 12:01:02
+5    2020-01-01 12:00:00
+6    1969-01-01 12:00:00
+7    0001-01-01 00:00:00
+8    2071-01-01 00:59:59
+9                    NaT
+Name: time, dtype: object
+"""
 
 import time
 import struct
 import datetime
 import io
-import os
 from collections import namedtuple
-from collections import OrderedDict
 import decimal
 import numpy as np
 import pandas as pd
@@ -125,8 +216,8 @@ class DbfReader:
 
     def fetchmany(self, start=1, count=10):
         """
-        :param start first record no in dbf table, record no is range(1, len(dbf)+1)
-        :param count record number fetched from dbf table, fetch record: start,...,start+count-1
+        :param start： first record no in dbf table, record no is range(1, len(dbf)+1)
+        :param count： record number fetched from dbf table, fetch records, start,...,start+count-1
         """
         if not self.file_handle:
             raise FileNotFoundError('Error: no file handle found!')
