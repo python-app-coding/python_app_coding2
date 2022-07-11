@@ -1,15 +1,23 @@
 # coding = utf8
+
 """
 DbfReader is class for reading dbf file to DataFrame
 
 types map:
     DBF ==> DataFrame
+
     N --> np.float64 if deicmal_len > 0 else np.int64
+
     C --> np.str_
+
     D --> np.datetime64,
+
     L --> bool,
+
     F --> float,
+
     I --> np.int64
+
     else --> str() --> np.str_
 
 >>> import pandas as pd
@@ -167,6 +175,7 @@ class DbfReader:
     def open(self, filename=None):
         """
         open dbf and load 10 rows of records to data
+
         :param filename: dbf file name
         :return: None
         """
@@ -283,9 +292,7 @@ class DbfReader:
 
         parse dbf data to pandas:
             C, V: decode to str by bytes.decode
-            N, F: decode to str by bytes.decode
-                  parse to float64 if decimal > 0 for any record, else to int
-                  # parse to Decimal if decimal > 0 else to int
+            N, F: decode to str by bytes.decode. parse to float64 if decimal > 0 for any record, else to int
                I: decode to integer by unpack
                D: decode to str by bytes.decode
                   parse date by datetime.date(year, month, day)
@@ -297,6 +304,7 @@ class DbfReader:
            other: remain to binary byte string, including(G,P,M,Y,...)
 
         :param fp: file handle
+
         :return: list with field-data
         """
         _record = struct.unpack(self.field_unpack_format,

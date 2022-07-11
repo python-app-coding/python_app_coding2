@@ -10,7 +10,8 @@ Welcome to pddbf's documentation!
    :maxdepth: 2
    :caption: Contents:
 
-
+   pddbf.rst
+   modules.rst
 
 Indices and tables
 ==================

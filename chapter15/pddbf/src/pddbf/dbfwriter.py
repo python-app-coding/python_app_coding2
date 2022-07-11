@@ -70,7 +70,8 @@ class DbfWriter:
         Notes:
             before use to_dbf, can set DbfWriter.max_decimal, DbfWriter.codeset
 
-        example:
+        Example:
+
         >>> import pandas as pd
         >>> from datetime import datetime as dt
         >>> dft = pd.DataFrame({'serial_no': ['10101', '10102', '10103', '10104'],\
@@ -128,6 +129,7 @@ class DbfWriter:
 
         >>> dbfr.close()
         """
+
         self.report = ''
 
         # check df
