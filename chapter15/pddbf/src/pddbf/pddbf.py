@@ -14,9 +14,9 @@ from dbfwriter import DbfWriter
 def read_dbf(dbffile: str) -> pd.DataFrame:
     """
     读取dbf文件为DataFrame.
-    read dbf_bak file to DataFrame.
+    read dbf file to DataFrame.
 
-    :param dbffile: str, dbf file name, suffix .dbf_bak is needed
+    :param dbffile: str, dbf file name, suffix .dbf is needed
     :return: DataFrame
     """
     if not os.path.isfile(dbffile):
@@ -57,14 +57,14 @@ def to_csv(dbf, csv='temp.csv'):
 class Dbf:
     """
     ---------------------------------------------------------------------------------------------------------------
-    读写DBF文件的用户服务类
+    读写DBF文件服务类
     A class used to read and write DBF file，its property data is DataFrame。
 
-    属性
+    属性:
     data：DataFrame。用于存放读入的DBF文件数据。
 
-    对象方法
-    （object methods）
+    对象方法:
+    object methods
 
     open(self, filename: str = '')
         打开一个DBF文件。用于在方法fetch中读入数据，必须在fetch之前打开。
@@ -93,12 +93,12 @@ class Dbf:
         csvfile: str. 'temp.csv'( default). file name to write.
         sep: str. ','( default).  length is 1. charater used to seperate field data in record line.
 
-    to_dbf(self, dbffile='temp.dbf_bak')
+    to_dbf(self, dbffile='temp.dbf')
         将数据写入DBF文件
         write data to DBF file
 
         :parameters
-        dbffile: str. 'temp.dbf_bak'( default). file name to write.
+        dbffile: str. 'temp.dbf'( default). file name to write.
 
     ---------------------------------------------------------------------------------------------------------------
     读写DBF文件数据过程说明
@@ -106,12 +106,12 @@ class Dbf:
     目前支持的DBF数据类型：C(字符)、N（数值）、F（浮点）、D（日期）、L（逻辑）、T（时间日期）、B（双精度）
 
     调用方式（call procedure）：
-    1. 初始化：          dbf_bak = Dbf()                                 # 创建类Dbf的对象实例
-    2. 打开DBF文件：     dbf_bak.open(filename)                           # 打开DBF文件
-    3. 读入数据：        dbf_bak.fetch()                                  # 读入DBF文件中的数据
-    4. 访问数据          dbf_bak.data                                    # 数据存储在属性变量data，格式为 DataFrame
-    5. 写数据csv：       dbf_bak.to_csv(csvname=csvfile，sep=',')        # 将data写到文件csvfile,格式为 csv, 分隔符为sep
-    6. 写数据dfb：       dbf_bak.to_dbf(dbfname=dbffile)                 # 将data写到DBF文件
+    1. 初始化：          dbf = Dbf()                                 # 创建类Dbf的对象实例
+    2. 打开DBF文件：     dbf.open(filename)                           # 打开DBF文件
+    3. 读入数据：        dbf.fetch()                                  # 读入DBF文件中的数据
+    4. 访问数据          dbf.data                                    # 数据存储在属性变量data，格式为 DataFrame
+    5. 写数据csv：       dbf.to_csv(csvname=csvfile，sep=',')        # 将data写到文件csvfile,格式为 csv, 分隔符为sep
+    6. 写数据dfb：       dbf.to_dbf(dbfname=dbffile)                 # 将data写到DBF文件
 
     ---------------------------------------------------------------------------------------------------------------
     数据与接口说明
@@ -119,7 +119,7 @@ class Dbf:
     1. Dbf.data：从DBF文件读入的数据，格式为pandas.DataFrame ( read data to Dbf.data from dbase file)
     2. 从 DBF文件到DataFrame的数据类型转换使用Dbf.type_map，在初始化之前可以查看替换，须保证能够进行类型映射
     3. 对 DBF文件字符内容的解码使用 Dbf.codeset，缺省值为 GBK，初始化之前可以替换
-    4. 打开 DBF文件后，可以通过 dbf_bak.file_info查看文件结构信息，通过field_info查看字段结构信息
+    4. 打开 DBF文件后，可以通过 dbf.file_info查看文件结构信息，通过field_info查看字段结构信息
     5. 读出的数据中包括DBF表的删除和删除标记列，名称为 _delflag、_nullflab，如果原DBF文件中有重名字段，会增加'_'的数量
     6. 切片访问按照切片格式，可以使用下标，小标范围，或索引号, 切片下标使用0开始记录号，而list使用1开始记录号
     7. 写数据到DBF文件，执行结果是将当前data的数据写到一个csv文件。
@@ -140,7 +140,7 @@ class Dbf:
     ---------------------------------------------------------------------------------------------------------------
 
     调用示例：
-    Examples:
+    (Examples)
     # read dbf to DataFrame
     >>> dbf = Dbf()
     >>> dbf.open('../tests/demo_with_cn.dbf')
@@ -164,32 +164,49 @@ class Dbf:
 
     def open(self, filename: str = ''):
         """
-        open and load dbf_bak to self.data
-        :param filename: dbf_bak file name to read
+        open and load dbf to self.data
+
+        Args:
+            filename(str): dbf file name to read
         """
         self.reader.encoding = self.encoding
         self.reader.open(filename=filename)
         if isinstance(self.reader.data, pd.DataFrame):
-            self.__data_cleaning(self.reader.data)
+            self.__data_cleaning()
 
     def close(self):
         """
-        close dbf_bak file opened in self.reader
-        can not fetch data if reader closed
+        close dbf file
+        fetch is not available after the close method is executed
         """
         self.reader.close()
 
     def fetch(self, start=1, count=10):
         """
-        start in range(1, len(dbf_bak)+1)
+        从DBF文件读出数据到Dbf对象属性data
+        开始记录号从1至DBF的最大记录长度
+        read DBF file records to Dbf attribute data
+        start in range(1, len(dbf)+1)
+
+        Args:
+            start(int): start record number to read
+            count(int): record count to read
         """
         if start < 0 or count < 0:
             self.reader.fetchall()
         else:
             self.reader.fetchmany(start=start, count=count)
-        self.__data_cleaning(self.reader.data)
+        self.__data_cleaning()
 
     def to_csv(self, csvfile='temp.csv', sep=',', **kwargs):
+        """
+        将self.data写入csv文件csvfile
+
+        Args:
+            csvfile(str): csv file name to save
+            sep(str): seperator used in csv file
+            kwargs(dict)； key parameters used for method DataFrame.to_csv
+        """
         if not isinstance(self.data, pd.DataFrame):
             raise FileNotFoundError('no data to save to csv!')
         self.data.to_csv(csvfile, index=False, sep=sep, **kwargs)
@@ -201,12 +218,16 @@ class Dbf:
         writer.encoding = self.encoding
         writer.to_dbf(df=self.data, dbffile=dbffile)
 
-    def __data_cleaning(self, df):
+    def __data_cleaning(self):
         """
-        fetch df to self.data from self.reader.data
-        filter out the fields _delflag in reader.data
-        save delflag in self._delflag
-        :param df: DataFrame to set to self.data
+        对象内部数据转换方法方法
+        将self.data设置为DBf读出数据self.reader.data的视图，不包含数据列_delflag
+        设置self._delflag，作为self.reader.data._delflag数据列视图（Series）
+
+        object internal data conversion method,
+        set self.data as a view of self.reader.data
+        set self._delflag as a view of self.readerdata[_delflag]
         """
+        df = self.reader.data
         self.delflag = df['_delflag'] if '_delflag' in df.columns else None
         self.data = df[[col for col in df.columns if col != '_delflag']]
