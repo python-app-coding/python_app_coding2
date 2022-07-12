@@ -73,9 +73,9 @@ class Dbf:
         :parameters
         filename: str, file name to open
 
-    关闭打开的DBF文件。当不需要读取DBF文件数据时，可以关闭打开的DBF文件。
-    关闭之后，不能使用fetch方法获取数据
     close()
+        关闭打开的DBF文件。当不需要读取DBF文件数据时，可以关闭打开的DBF文件。
+        关闭之后，不能使用fetch方法获取数据
 
     fetch(self, start=1, count=10)
         读入在open方法中打开的DBF文件的数据，存入属性data之中。
@@ -103,9 +103,11 @@ class Dbf:
     ---------------------------------------------------------------------------------------------------------------
     读写DBF文件数据过程说明
     (read or write dbase file to or from pandas.DataFrame)
+
     目前支持的DBF数据类型：C(字符)、N（数值）、F（浮点）、D（日期）、L（逻辑）、T（时间日期）、B（双精度）
 
     调用方式（call procedure）：
+
     1. 初始化：          dbf = Dbf()                                 # 创建类Dbf的对象实例
     2. 打开DBF文件：     dbf.open(filename)                           # 打开DBF文件
     3. 读入数据：        dbf.fetch()                                  # 读入DBF文件中的数据
@@ -114,8 +116,10 @@ class Dbf:
     6. 写数据dfb：       dbf.to_dbf(dbfname=dbffile)                 # 将data写到DBF文件
 
     ---------------------------------------------------------------------------------------------------------------
+
     数据与接口说明
     (comments for some attributes or interface)
+
     1. Dbf.data：从DBF文件读入的数据，格式为pandas.DataFrame ( read data to Dbf.data from dbase file)
     2. 从 DBF文件到DataFrame的数据类型转换使用Dbf.type_map，在初始化之前可以查看替换，须保证能够进行类型映射
     3. 对 DBF文件字符内容的解码使用 Dbf.codeset，缺省值为 GBK，初始化之前可以替换
@@ -125,23 +129,31 @@ class Dbf:
     7. 写数据到DBF文件，执行结果是将当前data的数据写到一个csv文件。
 
     ---------------------------------------------------------------------------------------------------------------
+
     需要注意的问题
+
     ----------------------
+
     浮点计算与四舍五入问题
     (some problem about float operation and rounding)
+
     1. 从dbf文件读入数据时，浮点数转换为Decimal类型
     2. 设置 decimal 舍入格式为 ROUNDING_HALF_UP，精度prec为默认的28位
     3. 从DataFrame写回dbf文件时，对数值型N，根据舍入规则保留小数位数
-    ----------------------
+
     标记处理
-    （flag field for delete and null flag）
+    (flag field for delete and null flag)
+
     1. 在从dbf读出数据时，将删除标记读入为一个字段_delflag, 忽略_nullflag
     2. 在向dbf写入数据时，忽略_delflag字段，不写删除标记（所有记录标记 b' '），所有记录标记为未删除
+
     ---------------------------------------------------------------------------------------------------------------
 
     调用示例：
     (Examples)
+
     # read dbf to DataFrame
+
     >>> dbf = Dbf()
     >>> dbf.open('../tests/demo_with_cn.dbf')
     >>> dbf.fetch(1, 20)

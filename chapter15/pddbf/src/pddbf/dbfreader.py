@@ -4,21 +4,16 @@
 DbfReader is class for reading dbf file to DataFrame
 
 types map:
+
     DBF ==> DataFrame
 
-    N --> np.float64 if deicmal_len > 0 else np.int64
-
-    C --> np.str_
-
-    D --> np.datetime64,
-
-    L --> bool,
-
-    F --> float,
-
-    I --> np.int64
-
-    else --> str() --> np.str_
+    -    N --> np.float64 if deicmal_len > 0 else np.int64
+    -    C --> np.str_
+    -    D --> np.datetime64,
+    -    L --> bool,
+    -    F --> float,
+    -    I --> np.int64
+    -    else --> str() --> np.str_
 
 >>> import pandas as pd
 >>> dbfr = DbfReader()

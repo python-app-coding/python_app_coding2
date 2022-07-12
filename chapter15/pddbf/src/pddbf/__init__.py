@@ -13,8 +13,8 @@ Dbf： 读写dbf文件的类。调用DbfReader和DbfWriter。
 
     对象属性：
     data：DataFrame数据。读取dbf文件的数据后存到data，写dbf文件时，将data写到dbf
-    reader：DbfReader对象，用于读取dbf文件。
     delflag：保存原dbf文件中的删除标记。不用于写dbf文件。
+    reader：DbfReader对象，用于读取dbf文件。
 
     方法：
     open: 打开dbf文件。
