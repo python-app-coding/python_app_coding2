@@ -28,8 +28,10 @@ class DbfReader:
     some DBF types parsed to DataFrmae types directly, else converted to Char type by str.
     The conversion procedure implemented by a types map.
 
-    types map used in reading DBF to DataFrame:
+    types map for reading DBF to DataFrame:
+
     DBF ==> DataFrame
+
     -  N --> float64 if deicmal > 0 else int64
     -  C --> string
     -  D --> datetime64
