@@ -55,20 +55,20 @@ class DbfWriter:
         """
         covert DataFrame to dBase file
 
-        procedure:
-        1. get field_spec for dBase from DataFrame columns dtype
-        2. write dbf header using DataFrame.len, field_spec
-        3. write dbf records according to DataFrame.row and field_spec
-           write delflag of dBase record to b' ' or b'\2a' when DataFrame._delflag is False or True
+        The procedure to write DataFrame to DBF file:
 
-        field_spec, list with item: namedtuple(name, type, size, decimal)
-           name:strlen(name)<=11,
-           type must in 'C N F I O D L'
-           size:int=len(field),
-           decimal:int
+        1. get field_spec for dBase from DataFrame columns dtype.
+        2. write dbf header using DataFrame.len, field_spec.
+        3. write dbf records according to DataFrame.row and field_spec.
 
-        Notes:
-            before use to_dbf, can set DbfWriter.max_decimal, DbfWriter.codeset
+
+        field_spec, namedtuple(name, type, size, decimal):
+
+        - name: strlen(name)<=11.
+        - type: C N F I O D L.
+        - size: int=len(field).
+        - decimal: int.
+
 
         Example:
 
@@ -166,17 +166,17 @@ class DbfWriter:
     def get_field_spec_from_dataframe(df):
         """
         use some strategies to set field type,size,decimal
+
         use type for dbf, dtype for DataFrame in following:
-        for each column in data(DataFrame.columns)
-        0. set type='G', decimal=0 for initial, that means to set any dtypes to G if type_check.keys) return None
-        1. set type=_type if DbfWriter.type_check[_type][data.column] is in {N,B,L,D,T,C}
-           where need to filter NaN from data.column
-        2. set len=8 for type(D, T)
-        3. set len=4, type='I' if range(-2**32, 2**32) for type(N)
-           set len=maxlen if abs >= 2**32 for type(N)
-        4. set len=8 for type(B), double-float
-        5. set len=1 for type(L)
-        6. set len=max(str(df[column]).encode('GBK')) for type(X), write value as type(C)
+
+        0. set type='G', decimal=0 for initial, that means to set any dtypes to G if type_check.keys) return None.
+        1. set type=_type if DbfWriter.type_check[_type][data.column] is in {N,B,L,D,T,C}. where need to filter NaN from data.column.
+        2. set len=8 for type(D, T).
+        3. set len=4, type='I' if range(-2**32, 2**32) for type(N). set len=maxlen if abs >= 2**32 for type(N).
+        4. set len=8 for type(B), double-float.
+        5. set len=1 for type(L).
+        6. set len=max(str(df[column]).encode('GBK')) for type(X), write value as type(C).
+
 
         # 6. for type(Decimal) by pandas._libs_lib.is_decimal(data.column):
         #        get max_int_len, max_decimal_len from DataFrame

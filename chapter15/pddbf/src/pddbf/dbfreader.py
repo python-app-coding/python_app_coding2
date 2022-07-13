@@ -1,100 +1,10 @@
 # coding = utf8
 
 """
-DbfReader is class for reading dbf file to DataFrame
+Module dbfreader include a class DbfReader and some functions for datetime calculation.
+DbfReader is class for reading dbf file to DataFrame.
+functions called by DbfReader for converting DBF field with type D to DataFrame column type datetime64.
 
-types map:
-
-    DBF ==> DataFrame
-
-    -    N --> np.float64 if deicmal_len > 0 else np.int64
-    -    C --> np.str_
-    -    D --> np.datetime64,
-    -    L --> bool,
-    -    F --> float,
-    -    I --> np.int64
-    -    else --> str() --> np.str_
-
->>> import pandas as pd
->>> dbfr = DbfReader()
->>> dbfr.open('../tests/demo_with_cn.dbf')
->>> dbfr.close()
->>> dbfr.data.dtypes    # doctest: +NORMALIZE_WHITESPACE
-    _delflag               bool
-    serial_no            object
-    en_name              object
-    ch_name              object
-    price               float64
-    shipping     datetime64[ns]
-    dtype: object
-
->>> dbfr.data
-   _delflag serial_no       en_name ch_name   price            shipping
-0     False     10101  Refrigerator      冰箱  310.51 2020-03-01 01:00:00
-1     False     10102        Washer     洗衣机  420.35 2020-03-02 01:00:00
-2     False     10103         Stove      炉子  350.00 2020-03-03 00:30:00
-3     False     10104    Ventilator     通风机  210.40 2020-03-04 00:00:30
-
->>> dbfr.open('../tests/demo_with_null.dbf')
->>> dbfr.close()
->>> dbfr.data.dtypes    # doctest: +NORMALIZE_WHITESPACE
-    _delflag       bool
-    ksh          object
-    name         object
-    birth        object
-    time         object
-    km1           int64
-    km2         float64
-    zf           object
-    hcf          object
-    stat           bool
-    dtype: object
-
->>> dbfr.data
-   _delflag          ksh name       birth  ...   km2      zf    hcf   stat
-0     False  3702693000a  张同志  2001-01-01  ...  43.0  107.00  58.75  False
-1     False  3712091000b  李产生  2001-01-02  ...  53.0  108.00  54.50  False
-2     False  37131510000  贺理论  2001-02-01  ...  62.0  102.00  45.50  False
-3     False  37077010000  孟自豪  1999-01-01  ...  52.0   97.00  46.75  False
-4     False  37015640000  程前进  2010-01-01  ...  47.0  102.00  53.00  False
-5     False  37050440000  胡德利  2020-01-01  ...  35.0   95.00  53.75  False
-6     False  37085740000  栾作文  1970-01-01  ...  60.0  121.00  60.75  False
-7     False  37081250001  苏成绩  1970-02-01  ...  53.0  108.00  54.50  False
-8     False  37043430000   成书  1971-01-01  ...  27.0   84.00  49.50  False
-9     False  37010100001  end        None  ...   0.0   99.99   0.00   True
-<BLANKLINE>
-[10 rows x 10 columns]
-
->>> dbfr.data[['time', 'km1']]
-                  time  km1
-0  0011-01-01 23:01:02   64
-1  1990-01-02 11:01:02   55
-2  1901-02-01 00:59:06   40
-3  1999-01-01 01:10:10   45
-4  2010-01-01 12:01:02   55
-5  2020-01-01 12:00:00   60
-6  1969-01-01 12:00:00   61
-7  0001-01-01 00:00:00   55
-8  2071-01-01 00:59:59   57
-9                 None    0
-
->>> dbfr.data['time'].astype(np.datetime64)
-Traceback (most recent call last):
-   ...
-pandas._libs.tslibs.np_datetime.OutOfBoundsDatetime: Out of bounds nanosecond timestamp: 11-01-01 23:01:02
-
->>> pd.to_datetime(dbfr.data['time'], errors='ignore')
-0    0011-01-01 23:01:02
-1    1990-01-02 11:01:02
-2    1901-02-01 00:59:06
-3    1999-01-01 01:10:10
-4    2010-01-01 12:01:02
-5    2020-01-01 12:00:00
-6    1969-01-01 12:00:00
-7    0001-01-01 00:00:00
-8    2071-01-01 00:59:59
-9                    NaT
-Name: time, dtype: object
 """
 
 import time
@@ -111,6 +21,103 @@ decimal.getcontext().rounding = decimal.ROUND_HALF_UP
 
 
 class DbfReader:
+
+    """
+    read DBF file to DataFrame.
+
+    some DBF types parsed to DataFrmae types directly, else converted to Char type by str.
+    The conversion procedure implemented by a types map.
+
+    types map used in reading DBF to DataFrame:
+    DBF ==> DataFrame
+    -  N --> float64 if deicmal > 0 else int64
+    -  C --> string
+    -  D --> datetime64
+    -  L --> bool
+    -  F --> float64
+    -  I --> int64
+    -  else --> string
+
+    >>> dbfr = DbfReader()
+    >>> dbfr.open('../tests/demo_with_cn.dbf')
+    >>> dbfr.close()
+    >>> dbfr.data.dtypes    # doctest: +NORMALIZE_WHITESPACE
+        _delflag               bool
+        serial_no            object
+        en_name              object
+        ch_name              object
+        price               float64
+        shipping     datetime64[ns]
+        dtype: object
+
+    >>> dbfr.data
+       _delflag serial_no       en_name ch_name   price            shipping
+    0     False     10101  Refrigerator      冰箱  310.51 2020-03-01 01:00:00
+    1     False     10102        Washer     洗衣机  420.35 2020-03-02 01:00:00
+    2     False     10103         Stove      炉子  350.00 2020-03-03 00:30:00
+    3     False     10104    Ventilator     通风机  210.40 2020-03-04 00:00:30
+
+    >>> dbfr.open('../tests/demo_with_null.dbf')
+    >>> dbfr.close()
+    >>> dbfr.data.dtypes    # doctest: +NORMALIZE_WHITESPACE
+        _delflag       bool
+        ksh          object
+        name         object
+        birth        object
+        time         object
+        km1           int64
+        km2         float64
+        zf           object
+        hcf          object
+        stat           bool
+        dtype: object
+
+    >>> dbfr.data
+       _delflag          ksh name       birth  ...   km2      zf    hcf   stat
+    0     False  3702693000a  张同志  2001-01-01  ...  43.0  107.00  58.75  False
+    1     False  3712091000b  李产生  2001-01-02  ...  53.0  108.00  54.50  False
+    2     False  37131510000  贺理论  2001-02-01  ...  62.0  102.00  45.50  False
+    3     False  37077010000  孟自豪  1999-01-01  ...  52.0   97.00  46.75  False
+    4     False  37015640000  程前进  2010-01-01  ...  47.0  102.00  53.00  False
+    5     False  37050440000  胡德利  2020-01-01  ...  35.0   95.00  53.75  False
+    6     False  37085740000  栾作文  1970-01-01  ...  60.0  121.00  60.75  False
+    7     False  37081250001  苏成绩  1970-02-01  ...  53.0  108.00  54.50  False
+    8     False  37043430000   成书  1971-01-01  ...  27.0   84.00  49.50  False
+    9     False  37010100001  end        None  ...   0.0   99.99   0.00   True
+    <BLANKLINE>
+    [10 rows x 10 columns]
+
+    >>> dbfr.data[['time', 'km1']]
+                      time  km1
+    0  0011-01-01 23:01:02   64
+    1  1990-01-02 11:01:02   55
+    2  1901-02-01 00:59:06   40
+    3  1999-01-01 01:10:10   45
+    4  2010-01-01 12:01:02   55
+    5  2020-01-01 12:00:00   60
+    6  1969-01-01 12:00:00   61
+    7  0001-01-01 00:00:00   55
+    8  2071-01-01 00:59:59   57
+    9                 None    0
+
+    >>> dbfr.data['time'].astype(np.datetime64)
+    Traceback (most recent call last):
+       ...
+    pandas._libs.tslibs.np_datetime.OutOfBoundsDatetime: Out of bounds nanosecond timestamp: 11-01-01 23:01:02
+
+    >>> pd.to_datetime(dbfr.data['time'], errors='ignore')
+    0    0011-01-01 23:01:02
+    1    1990-01-02 11:01:02
+    2    1901-02-01 00:59:06
+    3    1999-01-01 01:10:10
+    4    2010-01-01 12:01:02
+    5    2020-01-01 12:00:00
+    6    1969-01-01 12:00:00
+    7    0001-01-01 00:00:00
+    8    2071-01-01 00:59:59
+    9                    NaT
+    Name: time, dtype: object
+    """
 
     dbf_version = {
         b'\x02': 'FoxBASE',
@@ -172,7 +179,6 @@ class DbfReader:
         open dbf and load 10 rows of records to data
 
         :param filename: dbf file name
-        :return: None
         """
         if not filename:
             if isinstance(self.file_handle, io.BufferedReader):
@@ -191,10 +197,16 @@ class DbfReader:
             self.filename = filename
 
     def close(self):
+        """
+        Close DBF file opened in method open.
+        """
         if self.file_handle:
             self.file_handle.close()
 
     def fetchall(self):
+        """
+        Read all record from DBF file.
+        """
         st = time.localtime()
         self.runtime = 'read data start: {}-{}-{} {}:{}:{}\n'. \
             format(st.tm_year, st.tm_mon, st.tm_mday, st.tm_hour, st.tm_min, st.tm_sec)
@@ -220,6 +232,8 @@ class DbfReader:
 
     def fetchmany(self, start=1, count=10):
         """
+        Read scoped records from DBF file, record no from start to start+count-1.
+
         :param start： first record no in dbf table, record no is range(1, len(dbf)+1)
         :param count： record number fetched from dbf table, fetch records, start,...,start+count-1
         """
@@ -243,6 +257,9 @@ class DbfReader:
         self.data = pd.DataFrame(data_dict)
 
     def parse_header(self):
+        """
+        Parse DBF head info, including file info, fields format and type.
+        """
         fp = self.file_handle
 
         # read file info
@@ -281,31 +298,30 @@ class DbfReader:
 
     def parse_record(self, fp):
         """
-        convert data from dBase types to pandas types:
-            dBase  type: C, V, N, F, D, L, I, B, O, T, @
-            pandas type: np.str_, np.int64, np.date, datetime, bool, np.float64
+        Parse DBF record byte data to list of python value
+
+        convert dBase types to pandas types:
+
+        - dBase  type: C, V, N, F, D, L, I, B, O, T, @
+        - pandas type: object, int64, date, datetime64, bool, float64
 
         parse dbf data to pandas:
-            C, V: decode to str by bytes.decode
-            N, F: decode to str by bytes.decode. parse to float64 if decimal > 0 for any record, else to int
-               I: decode to integer by unpack
-               D: decode to str by bytes.decode
-                  parse date by datetime.date(year, month, day)
-            T, @: decode to datetime by unpack 2 long integers
-                  parse to date and time by get_date_by_days and get_time_by_compound_value
-            B, O: decode to float64 by unpack
-               L: decode to str by bytes.decode
-                  parse to True if 'YyTt' else False
-           other: remain to binary byte string, including(G,P,M,Y,...)
 
-        :param fp: file handle
+        - C, V: decode to str by bytes.decode.
+        - N, F: decode to str by bytes.decode. parse to float64 if decimal > 0, else to int.
+        - I: decode to integer by unpack.
+        - D: decode to str by bytes.decode. parse date by datetime.date(year, month, day).
+        - T, @: decode to datetime by unpack 2 long integers. then parsed to datetime64.
+        - B, O: decode to float64 by unpack.
+        - L: decode to str by bytes.decode. parse to True if 'YyTt' else False
+        - other: convert to string by str(), including(G,P,M,Y,...)
 
-        :return: list with field-data
+        :param fp: DBF file handle
+        :return: list[DBF_field_value]
         """
         _record = struct.unpack(self.field_unpack_format,
                                 fp.read(self.file_info.record_len))
         result = []
-        # for ri in range(self.file_info.field_count):
         for ri, field_value in enumerate(_record):
             # get field-info
             _name = self.field_info[ri].name
@@ -315,10 +331,9 @@ class DbfReader:
 
             # parsing-1: decode field_value to str for 'N,F,D,C,V'
             if _type in 'N,F,D,C,V':
-                # print(field_value)
                 field_value = field_value.replace(b'\x00', b'').decode(self.encoding).strip()
 
-            # parsing-2: convert field_value according to its type
+            # parsing-2: convert field_value according to type
             if _type in "N,F":
                 # N, F: numeric type, float, fixed-point, digital char
                 # set to Decimal if _decimal > 0
@@ -344,7 +359,8 @@ class DbfReader:
                     # get delflag to set field _delflag
                     field_value = False if field_value == b'\x20' else True
                 else:
-                    # set to False for uninitialized value '?'
+                    # set to True for valid value in DBF
+                    # undo: set to False for uninitialized value '?'
                     field_value = field_value in b'YyTt?'
             elif _type in 'T, @':
                 # consume much time to process

@@ -101,10 +101,13 @@ class Dbf:
         dbffile: str. 'temp.dbf'( default). file name to write.
 
     ---------------------------------------------------------------------------------------------------------------
-    读写DBF文件数据过程说明
-    (read or write dbase file to or from pandas.DataFrame)
 
-    目前支持的DBF数据类型：C(字符)、N（数值）、F（浮点）、D（日期）、L（逻辑）、T（时间日期）、B（双精度）
+    读写DBF文件数据过程说明
+    (Explanation about writting DBF file from pandas.DataFrame):
+
+    目前支持的DBF数据类型：
+
+    - C(字符)、N（数值）、F（浮点）、D（日期）、L（逻辑）、T（时间日期）、B（双精度）
 
     调用方式（call procedure）：
 
