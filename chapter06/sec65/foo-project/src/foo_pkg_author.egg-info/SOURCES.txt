@@ -1,9 +1,0 @@
-README.rst
-pyproject.toml
-src/foo_pkg/__init__.py
-src/foo_pkg/hello.py
-src/foo_pkg_author.egg-info/PKG-INFO
-src/foo_pkg_author.egg-info/SOURCES.txt
-src/foo_pkg_author.egg-info/dependency_links.txt
-src/foo_pkg_author.egg-info/entry_points.txt
-src/foo_pkg_author.egg-info/top_level.txt

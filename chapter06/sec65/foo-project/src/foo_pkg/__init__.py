@@ -1,6 +1,6 @@
 # coding = utf8
 
-import os
+"""
+Foo is demo project for create and packaging project
+"""
 
-if __name__ == '__main__':
-    pass

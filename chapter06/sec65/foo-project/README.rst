@@ -1,6 +1,9 @@
 Foo
 =========
 
+1. Introduction 简介
+-------------------
+
 Foo is a demo project for creating and distributing python lib:
 
 - it provides a directories to make a project.
@@ -19,7 +22,7 @@ Foo 是一个演示项目，用于展示创建和分发Python第三方库:
 [联系](applied_python@163.com)
 
 
-Installation / 安装
+2. Installation / 安装
 --------------------------
 
 ::
@@ -28,7 +31,7 @@ Installation / 安装
 
 
 
-Usage / 使用
+3. Usage / 使用
 --------------------------
 
 
@@ -47,9 +50,44 @@ run mode / 运行方式：
     > hello
     Hello, World!
 
+4. Project 项目结构
+------------------
+Foo structure ::
 
-Further discussion / 更多
---------------------------
-more problems to issues on gitee
+  foo
+  |-- LICENSE
+  |-- README.rst
+  |-- pyproject.toml
+  |-- src
+       |-- foo
+           |-- __init__.py
+           |-- hello.py
+       |-- tests
+           |-- test_hello.py
+  |-- docs/
+       |-- index.rst
+
+5. FAQ 常见问题
+--------------
+1) Where to download foo_pkg_author ?
+
+   foo_pkg_author is on PyPI，please use pip to install.
+
+2) How to import foo ?
+
+>>> import foo_pkg
+
+3) How to call module in foo_pkg ?
+
+   hello is an only module of foo_pkg, import it as follow:
+
+   >>> import foo_pkg.hello as hello
+
+   then call method hello: ::
+
+   python code:
+
+   >>> hello.hello()
+   Hello, World!
 
 .. *ref*: ..\docs\index.rst

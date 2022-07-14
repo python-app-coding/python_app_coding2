@@ -1,0 +1,65 @@
+Creating Sphinx Docs
+========================
+
+1. 创建文档目录：make dir docs for use Sphinx
+
+    > md docs
+
+    Note: 在项目目录中创建docs目录，用于存放生成的文档
+
+
+2. 运行Sphinx: 在docs目录中运行Sphinx
+
+    > cd docs
+    > sphinx-quickstart
+
+
+3. 设置conf.py: modify source/conf.py
+
+    # -- Path setup --------------------------------------------------------------
+    import os
+    import sys
+    sys.path.insert(0, os.path.abspath('../../src'))
+
+    # -- Project information -----------------------------------------------------
+
+    project = 'foo-pkg'
+    copyright = '2022, author'
+    author = 'author'
+
+    # The full version, including alpha/beta/rc tags
+    release = '0.1'
+
+
+4. 抽取代码文档： retrieve docstring
+
+    sphinx-apidoc -o ./source ../src/foo_pkg
+
+    Note1: you can also use command "automodule::", "autoclass::", "autofunction::", ...
+           ```{eval-rst}
+            .. automodule:: <main>
+                :members:
+           ```
+    Note2: 在 markdown 格式中使用 autodoc ，需要使用 eval-rst 指令对导入文档的指令做一层封装，
+           详见文章：Use sphinx.ext.autodoc in Markdown files
+
+
+5. 设置目录树: add rst-files to source/index.rst
+
+    .. toctree::
+       :maxdepth: 2
+       :caption: Contents:
+
+    <package_name>
+    moudles
+
+
+5. make
+    make clean
+    make html
+
+
+6. use thereaddocs
+
+    ...
+
