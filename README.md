@@ -1,5 +1,5 @@
 # 实用Python编程技术（基础篇）
-# practical_python_coding
+# practical_python_coding -- Foundation and Files Operation
 
 #### 介绍
 本书致力于为编程入门提供一个实用教程，内容包括创建计算环境、IDE使用、基本编程知识、各种数据文件的读写。
