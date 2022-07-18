@@ -27,8 +27,9 @@ D:\FOO_PYSCALFFOLD<br>
 │  └─foo_pyscalffold<br>
 └─tests<br>
 
-    pyproject.toml
-    --------------
+pyproject.toml
+
+--------------
     
 
 3. docs
