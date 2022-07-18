@@ -1,3 +1,12 @@
+
+ch521
+    raw: 空白部分（制表符、空格、换行符）/'123
+    new: ..(..、换行符)/'123\n      abc\n'
+
+
+
+
+
 ch65
 
     raw: foo-package-USERNAME   <in pyproject.toml>

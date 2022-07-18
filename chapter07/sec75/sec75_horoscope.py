@@ -34,7 +34,7 @@ def get_horoscope2(month, day):
                  '狮子', '处女', '天秤', '天蝎', '射手']
     cutoff_day = (20, 19, 21, 21, 21, 22, 23, 23, 23, 23, 22, 22)
     _month = month - (1 if day < cutoff_day[month - 1] else 0)
-    return holoscope[_month if _month<12 else 0]
+    return holoscope[_month if _month < 12 else 0]
 
 
 def get_horoscope3(month, day):
