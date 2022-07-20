@@ -6,12 +6,12 @@ requires = [
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "foo-pkg-author"
+name = "package-foo"
 version = "0.0.3"
 authors = [
-  { name="Author", email="author@foo.com" },
+  { name="python_app_tech", email="python_app_tech@126.com" },
 ]
-description = "this is a demo project"
+description = "foo is a demo project"
 readme = "README.rst"
 requires-python = ">=3.8"
 classifiers = [
@@ -38,9 +38,9 @@ classifiers = [
 
 # 指定发行包路径
 [tool.setuptools]
-packages = ["foo_pkg"]
+packages = ["foo"]
 package-dir = {"" = "src"}
 
 # 设置程序运行入口点
 [project.scripts]
-hello = "foo_pkg.hello:hello"
+foohello = "foo.hello:hello"

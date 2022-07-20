@@ -13,10 +13,10 @@ ch65
     new: foo-pkg-author
 
     raw: authors = [/{ name="Author", email="author@example.com" },/]
-    new: authors = [{ name="Author", email="author@example.com" }]
+    new: authors = [{ name="Author", email="author@foo.com" }]
 
     raw: import foo
-    new: import foo_pkg as foo
+    new: import foo
 
 
 ch83    cmp files
