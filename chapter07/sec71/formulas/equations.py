@@ -36,6 +36,5 @@ def eq12c(a, b, c):
 
 
 if __name__ == '__main__':
-    # print(eq12(1, 2, 3))
     import doctest
     doctest.testmod(verbose=True)
