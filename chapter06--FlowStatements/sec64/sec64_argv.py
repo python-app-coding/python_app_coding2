@@ -35,7 +35,7 @@ def argv(byimport=True):
     # os: current work path
     print('current path:')
     print('          os.getcwd() = {}'.format(os.getcwd()))
-    print(' os.path.abspath(".") = {}'.format(osp.abspath("../../chapter03")))
+    print(' os.path.abspath(".") = {}'.format(osp.abspath("../../chapter03--IPython")))
     print('          sys.path[0] = {}\n'.format(sys.path[0]))
 
 
