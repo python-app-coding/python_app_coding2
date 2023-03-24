@@ -19,13 +19,13 @@ file_type_dict = {
 }
 
 File_info = namedtuple("File_info", ('type', 'year', 'month', 'day', 'record_count', 'header_len', 'record_len'))
-
+FieldSpec = namedtuple('Field', ('name', 'type', 'size', 'decimal'))
 
 def test_header():
     """
-    >>> with open("exp_foxpro.dbf", "rb") as fp:
-    ...    data_info = fp.read(32)
-    ...    r = list(struct.unpack("<B3BLHH20x", data_info))
+    >>> with open("demo_foxpro.dbf", "rb") as f:
+    ...    data_info = f.read(32)
+    ...    r = list(struct.unpack("<4BLHH20x", data_info))
     ...    r[0] = hex(r[0])
     ...    print("{}, {}, {}, {}, {}, {}, {}".format(*r))
     0x30, 122, 7, 11, 3, 360, 6
@@ -37,9 +37,20 @@ def test_header():
     >>> file_info = File_info(*r)
     >>> file_info
     File_info(type='0x30', year=122, month=7, day=11, record_count=3, header_len=360, record_len=6)
+
+    >>> field_info = []
+    >>> with open("demo_foxpro.dbf", "rb") as f:
+    ...    f.read(32)
+    ...    for _count in range((file_info.header_len-33-263)//32):
+    ...        field_data = f.read(32)
+    ...        name, type, size, decimal = struct.unpack('<11sc4xBB14x', field_data)
+    ...        name = ''.join([chr(c) for c in name if c > 0])
+    ...        type = chr(type[0])
+    ...        field = FieldSpec(name, type, size, decimal)
+    ...        field_info.append(field)
+    >>> field_info
+    Field(name='a', type='I', size=4, decimal=0), Field(name='b', type='C', size=1, decimal=0)
     """
-
-
 
 
 if __name__ == '__main__':
