@@ -1,6 +1,6 @@
 # coding: utf8
 
-import os
+# import os
 import struct
 from collections import namedtuple
 
@@ -17,11 +17,23 @@ file_type_dict = {
     '0xF5': "FoxPro 2.x(erlier) with memo",
     '0xFB': "FoxBASE"
 }
-
 File_info = namedtuple("File_info", ('type', 'year', 'month', 'day', 'record_count', 'header_len', 'record_len'))
 FieldSpec = namedtuple('Field', ('name', 'type', 'size', 'decimal'))
 
-def test_header():
+
+def read_field_spec(f, header_len):
+    field_info = []
+    for _count in range((header_len-33-263)//32):
+        byte1 = f.read(1)
+        if byte1 == b'r':
+            break
+        field_data = byte1 + f.read(31)
+        field = FieldSpec(*struct.unpack('<11sc4xBB14x', field_data))
+        field_info.append(field)
+    return field_info
+
+
+def read_dbf_header():
     """
     >>> with open("demo_foxpro.dbf", "rb") as f:
     ...    data_info = f.read(32)
@@ -54,5 +66,5 @@ def test_header():
 
 
 if __name__ == '__main__':
-    test_header()
+    read_dbf_header()
 
