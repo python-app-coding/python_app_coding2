@@ -23,7 +23,7 @@ File_info = namedtuple("File_info", ('type', 'year', 'month', 'day', 'record_cou
 
 def test_header():
     """
-    >>> with open("temp.dbf", "rb") as fp:
+    >>> with open("exp_foxpro.dbf", "rb") as fp:
     ...    data_info = fp.read(32)
     ...    r = list(struct.unpack("<B3BLHH20x", data_info))
     ...    r[0] = hex(r[0])

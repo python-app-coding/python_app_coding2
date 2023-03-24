@@ -93,12 +93,12 @@ class Dbf:
         csvfile: str. 'temp.csv'( default). file name to write.
         sep: str. ','( default).  length is 1. charater used to seperate field data in record line.
 
-    to_dbf(self, dbffile='temp.dbf')
+    to_dbf(self, dbffile='exp_foxpro.dbf')
         将数据写入DBF文件
         write data to DBF file
 
         :parameters
-        dbffile: str. 'temp.dbf'( default). file name to write.
+        dbffile: str. 'exp_foxpro.dbf'( default). file name to write.
 
     ---------------------------------------------------------------------------------------------------------------
 
