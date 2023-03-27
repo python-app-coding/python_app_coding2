@@ -26,7 +26,7 @@ class TestDbfreader:
         pydbfdir = os.path.abspath('../pddbf')
         sys.path.insert(0, pydbfdir)
         self.pydbf = importlib.import_module('pddbf')
-        self.dfr = self.pydbf.read_dbf("demo_with_cn.dbf")
+        self.dfr = self.pydbf.read_dbf("dbf_with_cn.dbf")
         self.dfr = self.dfr.astype({'price': float, 'shipping': np.datetime64})
 
     def test_read_dbf1(self):

@@ -93,12 +93,12 @@ class Dbf:
         csvfile: str. 'temp.csv'( default). file name to write.
         sep: str. ','( default).  length is 1. charater used to seperate field data in record line.
 
-    to_dbf(self, dbffile='demo_foxpro.dbf')
+    to_dbf(self, dbffile='dbf_foxpro.dbf')
         将数据写入DBF文件
         write data to DBF file
 
         :parameters
-        dbffile: str. 'demo_foxpro.dbf'( default). file name to write.
+        dbffile: str. 'dbf_foxpro.dbf'( default). file name to write.
 
     ---------------------------------------------------------------------------------------------------------------
 
@@ -158,7 +158,7 @@ class Dbf:
     # read dbf to DataFrame
 
     >>> dbf = Dbf()
-    >>> dbf.open('../tests/demo_with_cn.dbf')
+    >>> dbf.open('../tests/dbf_with_cn.dbf')
     >>> dbf.fetch(1, 20)
     >>> dbf.data    # doctest: +NORMALIZE_WHITESPACE
           serial_no       en_name ch_name   price            shipping

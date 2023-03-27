@@ -41,7 +41,7 @@ class DbfReader:
     -  else --> string
 
     >>> dbfr = DbfReader()
-    >>> dbfr.open('../tests/demo_with_cn.dbf')
+    >>> dbfr.open('../tests/dbf_with_cn.dbf')
     >>> dbfr.close()
     >>> dbfr.data.dtypes    # doctest: +NORMALIZE_WHITESPACE
         _delflag               bool
@@ -59,7 +59,7 @@ class DbfReader:
     2     False     10103         Stove      炉子  350.00 2020-03-03 00:30:00
     3     False     10104    Ventilator     通风机  210.40 2020-03-04 00:00:30
 
-    >>> dbfr.open('../tests/demo_with_null.dbf')
+    >>> dbfr.open('../tests/dbf_with_null.dbf')
     >>> dbfr.close()
     >>> dbfr.data.dtypes    # doctest: +NORMALIZE_WHITESPACE
         _delflag       bool

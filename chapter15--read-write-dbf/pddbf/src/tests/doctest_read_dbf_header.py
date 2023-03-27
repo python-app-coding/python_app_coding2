@@ -48,7 +48,7 @@ def read_dbf_header(dbf_file_name):
 
 def doctest_read_dbf_header():
     """
-    >>> file_info, field_info = read_dbf_header('demo_foxpro.dbf')
+    >>> file_info, field_info = read_dbf_header('dbf_foxpro.dbf')
     >>> file_info
     File_info(type='0x30', year=122, month=7, day=11, record_count=3, header_len=360, record_len=6)
 
@@ -64,6 +64,6 @@ def doctest_read_dbf_header():
 
 
 if __name__ == '__main__':
-    print(read_dbf_header('demo_foxpro.dbf'))
-    print(read_dbf_header('demo_with_cn.dbf'))
-    print(read_dbf_header('demo_with_null.dbf'))
+    print(read_dbf_header('dbf_foxpro.dbf'))
+    print(read_dbf_header('dbf_with_cn.dbf'))
+    print(read_dbf_header('dbf_with_null.dbf'))
