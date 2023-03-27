@@ -63,6 +63,40 @@ def doctest_read_dbf_header():
     """
 
 
+def doctest_read_file_info():
+    """
+    >>> f = open("dbf_foxpro.dbf", 'rb')
+    >>> file_info_data = f.read(32)
+
+    # 读取DBF文件信息解析格式： <4BLHH20x
+    # < : 小端， 4B: 4个无符号单字节整数， L: 4字节整数， H: 2字节整数， 20x: 20个字节不解析
+    >>> file_type, year, month, day, record_count, header_length, record_length = \\
+    ... struct.unpack('<4BLHH20x', file_info_data)
+    >>> hex(file_type), year, month, day, record_count, header_length, record_length
+    ('0x30', 122, 7, 11, 3, 360, 6)
+
+    >>> field_info = []
+    >>> for _count in range((header_length-33-263)//32):
+    ...     field_data = f.read(32)
+    ...     field = list(struct.unpack('<11sc4xBB14x', field_data))
+    ...     field[0] = ''.join([chr(c) for c in field[0] if c > 0])
+    ...     field_info.append(FieldSpec(*field))
+    >>> for fd in field_info: print(fd)
+    Field(name='a', type=b'I', size=4, decimal=0)
+    Field(name='b', type=b'C', size=1, decimal=0)
+
+    >>> f.close()
+    """
+
+
+def doctest_read_field_info():
+    """
+    >>> f = open("dbf_foxpro.dbf", 'rb')
+    >>> file_info_data = f.read(32)
+    """
+
+
+
 if __name__ == '__main__':
     print(read_dbf_header('dbf_foxpro.dbf'))
     print(read_dbf_header('dbf_with_cn.dbf'))

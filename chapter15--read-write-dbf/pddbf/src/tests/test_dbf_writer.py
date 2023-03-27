@@ -9,13 +9,12 @@ import faker
 import time
 
 
-
 class TestDbfwriter:
 
     def setup(self):
         dbfdir = os.path.abspath('../pddbf')
         sys.path.insert(0, dbfdir)
-        self.pydbf = importlib.import_module('pddbf')
+        pydbf = importlib.import_module('pddbf')
 
         fk = faker.Faker('zh_cn')
         record_num = 100000
@@ -32,7 +31,7 @@ class TestDbfwriter:
 
         st = time.time()
         tempfile = os.path.join(dbfdir, 'temp_test_10w.dbf')
-        self.pydbf.to_dbf(self.dffaker, tempfile)
+        pydbf.to_dbf(self.dffaker, tempfile)
         self.write_time = time.time()-st
 
         st = time.time()
