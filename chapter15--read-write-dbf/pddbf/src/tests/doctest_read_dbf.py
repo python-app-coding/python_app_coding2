@@ -22,28 +22,49 @@ FieldSpec = namedtuple('Field', ('name', 'type', 'size', 'decimal'))
 
 
 def read_dbf_header(dbf_file_name):
-    field_info = []
     with open(dbf_file_name, "rb") as f:
-        # get file info
-        file_info_data = f.read(32)
-        r = list(struct.unpack("<4BLHH20x", file_info_data))
-        r[0] = hex(r[0])
-        file_info = File_info(*r)
-
-        # get field info
-        for _count in range((file_info.header_len-33-263)//32):
-            # byte1 = f.read(1)
-            # if byte1 == b'r':
-            #     break
-            # field_data = byte1 + f.read(31)
-            field_data = f.read(32)
-            name, type, size, decimal = struct.unpack('<11sc4xBB14x', field_data)
-            name = ''.join([chr(c) for c in name if c > 0])
-            type = chr(type[0])
-            field = FieldSpec(name, type, size, decimal)
-            # field = FieldSpec(*struct.unpack('<11sc4xBB14x', field_data))
-            field_info.append(field)
+        file_info = read_file_info(f)
+        field_info = read_field_spec(f, file_info)
     return file_info, field_info
+
+
+def read_file_info(f):
+    file_info_data = f.read(32)
+    r = list(struct.unpack("<4BLHH20x", file_info_data))
+    r[0] = hex(r[0])
+    file_info = File_info(*r)
+    return file_info
+
+
+def read_field_spec(f, file_info):
+    field_info = []
+    for _count in range((file_info.header_len-33-263)//32):
+        field_data = f.read(32)
+        name, type, size, decimal = struct.unpack('<11sc4xBB14x', field_data)
+        name = ''.join([chr(c) for c in name if c > 0])
+        type = chr(type[0])
+        field = FieldSpec(name, type, size, decimal)
+        field_info.append(field)
+    return field_info
+
+
+def read_records_all(f, file_info, field_spec):
+    f.seek(file_info.header_len)
+    record_data = []
+    for _ in range(file_info.record_count):
+        record_bytes = f.read(file_info.record_len)
+        record_value = []
+        pos = 0
+        for finfo in field_spec:
+            field_bytes = record_bytes[pos: pos+finfo.size]
+            value = parse_field_value(field_bytes, finfo)
+            record_value.append(value)
+            pos += finfo.size
+        record_data.append(record_value)
+
+
+def parse_field_value(field_bytes, finfo):
+    pass
 
 
 def doctest_read_dbf_header():
