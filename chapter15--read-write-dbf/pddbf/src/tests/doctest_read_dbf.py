@@ -3,6 +3,8 @@
 # import os
 import struct
 from collections import namedtuple
+import decimal
+import datetime
 
 
 file_type_dict = {
@@ -48,23 +50,48 @@ def read_field_spec(f, file_info):
     return field_info
 
 
-def read_records_all(f, file_info, field_spec):
-    f.seek(file_info.header_len)
-    record_data = []
+def read_records_all(f, file_info, fields_spec):
+    f.seek(file_info.header_len)		                # 跳过表头区
+    records_data = []			                        # 存放所有记录数据
     for _ in range(file_info.record_count):
-        record_bytes = f.read(file_info.record_len)
-        record_value = []
+        record_bytes = f.read(file_info.record_len)	    # 读出当前记录二进制数据
+        record_value = []			                    # 存放当前的解析后记录数据
         pos = 0
-        for finfo in field_spec:
-            field_bytes = record_bytes[pos: pos+finfo.size]
-            value = parse_field_value(field_bytes, finfo)
+        for field_spec in fields_spec:
+            field_bytes = record_bytes[pos: pos+field_spec.size]
+            value = parse_field_value(field_bytes, field_spec)
             record_value.append(value)
-            pos += finfo.size
-        record_data.append(record_value)
+            pos += field_spec.size
+        records_data.append(record_value)
+    return records_data
 
 
-def parse_field_value(field_bytes, finfo):
-    pass
+def parse_field_value(field_data, field_spec):
+    _name = field_spec.name
+    _type = field_spec.type
+    _decimal = field_spec.decimal
+    _size = field_spec.size
+
+    value = field_data
+    if _type in 'NFCVDL':	        # 这些类型以字符方式存储，先进行GBK解码
+        value = value.replace(b'\00', b'').decode('GBK')  # 去除填充符'\00'
+
+    # 按照具体类型进行解析（下述类型之外的数据保持将二进制格式，pandas将识别为object类型）
+    if _type == 'L':	            # 逻辑类型解析
+        value = value in 'YyTt'    # False值为0x20，有些版本的True值会为Y,y,T,t
+    elif _type in 'NF':	            # 数值类型解析
+        if _decimal:		        # 使用Decimal可以精确表示dBase定点浮点数
+            value = decimal.Decimal(value)
+        else:			            # 没有小数位时使用整数类型
+            value = int(value) if value.isdigit() else None
+    elif _type == 'D':	            # 日期类型按照YYYYMMDD方式存储，进一步解析位datetime.date
+        value = datetime.date(value[0:4], int(value[4:6]), int(value[6:8]))
+    elif _type in 'BO':	            # 双精度数类型解析
+        value = struct.unpack('<d', value)
+    elif _type in 'I':	            # 整数类型解析
+        value = struct.unpack('<i', value)
+
+    return value
 
 
 def doctest_read_dbf_header():
@@ -113,7 +140,24 @@ def doctest_read_file_info():
 def doctest_read_field_info():
     """
     >>> f = open("dbf_foxpro.dbf", 'rb')
-    >>> file_info_data = f.read(32)
+    >>> file_info = read_file_info(f)
+    >>> field_spec = read_field_spec(f, file_info)
+    >>> f.close()
+    >>> print(field_spec)
+    [Field(name='a', type='I', size=4, decimal=0), Field(name='b', type='C', size=1, decimal=0)]
+    """
+
+
+def doctest_read_record():
+    """
+    >>> f = open("dbf_foxpro.dbf", 'rb')
+    >>> file_info = read_file_info(f)
+    >>> fields_spec = read_field_spec(f, file_info)
+    >>> record_data = read_records_all(f, file_info, fields_spec)
+    >>> f.close()
+    >>> file_info
+    >>> fields_spec
+    >>> record_data
     """
 
 

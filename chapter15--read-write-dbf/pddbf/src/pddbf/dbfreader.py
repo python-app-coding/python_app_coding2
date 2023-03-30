@@ -321,16 +321,16 @@ class DbfReader:
         :param fp: DBF file handle
         :return: list[DBF_field_value]
         """
-        _record = struct.unpack(self.field_unpack_format,
-                                fp.read(self.file_info.record_len))
+        _record = struct.unpack(self.field_unpack_format, fp.read(self.file_info.record_len))
         result = []
-        for ri, field_value in enumerate(_record):
+        for ri, value in enumerate(_record):
             # get field-info
             _name = self.field_info[ri].name
             _type = self.field_info[ri].type
             _decimal = self.field_info[ri].decimal
             _size = self.field_info[ri].size
 
+            field_value = value
             # parsing-1: decode field_value to str for 'N,F,D,C,V'
             if _type in 'N,F,D,C,V':
                 field_value = field_value.replace(b'\x00', b'').decode(self.encoding).strip()
@@ -371,7 +371,7 @@ class DbfReader:
             #     # remain str
             #     pass
             # else:
-            # remain as binary string for type[Y, M, G, P]
+            #     # remain as binary string for type[Y, M, G, P]
             # Y: money format
             # M: comments pointer
             # G: general binary format
