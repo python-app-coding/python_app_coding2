@@ -218,4 +218,7 @@ def doctest_dbfreader():
     >>> dbfr.open("dbf_foxpro.dbf")
     >>> dbfr.read(1, 2)
     >>> dbfr.data
+       a  b
+    0  0  x
+    1  1  y
     """
