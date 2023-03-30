@@ -6,6 +6,7 @@ from collections import namedtuple
 import decimal
 import datetime
 
+import pandas as pd
 
 file_type_dict = {
     '0x20': "Foxbase",
@@ -117,6 +118,31 @@ def parse_field_value(field_data, field_spec):
     return value
 
 
+class DbfReader:
+    """
+    read dbf to pd.DataFrame
+    """
+    def __init__(self):
+        self.file = None
+        self.file_info = None
+        self.field_spec = None
+        self.data = None
+
+    def open(self, dbffilename=None):
+        self.file = open(dbffilename, 'rb')
+        self.file_info = read_file_info(self.file)
+        self.field_spec = read_field_spec(self.file, self.file_info)
+
+    def read(self, start=1, end=None):
+        end = self.file_info.record_count if not end else end
+        data = read_some_records(self.file, self.file_info, self.field_spec, start=start, end=end)
+        self.data = pd.DataFrame(data, columns=[fs.name for fs in self.field_spec])
+
+    def __del__(self):
+        if self.file:
+            self.file.close()
+
+
 def doctest_read_dbf_header():
     """
     >>> file_info, field_info = read_dbf_header('dbf_foxpro.dbf')
@@ -183,4 +209,13 @@ def doctest_read_record():
     [[0, 'x'], [1, 'y'], [2, 'z']]
     >>> some_records
     [[1, 'y'], [2, 'z']]
+    """
+
+
+def doctest_dbfreader():
+    """
+    >>> dbfr = DbfReader()
+    >>> dbfr.open("dbf_foxpro.dbf")
+    >>> dbfr.read(1, 2)
+    >>> dbfr.data
     """
