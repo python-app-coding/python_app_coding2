@@ -50,11 +50,34 @@ def read_field_spec(f, file_info):
     return field_info
 
 
-def read_records_all(f, file_info, fields_spec):
+def read_all_records(f, file_info, fields_spec):
     f.seek(file_info.header_len)		                # 跳过表头区
     records_data = []			                        # 存放所有记录数据
     for _ in range(file_info.record_count):
         record_bytes = f.read(file_info.record_len)	    # 读出当前记录二进制数据
+        record_value = []			                    # 存放当前的解析后记录数据
+        pos = 1                                         # 第一个字节为记录删除标记
+        for field_spec in fields_spec:
+            field_bytes = record_bytes[pos: pos+field_spec.size]
+            value = parse_field_value(field_bytes, field_spec)
+            record_value.append(value)
+            pos += field_spec.size
+        records_data.append(record_value)
+    return records_data
+
+
+def read_some_records(f, file_info, fields_spec, start=1, end=10):
+    f.seek(file_info.header_len)		                # 跳过表头区
+    records_data = []			                        # 存放所有记录数据
+    if not(0 <= start-1 <= end and start <= end <= file_info.record_len):
+        print("start, end is not in range of record!")
+        return
+    for ri in range(file_info.record_len):
+        record_bytes = f.read(file_info.record_len)	    # 读出当前记录二进制数据
+        if ri < start-1:                                # 跳过不在范围记录
+            continue
+        if ri == end:
+            break
         record_value = []			                    # 存放当前的解析后记录数据
         pos = 1                                         # 第一个字节为记录删除标记
         for field_spec in fields_spec:
@@ -153,8 +176,11 @@ def doctest_read_record():
     >>> f = open("dbf_foxpro.dbf", 'rb')
     >>> file_info = read_file_info(f)
     >>> fields_spec = read_field_spec(f, file_info)
-    >>> record_data = read_records_all(f, file_info, fields_spec)
+    >>> all_records = read_all_records(f, file_info, fields_spec)
+    >>> some_records = read_some_records(f, file_info, fields_spec, 2, 3)
     >>> f.close()
-    >>> record_data
+    >>> all_records
     [[0, 'x'], [1, 'y'], [2, 'z']]
+    >>> some_records
+    [[1, 'y'], [2, 'z']]
     """
