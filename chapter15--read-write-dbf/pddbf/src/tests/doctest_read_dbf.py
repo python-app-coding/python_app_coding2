@@ -56,7 +56,7 @@ def read_records_all(f, file_info, fields_spec):
     for _ in range(file_info.record_count):
         record_bytes = f.read(file_info.record_len)	    # 读出当前记录二进制数据
         record_value = []			                    # 存放当前的解析后记录数据
-        pos = 0
+        pos = 1                                         # 第一个字节为记录删除标记
         for field_spec in fields_spec:
             field_bytes = record_bytes[pos: pos+field_spec.size]
             value = parse_field_value(field_bytes, field_spec)
@@ -76,9 +76,9 @@ def parse_field_value(field_data, field_spec):
     if _type in 'NFCVDL':	        # 这些类型以字符方式存储，先进行GBK解码
         value = value.replace(b'\00', b'').decode('GBK')  # 去除填充符'\00'
 
-    # 按照具体类型进行解析（下述类型之外的数据保持将二进制格式，pandas将识别为object类型）
+    # 按照具体类型进行解析（解析类型之外的数据保持原二进制格式）
     if _type == 'L':	            # 逻辑类型解析
-        value = value in 'YyTt'    # False值为0x20，有些版本的True值会为Y,y,T,t
+        value = value in 'YyTt'     # False值为0x20，有些版本的True值会为Y,y,T,t
     elif _type in 'NF':	            # 数值类型解析
         if _decimal:		        # 使用Decimal可以精确表示dBase定点浮点数
             value = decimal.Decimal(value)
@@ -89,7 +89,7 @@ def parse_field_value(field_data, field_spec):
     elif _type in 'BO':	            # 双精度数类型解析
         value = struct.unpack('<d', value)
     elif _type in 'I':	            # 整数类型解析
-        value = struct.unpack('<i', value)
+        value, = struct.unpack('<i', value)
 
     return value
 
@@ -155,14 +155,6 @@ def doctest_read_record():
     >>> fields_spec = read_field_spec(f, file_info)
     >>> record_data = read_records_all(f, file_info, fields_spec)
     >>> f.close()
-    >>> file_info
-    >>> fields_spec
     >>> record_data
+    [[0, 'x'], [1, 'y'], [2, 'z']]
     """
-
-
-
-if __name__ == '__main__':
-    print(read_dbf_header('dbf_foxpro.dbf'))
-    print(read_dbf_header('dbf_with_cn.dbf'))
-    print(read_dbf_header('dbf_with_null.dbf'))
